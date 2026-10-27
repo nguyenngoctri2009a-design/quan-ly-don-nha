@@ -1,0 +1,17 @@
+# Backup folder chứa code PHP cũ
+_backup_php_goc/
+
+# File biến môi trường chứa mật khẩu bảo mật (Không push lên git công khai)
+.env
+.env.local
+.env.*.local
+
+# File nén zip & logs
+*.zip
+*.log
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

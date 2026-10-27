@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="canBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#f1f5f9"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+    <linearGradient id="sprayGrad" x1="100%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#fef08a" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="url(#goldGrad)"/>
+
+  <!-- Spray Mist Particles -->
+  <circle cx="15" cy="14" r="2.2" fill="#ffffff" fill-opacity="0.9"/>
+  <circle cx="10" cy="11" r="1.8" fill="#ffffff" fill-opacity="0.75"/>
+  <circle cx="9" cy="18" r="2" fill="#ffffff" fill-opacity="0.8"/>
+  <circle cx="5" cy="13" r="1.4" fill="#ffffff" fill-opacity="0.6"/>
+  <circle cx="12" cy="22" r="1.6" fill="#ffffff" fill-opacity="0.7"/>
+
+  <!-- Spray Nozzle (Đầu vòi sịt) -->
+  <rect x="23" y="15" width="5" height="3" rx="1" fill="#ffffff"/>
+  <rect x="27" y="14" width="10" height="7" rx="2" fill="#ffffff"/>
+  <rect x="29" y="16" width="6" height="3" rx="1" fill="#f59e0b"/>
+
+  <!-- Can Neck (Cổ bình) -->
+  <rect x="24" y="21" width="16" height="4" rx="1.5" fill="#e2e8f0"/>
+
+  <!-- Can Body (Thân bình sịt) -->
+  <rect x="20" y="25" width="24" height="27" rx="3" fill="url(#canBodyGrad)"/>
+  
+  <!-- Can Label / Accent Banner -->
+  <rect x="20" y="33" width="24" height="12" fill="#0f172a"/>
+  <!-- Crown / Star motif on can -->
+  <path d="M32 36 L34 39 L37 37.5 L36 41 L28 41 L27 37.5 L30 39 Z" fill="#fbbf24"/>
+
+  <!-- Can Bottom Rim -->
+  <rect x="22" y="52" width="20" height="2" rx="1" fill="#94a3b8"/>
+</svg>

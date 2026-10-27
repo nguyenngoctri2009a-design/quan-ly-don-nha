@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/(build-bundles.*|.*\\.py|.*\\.ps1|api/_.*|\\.env.*|\\.git.*)",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/js/:match*",
+      "has": [
+        {
+          "type": "header",
+          "key": "sec-fetch-dest",
+          "value": "document"
+        }
+      ],
+      "destination": "/",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/(css|js)/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/api/config",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, s-maxage=30, stale-while-revalidate=120" }
+      ]
+    },
+    {
+      "source": "/(favicon\\.svg|og-image\\.png|icons/.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, immutable" }
+      ]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Service-Worker-Allowed", "value": "/" }
+      ]
+    },
+    {
+      "source": "/manifest.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/manifest+json; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
+    }
+  ]
+}

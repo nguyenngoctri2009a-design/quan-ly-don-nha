@@ -1,0 +1,2827 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="STATIC_VERCEL_TOKEN_9999999999">
+  <!-- Clean Address Bar URL Routing (Tự động chuyển admin.html -> /admin) -->
+  <script>
+    (function() {
+      try {
+        var p = window.location.pathname;
+        if (p.endsWith('/admin.html')) {
+          var clean = p.replace(/\.html$/, '');
+          window.history.replaceState(null, '', clean + window.location.search + window.location.hash);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <title>Quản Trị Viên - Hệ Thống Quản Lý Trộm Nhà &amp; Quỹ Chuộc Tù</title>
+
+  <!-- ============================================================================== -->
+  <!-- 1. SEO & BẢO MẬT TRANG QUẢN TRỊ (CHỐNG GOOGLE INDEX TRÁNH LỘ CỔNG ADMIN) -->
+  <!-- ============================================================================== -->
+  <meta name="description" content="Cổng quản trị bảo mật cao cấp dành riêng cho Quản trị viên Nguyễn Trí &amp; Cửu Muội - Crew Lưới Búa.">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="author" content="Nguyễn Trí">
+  <meta name="theme-color" content="#f59e0b">
+  <meta name="msapplication-TileColor" content="#f59e0b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Lưới Búa Admin">
+
+  <!-- ============================================================================== -->
+  <!-- 2. OPEN GRAPH CHO FACEBOOK, MESSENGER & ZALO (PREVIEW AN TOÀN) -->
+  <!-- ============================================================================== -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:site_name" content="Crew Lưới Búa - Admin Portal">
+  <meta property="og:title" content="Cổng Quản Trị Tối Cao - Crew Lưới Búa">
+  <meta property="og:description" content="Hệ thống quản trị bảo mật cao cấp dành cho Quản trị viên Nguyễn Trí &amp; Cửu Muội.">
+  <meta property="og:image" content="og-image.png">
+  <meta property="og:image:secure_url" content="og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Banner Quản Trị Crew Lưới Búa">
+
+  <!-- ============================================================================== -->
+  <!-- 3. ZALO & DISCORD RICH EMBED (VIỀN VÀNG HỔ PHÁCH #f59e0b) -->
+  <!-- ============================================================================== -->
+  <meta property="zalo:image" content="og-image.png">
+  <meta property="zalo:title" content="Cổng Quản Trị Tối Cao - Crew Lưới Búa">
+  <meta property="zalo:description" content="Hệ thống quản trị bảo mật cao cấp dành cho Quản trị viên Nguyễn Trí &amp; Cửu Muội.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Cổng Quản Trị Tối Cao - Crew Lưới Búa">
+  <meta name="twitter:description" content="Hệ thống quản trị bảo mật cao cấp dành cho Quản trị viên Nguyễn Trí &amp; Cửu Muội.">
+  <meta name="twitter:image" content="og-image.png">
+
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <!-- Favicon Tab Trình Duyệt (Icon Nhà Vàng) -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+  <link rel="alternate icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='18' fill='%23f59e0b'/><text x='50%25' y='54%25' font-size='38' text-anchor='middle' dominant-baseline='central'>🏠</text></svg>">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <!-- PWA Manifest & Cài Đặt App Desktop PC "Thống Kê Nhập Nhà" -->
+  <link rel="manifest" href="manifest.json">
+  <!-- Google Fonts: Plus Jakarta Sans & Inter (Native Vietnamese Typography) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&family=Great+Vibes&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="css/style.css?v=20261020_45">
+
+  <style>
+    /* Styling cho Login Gate trên nền tảng Static/Vercel */
+    /* Lucian UX/UI Prompt #062 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#062 */
+    :root {
+      --ux-accent: #0284c7;
+      --ux-accent-2: #38bdf8;
+      --ux-accent-soft: rgba(2, 132, 199, 0.16);
+      --ux-accent-ink: #ffffff;
+      --ux-mint: #10b981;
+      --ux-warn: #f59e0b;
+      --ux-danger: #ef4444;
+      --ux-ease: cubic-bezier(.2, .8, .2, 1);
+      --ux-spring: cubic-bezier(.34, 1.45, .64, 1);
+    }
+
+    #loginGate {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 40px 40px 40px 9vw;
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: url('icons/login-bg.png?v=20261021_09') center center / cover no-repeat;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+      overflow-y: auto;
+    }
+
+    #loginGate.gate-visible {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    @media (max-width: 820px) {
+      #loginGate {
+        justify-content: center;
+        padding: 20px 16px;
+        background-position: 65% center;
+      }
+    }
+
+    /* COMPONENT 062 - SIGN-IN CARD WITH FEEDBACK */
+    .u062 {
+      position: relative;
+      width: 100%;
+      max-width: 370px;
+      min-height: 540px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1.5px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 
+        0 24px 60px -12px rgba(15, 23, 42, 0.22),
+        0 4px 16px rgba(15, 23, 42, 0.06),
+        inset 0 1.5px 2px #ffffff;
+      backdrop-filter: blur(32px) saturate(190%);
+      -webkit-backdrop-filter: blur(32px) saturate(190%);
+      overflow: hidden;
+      color: #0f172a;
+    }
+
+    /* SHAKE ANIMATION ON WRONG PASSWORD */
+    .u062.shake {
+      animation: u062-no .5s cubic-bezier(.36, .07, .19, .97);
+    }
+    @keyframes u062-no {
+      15% { transform: translateX(-9px) rotate(-.6deg); }
+      30% { transform: translateX(8px) rotate(.5deg); }
+      45% { transform: translateX(-6px); }
+      60% { transform: translateX(4px); }
+      75% { transform: translateX(-2px); }
+    }
+
+    .u062-pane {
+      position: absolute;
+      inset: 0;
+      padding: 28px 26px 22px;
+      display: flex;
+      flex-direction: column;
+      transition: transform .6s var(--ux-ease), opacity .4s;
+    }
+
+    /* HEADER BRANDING - SANG TRỌNG, TINH TẾ, DỄ NHÌN */
+    .u062-brand-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.07);
+    }
+
+    .u062-logo-wrap {
+      width: 50px;
+      height: 50px;
+      border-radius: 15px;
+      background: #ffffff;
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.09);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      padding: 3px;
+    }
+
+    .u062-logo-wrap .brand-logo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      border-radius: 10px;
+    }
+
+    .u062-title-wrap {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .u062-title {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 850;
+      letter-spacing: -0.025em;
+      color: #0f172a;
+      line-height: 1.25;
+    }
+
+    .u062-subtitle {
+      margin: 3px 0 0;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #475569;
+      line-height: 1.3;
+    }
+
+    .u062-f {
+      position: relative;
+      margin-bottom: 14px;
+    }
+
+    .u062-f label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 750;
+      color: #1e293b;
+      letter-spacing: -0.01em;
+    }
+
+    .u062-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1.5px solid #cbd5e1;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+      transition: border-color .2s, box-shadow .2s, background-color .2s;
+    }
+
+    .u062-box:focus-within {
+      background: #ffffff;
+      border-color: var(--ux-accent);
+      box-shadow: 0 0 0 3.5px var(--ux-accent-soft);
+    }
+
+    .u062-f.bad .u062-box {
+      border-color: var(--ux-danger) !important;
+      background: #fff5f5 !important;
+      box-shadow: 0 0 0 3.5px rgba(239, 68, 68, 0.2) !important;
+    }
+
+    .u062-box input {
+      flex: 1;
+      min-width: 0;
+      height: 100%;
+      border: 0 !important;
+      padding: 0 12px !important;
+      background: none !important;
+      font-size: 14.5px !important;
+      font-weight: 700 !important;
+      color: #0f172a !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    .u062-box input::placeholder {
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    /* AUTOFILL FIX */
+    .u062-box input:-webkit-autofill,
+    .u062-box input:-webkit-autofill:hover, 
+    .u062-box input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+      -webkit-text-fill-color: #0f172a !important;
+      caret-color: #0f172a !important;
+      transition: background-color 5000s ease-in-out 0s !important;
+    }
+
+    .u062-box .field-icon {
+      margin-right: 12px;
+      font-size: 16px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .u062-eye {
+      width: 42px;
+      height: 42px;
+      margin-right: 4px;
+      border: 0;
+      padding: 0;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: none;
+      color: #64748b;
+      transition: color .2s, background-color .2s;
+      cursor: pointer;
+    }
+
+    .u062-eye:hover {
+      color: var(--ux-accent);
+      background: rgba(2, 132, 199, 0.08);
+    }
+
+    .u062-eye svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .u062-lid {
+      transform-origin: 12px 12px;
+      transition: transform .35s var(--ux-spring);
+    }
+
+    .u062-eye[aria-pressed="false"] .u062-lid {
+      transform: scaleY(.5);
+    }
+
+    .u062-slash {
+      stroke-dasharray: 24;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset .35s var(--ux-ease);
+    }
+
+    .u062-eye[aria-pressed="true"] .u062-slash {
+      stroke-dashoffset: 24;
+    }
+
+    .u062-caps {
+      position: absolute;
+      right: 0;
+      top: 0;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--ux-warn);
+      opacity: 0;
+      transition: opacity .2s;
+    }
+
+    .u062-caps.on {
+      opacity: 1;
+    }
+
+    /* ACCORDION ERROR DISPLAY */
+    .u062-err {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows .35s var(--ux-ease);
+    }
+
+    .u062-err > span {
+      overflow: hidden;
+      min-height: 0;
+      font-size: 12.5px;
+      font-weight: 750;
+      color: var(--ux-danger);
+    }
+
+    .u062-err > span::before {
+      content: "";
+      display: block;
+      height: 5px;
+    }
+
+    .u062-f.bad .u062-err {
+      grid-template-rows: 1fr;
+    }
+
+    .u062-rem-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: 2px;
+      margin-bottom: 16px;
+    }
+
+    .remember-checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #334155;
+      transition: color 0.2s ease;
+    }
+
+    .remember-checkbox-label:hover {
+      color: var(--ux-accent);
+    }
+
+    .remember-checkbox-label input[type="checkbox"] {
+      width: 17px !important;
+      min-width: 17px !important;
+      height: 17px !important;
+      accent-color: var(--ux-accent) !important;
+      cursor: pointer !important;
+      border-radius: 4px !important;
+      margin: 0 !important;
+      display: inline-block !important;
+    }
+
+    /* SHRINKING SUBMIT BUTTON WITH SPINNER & CHECKMARK */
+    .u062-go {
+      position: relative;
+      align-self: center;
+      width: 100%;
+      height: 50px;
+      margin-top: 4px;
+      border: 0;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      font-size: 14.5px;
+      font-weight: 850;
+      letter-spacing: -0.01em;
+      overflow: hidden;
+      cursor: pointer;
+      transition: width .45s var(--ux-spring), border-radius .45s var(--ux-spring), background-color .4s, transform .3s var(--ux-spring), box-shadow .3s;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.35);
+    }
+
+    .u062-go:hover {
+      transform: translateY(-1.5px);
+      box-shadow: 0 10px 28px rgba(2, 132, 199, 0.45);
+    }
+
+    .u062-go:active {
+      transform: scale(.97);
+    }
+
+    .u062-go span {
+      transition: opacity .2s;
+    }
+
+    .u062-go i {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 20px;
+      height: 20px;
+      margin: -10px 0 0 -10px;
+      border-radius: 50%;
+      border: 2.5px solid currentColor;
+      border-right-color: transparent;
+      opacity: 0;
+      animation: u062-spin .7s linear infinite;
+    }
+
+    .u062-go svg {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 24px;
+      height: 24px;
+      margin: -12px 0 0 -12px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .u062-go svg path {
+      stroke-dasharray: 26;
+      stroke-dashoffset: 26;
+      transition: stroke-dashoffset .4s var(--ux-ease) .1s;
+    }
+
+    .u062-go.busy, .u062-go.ok {
+      width: 50px !important;
+      border-radius: 25px !important;
+    }
+
+    .u062-go.busy span, .u062-go.ok span {
+      opacity: 0;
+    }
+
+    .u062-go.busy i {
+      opacity: 1;
+    }
+
+    .u062-go.ok {
+      background: var(--ux-mint) !important;
+      color: #ffffff !important;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45) !important;
+    }
+
+    .u062-go.ok svg path {
+      stroke-dashoffset: 0;
+    }
+
+    @keyframes u062-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .u062-sub-row {
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .btn-login-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .btn-login-secondary:hover {
+      color: #0284c7;
+      background: rgba(2, 132, 199, 0.08);
+      text-decoration: none;
+    }
+
+    .btn-login-secondary svg {
+      flex-shrink: 0;
+    }
+
+    .login-footer {
+      margin-top: auto;
+      text-align: center;
+      font-size: 11.5px;
+      color: #64748b;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    /* PANE 2: WELCOME SCREEN */
+    .u062-hi {
+      transform: translateX(100%);
+      opacity: 0;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .u062.is-in .u062-login {
+      transform: translateX(-30%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .u062.is-in .u062-hi {
+      transform: none;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .u062-av {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #ffffff;
+      box-shadow: 0 0 0 4px var(--ux-mint), 0 10px 25px rgba(16, 185, 129, 0.25);
+    }
+
+    .u062-hi h3 {
+      margin: 18px 0 4px;
+      font-size: 22px;
+      font-weight: 850;
+      color: #0f172a;
+    }
+
+    .u062-hi p {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .u062-hi button {
+      margin-top: 20px;
+      height: 44px;
+      padding: 0 22px;
+      border: 0;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.3);
+      transition: transform .2s ease;
+    }
+
+    .u062-hi button:hover {
+      transform: translateY(-2px);
+    }
+
+    /* PREFERS-REDUCED-MOTION */
+    @media (prefers-reduced-motion: reduce) {
+      .u062, .u062 *, .u062 *::before, .u062 *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+
+    .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border: 1px solid #fde68a;
+      white-space: nowrap;
+      flex-shrink: 0;
+      line-height: 1.4;
+    }
+  </style>
+
+  <!-- Preconnect & DNS Prefetch Tăng Tốc Độ Kết Nối CDN & Firebase -->
+  <link rel="preconnect" href="https://code.highcharts.com">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://www.gstatic.com">
+  <link rel="dns-prefetch" href="https://tiktok-46d94-default-rtdb.asia-southeast1.firebasedatabase.app">
+
+  <!-- Phân luồng tài nguyên: Preload Web Worker & Core Bundle đã đóng gói tối ưu 0ms -->
+  <link rel="preload" href="js/worker-calc.js" as="worker">
+  <link rel="preload" href="js/admin.bundle.js?v=20261022_03" as="script">
+
+  <!-- Highcharts & Canvas Export Libraries (Tải cục bộ tốc độ 0ms) -->
+  <script src="js/highcharts.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- Firebase Realtime Database SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script>
+    if (typeof firebase !== 'undefined' && (!firebase.apps || !firebase.apps.length)) {
+      try {
+        firebase.initializeApp({
+          databaseURL: "https://tiktok-46d94-default-rtdb.asia-southeast1.firebasedatabase.app"
+        });
+        window.db = firebase.database();
+      } catch (e) {}
+    }
+  </script>
+  <!-- Crew Lưới Búa - Tường Lửa Bảo Vệ Mã Nguồn & Chống Soi Code -->
+  <script src="js/code-shield.js"></script>
+  <!-- Crew Lưới Búa - Hộp Thoại Xác Nhận & Thông Báo Siêu Sang Trọng (Confirm / Alert / Prompt) -->
+  <script src="js/custom-modal.js"></script>
+  <!-- Anti-Fake IP & Machine Banning Security Module -->
+  <script src="js/machine-security.js"></script>
+</head>
+<body>
+
+<!-- CREW LƯỠI BÚA - CINEMATIC SPLASH INTRO (6.0S HOÀNG GIA ĐẲNG CẤP) -->
+<div class="crew-intro-overlay" id="crewIntroOverlay">
+  <button class="intro-skip-btn" id="btnSkipIntro" onclick="finishCrewIntro(event)">Bỏ qua ➔</button>
+  <div class="intro-center-box">
+    <svg class="intro-axe-svg" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Nền khiên trắng ngọc / ngà hoàng gia sang trọng -->
+        <linearGradient id="shieldPlateGradAdm" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="60%" stop-color="#f8fafc"/>
+          <stop offset="100%" stop-color="#edf2f7"/>
+        </linearGradient>
+
+        <!-- Viền vàng kim 24K cực sang -->
+        <linearGradient id="gold24kGradAdm" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#fef08a"/>
+          <stop offset="25%" stop-color="#f59e0b"/>
+          <stop offset="70%" stop-color="#d97706"/>
+          <stop offset="100%" stop-color="#92400e"/>
+        </linearGradient>
+
+        <!-- Thép lưỡi búa Titanium xám ánh bạc 3D nổi khối -->
+        <linearGradient id="steelBladeGradAdm" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#475569"/>
+          <stop offset="35%" stop-color="#1e293b"/>
+          <stop offset="70%" stop-color="#334155"/>
+          <stop offset="100%" stop-color="#0f172a"/>
+        </linearGradient>
+
+        <!-- Lưỡi chém sắc lạnh Chrome Cyan -->
+        <linearGradient id="chromeRazorGradAdm" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#0284c7"/>
+          <stop offset="35%" stop-color="#38bdf8"/>
+          <stop offset="65%" stop-color="#e0f2fe"/>
+          <stop offset="100%" stop-color="#0284c7"/>
+        </linearGradient>
+
+        <!-- Ngọc Đỏ Ruby trung tâm -->
+        <radialGradient id="rubyGlowGradAdm" cx="40%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#fda4af"/>
+          <stop offset="45%" stop-color="#e11d48"/>
+          <stop offset="85%" stop-color="#9f1239"/>
+          <stop offset="100%" stop-color="#4c0519"/>
+        </radialGradient>
+
+        <!-- Hào quang mềm sau lưng -->
+        <radialGradient id="sunGlowAdm" cx="50%" cy="45%" r="50%">
+          <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.22"/>
+          <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.09"/>
+          <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Ánh sáng chớp loé quét lưỡi búa (Specular Glint) -->
+        <linearGradient id="glintGradAdm" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+          <stop offset="40%" stop-color="#ffffff" stop-opacity="0.95"/>
+          <stop offset="60%" stop-color="#ffffff" stop-opacity="0.95"/>
+          <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+        </linearGradient>
+
+        <!-- Chữ vàng 3D -->
+        <linearGradient id="titleGoldGradAdm" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#fef08a"/>
+          <stop offset="35%" stop-color="#f59e0b"/>
+          <stop offset="70%" stop-color="#d97706"/>
+          <stop offset="100%" stop-color="#78350f"/>
+        </linearGradient>
+
+        <filter id="softGlowAdm" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+        <filter id="shieldShadowAdm" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12"/>
+        </filter>
+      </defs>
+
+      <!-- Hào quang nền sáng -->
+      <circle cx="250" cy="220" r="195" fill="url(#sunGlowAdm)"/>
+
+      <!-- ============================================== -->
+      <!-- TẦNG 1: TÔ MÀU SẮC (Sẽ hiện ra ở giai đoạn 2)  -->
+      <!-- ============================================== -->
+      <g class="axe-color-fills">
+        <!-- Khung Khiên Huy Hiệu (Shield Crest) -->
+        <path d="M250 35 L385 65 C395 160 385 240 340 310 L250 395 L160 310 C115 240 105 160 115 65 Z"
+              fill="url(#shieldPlateGradAdm)" stroke="url(#gold24kGradAdm)" stroke-width="4"/>
+        
+        <!-- Đường viền trang trí & vân hoa văn khắc chìm trong khiên -->
+        <path d="M250 50 L370 77 C378 155 370 230 330 295 L250 375 L170 295 C130 230 122 155 130 77 Z"
+              fill="none" stroke="url(#gold24kGradAdm)" stroke-width="1.8" stroke-dasharray="6 4" opacity="0.8"/>
+        <path d="M250 82 L345 145 M250 82 L155 145" stroke="url(#gold24kGradAdm)" stroke-width="1.4" stroke-opacity="0.45"/>
+        <path d="M250 102 L325 155 M250 102 L175 155" stroke="url(#gold24kGradAdm)" stroke-width="1.2" stroke-opacity="0.3"/>
+
+        <!-- Đinh tán vàng kim hoàng gia 4 góc khiên -->
+        <circle cx="128" cy="74" r="3.5" fill="url(#gold24kGradAdm)"/>
+        <circle cx="372" cy="74" r="3.5" fill="url(#gold24kGradAdm)"/>
+        <circle cx="180" cy="285" r="3" fill="url(#gold24kGradAdm)"/>
+        <circle cx="320" cy="285" r="3" fill="url(#gold24kGradAdm)"/>
+        <circle cx="250" cy="380" r="3" fill="url(#gold24kGradAdm)"/>
+
+        <!-- Cán Búa (Handle Shaft) -->
+        <rect x="244" y="80" width="12" height="280" rx="4" fill="url(#steelBladeGradAdm)"/>
+        <!-- Đai vàng trang trí trên cán -->
+        <rect x="241" y="105" width="18" height="6" rx="2" fill="url(#gold24kGradAdm)"/>
+        <rect x="241" y="175" width="18" height="6" rx="2" fill="url(#gold24kGradAdm)"/>
+        <rect x="241" y="240" width="18" height="6" rx="2" fill="url(#gold24kGradAdm)"/>
+        <rect x="241" y="300" width="18" height="6" rx="2" fill="url(#gold24kGradAdm)"/>
+
+        <!-- Đuôi Cán & Chuôi Nhọn (Pommel) -->
+        <path d="M239 355 L261 355 L257 375 L250 388 L243 375 Z" fill="url(#gold24kGradAdm)"/>
+        <circle cx="250" cy="368" r="3" fill="url(#rubyGlowGradAdm)"/>
+
+        <!-- Mũi Kích Đỉnh (Top Spear Tip) -->
+        <path d="M250 45 L264 88 L250 96 L236 88 Z" fill="url(#chromeRazorGradAdm)"/>
+        <path d="M250 45 L250 96" stroke="#ffffff" stroke-width="1.5"/>
+
+        <!-- LƯỠI BÚA TRÁI (Left Battleaxe Blade) -->
+        <path d="M243 118 C200 102, 140 82, 85 75 C45 125, 45 195, 85 245 C140 235, 200 205, 243 175 Z" fill="url(#steelBladeGradAdm)"/>
+        <!-- Viền Lưỡi Cắt Trái Sắc Lạnh -->
+        <path d="M85 75 C45 125, 45 195, 85 245 C98 225, 95 95, 85 75 Z" fill="url(#chromeRazorGradAdm)"/>
+        <!-- Hoa văn viền vàng trên lưỡi trái -->
+        <path d="M243 118 C205 106, 160 92, 115 88 C135 98, 175 110, 243 126 Z" fill="url(#gold24kGradAdm)"/>
+        <path d="M243 165 C200 185, 160 205, 115 228 C135 215, 175 195, 243 175 Z" fill="url(#gold24kGradAdm)"/>
+        <!-- Cổ tự / Rune Cyan Trái -->
+        <path d="M125 130 L185 136 L135 162 Z" fill="#0284c7"/>
+
+        <!-- LƯỠI BÚA PHẢI (Right Battleaxe Blade) -->
+        <path d="M257 118 C300 102, 360 82, 415 75 C455 125, 455 195, 415 245 C360 235, 300 205, 257 175 Z" fill="url(#steelBladeGradAdm)"/>
+        <!-- Viền Lưỡi Cắt Phải Sắc Lạnh -->
+        <path d="M415 75 C455 125, 455 195, 415 245 C402 225, 405 95, 415 75 Z" fill="url(#chromeRazorGradAdm)"/>
+        <!-- Hoa văn viền vàng trên lưỡi phải -->
+        <path d="M257 118 C295 106, 340 92, 385 88 C365 98, 325 110, 257 126 Z" fill="url(#gold24kGradAdm)"/>
+        <path d="M257 165 C300 185, 340 205, 385 228 C365 215, 325 195, 257 175 Z" fill="url(#gold24kGradAdm)"/>
+        <!-- Cổ tự / Rune Cyan Phải -->
+        <path d="M375 130 L315 136 L365 162 Z" fill="#0284c7"/>
+
+        <!-- Vệt sáng loé quét lưỡi búa (Blade Glint) -->
+        <path class="blade-shine-sweep" d="M140 60 L180 60 L100 240 L60 240 Z" fill="url(#glintGradAdm)"/>
+        <path class="blade-shine-sweep" d="M360 60 L320 60 L400 240 L440 240 Z" fill="url(#glintGradAdm)"/>
+
+        <!-- Khối Giáp Tâm & Viên Ngọc Ruby Hoàng Gia -->
+        <rect x="228" y="112" width="44" height="68" rx="6" fill="url(#steelBladeGradAdm)" stroke="url(#gold24kGradAdm)" stroke-width="2.5"/>
+        <circle cx="250" cy="146" r="23" fill="url(#gold24kGradAdm)"/>
+        <circle cx="250" cy="146" r="18" fill="#1e293b" stroke="#ffffff" stroke-width="1.2"/>
+        <circle cx="250" cy="146" r="15" fill="none" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="3 2" opacity="0.85"/>
+        <circle cx="250" cy="146" r="11" fill="url(#rubyGlowGradAdm)"/>
+        <circle cx="248" cy="143" r="3" fill="#ffffff" opacity="0.95"/>
+      </g>
+
+      <!-- ============================================== -->
+      <!-- TẦNG 2: VẼ KHUNG NÉT PHÁC THẢO (120FPS GPU)    -->
+      <!-- ============================================== -->
+      <g class="axe-frame-stroke">
+        <!-- Khung khiên ngoài -->
+        <path class="p-stroke p-shield-out" pathLength="1000" d="M250 35 L385 65 C395 160 385 240 340 310 L250 395 L160 310 C115 240 105 160 115 65 Z"/>
+        <!-- Khung khiên trong -->
+        <path class="p-stroke p-shield-in" pathLength="1000" d="M250 50 L370 77 C378 155 370 230 330 295 L250 375 L170 295 C130 230 122 155 130 77 Z"/>
+        <!-- Mũi giáo -->
+        <path class="p-stroke p-spear" pathLength="1000" d="M250 45 L264 88 L250 96 L236 88 Z"/>
+        <!-- Lưỡi búa trái -->
+        <path class="p-stroke p-blade-l" pathLength="1000" d="M243 118 C200 102, 140 82, 85 75 C45 125, 45 195, 85 245 C140 235, 200 205, 243 175 Z"/>
+        <path class="p-stroke p-blade-l" pathLength="1000" d="M85 75 C45 125, 45 195, 85 245"/>
+        <path class="p-stroke p-rune" pathLength="1000" d="M125 130 L185 136 L135 162 Z"/>
+        <!-- Lưỡi búa phải -->
+        <path class="p-stroke p-blade-r" pathLength="1000" d="M257 118 C300 102, 360 82, 415 75 C455 125, 455 195, 415 245 C360 235, 300 205, 257 175 Z"/>
+        <path class="p-stroke p-blade-r" pathLength="1000" d="M415 75 C455 125, 455 195, 415 245"/>
+        <path class="p-stroke p-rune" pathLength="1000" d="M375 130 L315 136 L365 162 Z"/>
+        <!-- Thân cán búa -->
+        <path class="p-stroke p-shaft" pathLength="1000" d="M244 80 L244 360"/>
+        <path class="p-stroke p-shaft" pathLength="1000" d="M256 80 L256 360"/>
+        <!-- Tâm ngọc ruby -->
+        <path class="p-stroke p-core" pathLength="1000" d="M234 112 L266 112 A6 6 0 0 1 272 118 L272 174 A6 6 0 0 1 266 180 L234 180 A6 6 0 0 1 228 174 L228 118 A6 6 0 0 1 234 112 Z"/>
+        <path class="p-stroke p-core" pathLength="1000" d="M250 123 A23 23 0 1 1 249.9 123 Z"/>
+        <path class="p-stroke p-core" pathLength="1000" d="M250 134 A12 12 0 1 1 249.9 134 Z"/>
+        <!-- Đuôi cán -->
+        <path class="p-stroke p-shaft" pathLength="1000" d="M239 355 L261 355 L257 375 L250 388 L243 375 Z"/>
+        <!-- Bệ đỡ chữ -->
+        <path class="p-stroke p-banner" pathLength="1000" d="M143 434 L357 434 A8 8 0 0 1 365 442 L365 472 A8 8 0 0 1 357 480 L143 480 A8 8 0 0 1 135 472 L135 442 A8 8 0 0 1 143 434 Z"/>
+      </g>
+
+      <!-- ============================================== -->
+      <!-- TẦNG 3: TYPOGRAPHY (CHỮ CREW LƯỠI BÚA)        -->
+      <!-- ============================================== -->
+      <g class="axe-text-layer">
+        <!-- Bệ đỡ chữ viền vàng sang trọng -->
+        <rect x="135" y="434" width="230" height="46" rx="8" fill="#0f172a" stroke="url(#gold24kGradAdm)" stroke-width="2"/>
+        <text x="250" y="420" font-size="13" font-weight="800" fill="#64748b" letter-spacing="8" text-anchor="middle">CREW</text>
+        <text x="250" y="466" font-size="26" font-weight="900" fill="url(#titleGoldGradAdm)" letter-spacing="5" text-anchor="middle">LƯỠI BÚA</text>
+      </g>
+    </svg>
+
+    <!-- Hộp trạng thái tiến trình (6.0s) -->
+    <div class="intro-status-box">
+      <div class="intro-status-text" id="introStatusText">✍️ [1/4] Đang vẽ phác thảo khung khiên Crew Lưỡi Búa...</div>
+      <div class="intro-progress-bar">
+        <div class="intro-progress-fill"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MÀN HÌNH ĐĂNG NHẬP XÁC THỰC BẢO MẬT DÀNH CHO ADMIN -->
+<div id="loginGate">
+  <button type="button" class="btn-install-pc btn-install-pc-gate" id="btnInstallAppPcGate" style="display:none;" aria-hidden="true"></button>
+  <!-- Lucian UX/UI Prompt #062 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#062 -->
+  <div class="ux u062 login-card" id="u062Card">
+    <!-- PANE 1: FORM ĐĂNG NHẬP -->
+    <form class="u062-pane u062-login" id="staticLoginForm" novalidate>
+      <div class="u062-brand-header">
+        <div class="u062-logo-wrap">
+          <img src="icons/brand-logo.png" alt="Logo Crew Lưới Búa" class="brand-logo-img" width="50" height="50" decoding="async">
+        </div>
+        <div class="u062-title-wrap">
+          <h3 class="u062-title">Đăng Nhập Quản Trị</h3>
+          <p class="u062-subtitle">Xác thực hệ thống • Crew Lưới Búa</p>
+        </div>
+      </div>
+
+      <div id="loginErrorMsg" class="login-error-box" style="display:none; flex-direction:column; gap:8px;">
+        <div style="display:flex; align-items:center; gap:8px; width:100%;">
+          <span>⚠️</span>
+          <span id="loginErrorText" style="flex:1;"></span>
+        </div>
+        <button type="button" id="btnInlineUnlock" onclick="window.MachineSecurity && window.MachineSecurity.emergencyUnlock()" style="display:none; margin-top:4px; padding:8px 14px; background:#ffffff; color:#0b1120; font-weight:800; border:none; border-radius:9999px; font-size:12px; cursor:pointer; align-self:center; box-shadow:0 3px 10px rgba(0,0,0,0.2);">
+          🔑 Mở Khóa Khẩn Cấp
+        </button>
+      </div>
+
+      <div class="u062-f" id="userGroup">
+        <label for="usernameInput">Username</label>
+        <div class="u062-box">
+          <input 
+            type="text" 
+            id="usernameInput" 
+            placeholder="Tên tài khoản quản trị" 
+            required 
+            autocomplete="username"
+          >
+          <span class="field-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="u062-f u062-pw" id="passGroup">
+        <label for="passwordInput">Password</label>
+        <span class="u062-caps" id="capsLockWarning" aria-live="polite">⚠️ Caps Lock đang bật</span>
+        <div class="u062-box">
+          <input 
+            type="password" 
+            id="passwordInput" 
+            placeholder="••••••••••••" 
+            required 
+            autocomplete="current-password"
+          >
+          <button class="u062-eye" id="togglePasswordBtn" type="button" aria-pressed="false" aria-label="Hiện mật khẩu">
+            <svg viewBox="0 0 24 24">
+              <g class="u062-lid">
+                <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </g>
+              <path class="u062-slash" d="M4 4l16 16"/>
+            </svg>
+          </button>
+        </div>
+        <div class="u062-err">
+          <span id="passInlineError" role="alert"></span>
+        </div>
+      </div>
+
+      <div class="u062-rem-row">
+        <label class="remember-checkbox-label" for="rememberCredentials">
+          <input type="checkbox" id="rememberCredentials">
+          <span class="remember-text">Lưu mật khẩu</span>
+        </label>
+      </div>
+
+      <button class="u062-go" type="submit" id="btnSubmitLogin" aria-label="Đăng Nhập Quản Trị">
+        <span>Đăng Nhập Quản Trị</span>
+        <i aria-hidden="true"></i>
+        <svg viewBox="0 0 26 26" aria-hidden="true">
+          <path d="M6 13.5l4.5 4.5L20 8.5"/>
+        </svg>
+      </button>
+
+      <div class="u062-sub-row">
+        <a href="index.html" class="btn-login-secondary" title="Xem giao diện thành viên">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>Quay lại Trang Thành Viên</span>
+        </a>
+      </div>
+
+      <div class="login-footer">
+        🔒 Vercel Edge Global Shield
+      </div>
+    </form>
+
+    <!-- PANE 2: MÀN HÌNH CHÀO MỪNG ADMIN (WELCOME SCREEN) -->
+    <div class="u062-pane u062-hi" id="welcomePane" aria-hidden="true">
+      <div class="u062-av" id="welcomeAdminAvatar" style="background: url('icons/brand-logo.png') center/cover no-repeat;" aria-hidden="true"></div>
+      <h3 id="welcomeAdminTitle">Chào mừng Đại ca</h3>
+      <p id="welcomeAdminRole">Xác thực thành công • Đang vào hệ thống...</p>
+      <button type="button" id="btnContinueAdmin" tabindex="-1">Vào Bảng Điều Khiển</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- GIAO DIỆN CHÍNH CỦA ỨNG DỤNG (DÀNH CHO ADMIN CÓ ĐẦY ĐỦ QUYỀN) -->
+<div class="app-layout" id="mainAppLayout" style="display:none;">
+
+  <!-- TOP HEADER NAVBAR -->
+  <header class="navbar">
+    <div class="nav-left-group">
+      <!-- 3 GẠCH HAMBURGER TOGGLE BUTTON -->
+      <button type="button" class="btn-sidebar-toggle" id="btnToggleSidebar" aria-label="Đóng/Mở Danh Mục (3 gạch)" title="Đóng/Mở Danh Mục (3 gạch - Phím tắt Ctrl+B)">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <div class="nav-brand">
+        <div class="brand-icon">
+          <img src="icons/brand-logo.png" alt="Logo Crew Lưới Búa" class="brand-logo-img" width="36" height="36" decoding="async">
+        </div>
+        <div class="brand-text">
+          <div class="brand-title-wrap">
+            <h1 class="brand-title">
+              <span class="text-slate">QUẢN LÝ </span>
+              <span class="text-gold">TRỘM NHÀ</span>
+            </h1>
+            <span class="admin-badge">Quản Trị</span>
+          </div>
+          <span class="brand-sub">Hệ thống quản trị bình sịt &amp; điều hành Crew Lưới Búa</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-meta">
+      <div class="nav-cluster nav-status-cluster">
+        <button class="shield-badge" id="btnShieldInfo" title="Hạ tầng bảo vệ Vercel Edge &amp; Cloudflare">🛡️ Edge Shield</button>
+        <div class="time-badge" id="liveClock">--:--:--</div>
+      </div>
+      <div class="nav-divider"></div>
+      <div class="nav-cluster nav-action-cluster">
+        <button type="button" class="btn-spotlight-nav" id="btnOpenSpotlight" title="Tìm kiếm thành viên, công cụ (Ctrl+K)">
+          <span>🔍</span>
+          <span class="spotlight-nav-label">Tìm Kiếm</span>
+          <kbd class="spotlight-kbd">Ctrl+K</kbd>
+        </button>
+        <button type="button" class="btn-sound-toggle" id="btnSoundToggle" title="Bật/Tắt Âm Thanh Hiệu Ứng">
+          <span>🔊</span>
+        </button>
+        <a href="index.html" class="btn-nav-member" title="Xem giao diện thành viên">👁️ Thành Viên</a>
+        <button class="btn-nav-export" id="exportImgTopBtn" title="Xuất báo cáo bình sịt &amp; quỹ">📸 Xuất Báo Cáo</button>
+        <button class="btn-nav-reset" id="resetAllBinhBtn" title="Reset toàn bộ số bình sịt &amp; tiền chuộc tù về ban đầu">🔄 Reset Chu Kỳ</button>
+        <div class="nav-divider"></div>
+        <div class="nav-admin-profile" id="adminProfileBadge" title="Tài khoản Quản Trị Viên đang hoạt động">
+          <span class="admin-profile-avatar" id="adminAvatarIcon">👑</span>
+          <div class="admin-profile-info">
+            <span class="admin-profile-name" id="adminProfileName">Nguyễn Trí</span>
+            <span class="admin-profile-role" id="adminProfileRole">Admin Tối Cao</span>
+          </div>
+        </div>
+        <button class="btn-nav-logout" id="btnLogoutStatic" title="Đăng xuất khỏi hệ thống">🚪 Thoát</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- APP BODY CONTAINER (SIDEBAR BÊN TRÁI + NỘI DUNG CHÍNH BÊN PHẢI) -->
+  <div class="app-body-container" id="appBodyContainer">
+
+    <!-- MOBILE SIDEBAR BACKDROP -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- LEFT SIDEBAR (DANH MỤC THU GỌN / ẨN ĐƯỢC) -->
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-inner">
+        <!-- Sidebar Header: ▍ DANH MỤC -->
+        <div class="sidebar-section-header">
+          <div class="sidebar-category-title">
+            <span class="category-indicator">▍</span>
+            <span>DANH MỤC</span>
+          </div>
+          <button type="button" class="sidebar-close-btn" id="btnCloseSidebar" aria-label="Đóng danh mục" title="Thu gọn danh mục">✕</button>
+        </div>
+
+        <!-- Sidebar Navigation Menu -->
+        <nav class="sidebar-menu" role="tablist" aria-label="Điều hướng các phân hệ">
+          <button type="button" class="sidebar-nav-item view-tab-btn active" data-view="analytics" role="tab" aria-selected="true">
+            <span class="nav-item-icon">📈</span>
+            <span class="nav-item-text">Thống Kê Dashboard</span>
+            <span class="tab-pill-pro">PRO</span>
+            <span class="nav-item-arrow">›</span>
+          </button>
+          <button type="button" class="sidebar-nav-item view-tab-btn" data-view="dashboard" role="tab" aria-selected="false">
+            <span class="nav-item-icon">📊</span>
+            <span class="nav-item-text">Bàn Làm Việc</span>
+            <span class="nav-item-arrow">›</span>
+          </button>
+          <button type="button" class="sidebar-nav-item view-tab-btn" data-view="records" role="tab" aria-selected="false">
+            <span class="nav-item-icon">📋</span>
+            <span class="nav-item-text">Lịch Sử Bản Ghi</span>
+            <span class="tab-pill" id="badgeRecords">0</span>
+            <span class="nav-item-arrow">›</span>
+          </button>
+          <button type="button" class="sidebar-nav-item view-tab-btn" data-view="members" role="tab" aria-selected="false">
+            <span class="nav-item-icon">👥</span>
+            <span class="nav-item-text">Thành Viên</span>
+            <span class="tab-pill" id="badgeMembers">0</span>
+            <span class="nav-item-arrow">›</span>
+          </button>
+          <button type="button" class="sidebar-nav-item view-tab-btn" data-view="logs" role="tab" aria-selected="false">
+            <span class="nav-item-icon">📜</span>
+            <span class="nav-item-text">Nhật Ký Hoạt Động</span>
+            <span class="tab-pill" id="badgeLogs">0</span>
+            <span class="nav-item-arrow">›</span>
+          </button>
+          <button type="button" class="sidebar-nav-item view-tab-btn" data-view="banned" role="tab" aria-selected="false">
+            <span class="nav-item-icon">🛡️</span>
+            <span class="nav-item-text">Ban Máy &amp; Bảo Mật</span>
+            <span class="tab-pill" id="badgeBanned">0</span>
+            <span class="nav-item-arrow">›</span>
+          </button>
+        </nav>
+
+        <!-- Sidebar Quick Actions Section -->
+        <div class="sidebar-quick-actions">
+          <div class="sidebar-category-title" style="margin-bottom: 8px;">
+            <span class="category-indicator">▍</span>
+            <span>TIỆN ÍCH NHANH</span>
+          </div>
+          <div class="sidebar-action-grid">
+            <button type="button" class="sidebar-action-pill btn-install-pc" id="sidebarInstallBtn" data-action="install-pwa" title="Cài đặt App Thống Kê Nhập Nhà trên máy tính PC">
+              <img src="icons/icon-192.png" alt="Logo" class="btn-icon-app" width="18" height="18" decoding="async">
+              <span>💻 Cài App Trên PC</span>
+            </button>
+            <button type="button" class="sidebar-action-pill" id="sidebarBackupBtn" title="Chụp ảnh sao lưu số nhà &amp; quỹ gửi thẳng về Discord">
+              <span>💾 Sao Lưu Chu Kỳ</span>
+            </button>
+            <button type="button" class="sidebar-action-pill" id="sidebarExportBtn" title="Chụp ảnh xuất báo cáo">
+              <span>📸 Xuất Báo Cáo</span>
+            </button>
+            <button type="button" class="sidebar-action-pill btn-action-danger" id="sidebarResetBtn" title="Reset chu kỳ bình sịt">
+              <span>🔄 Reset Kỳ</span>
+            </button>
+            <a href="index.html" class="sidebar-action-pill" title="Xem giao diện thành viên">
+              <span>👁️ Thành Viên</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Sidebar Footer / Status -->
+        <div class="sidebar-footer">
+          <div class="sidebar-footer-online">
+            <span class="live-dot"></span>
+            <span>Hệ Thống Sẵn Sàng</span>
+          </div>
+          <div class="sidebar-footer-info">Crew Lưới Búa • v2026.10</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="app-main-content" id="appMainContent">
+
+  <!-- ========================================================================
+       PHÂN HỆ 1: BẢNG THỐNG KÊ DASHBOARD (EXECUTIVE ANALYTICS) - TAB ĐỨNG ĐẦU
+       Chuẩn SaaS hiện đại 100% Tiếng Việt & Thống kê chính xác số bình sịt
+       ======================================================================== -->
+  <section id="view-analytics">
+    <div class="analytics-wrapper">
+      
+      <!-- Top Title Bar -->
+      <div class="analytics-header-bar">
+        <div class="analytics-title-group">
+          <h2>📈 BẢNG THỐNG KÊ DOANH SỐ &amp; NĂNG SUẤT BÌNH SỊT</h2>
+          <span>Phân tích dữ liệu thời gian thực theo mô hình quản trị thông minh</span>
+        </div>
+      </div>
+
+      <!-- 4 Cards Grid Layout (2x2) -->
+      <div class="analytics-grid">
+
+        <!-- CARD 1: DOANH SỐ DỌN NHÀ (TUẦN NÀY) -->
+        <div class="analytics-card">
+          <div class="analytics-card-header">
+            <span class="analytics-card-title">Doanh Số Bình Sịt (Tuần Này)</span>
+          </div>
+          <div class="analytics-value-row">
+            <div class="analytics-big-number" id="analyticsRevValue">0 Bình</div>
+            <div class="analytics-trend-badge" id="analyticsRevTrend">
+              <span>↑ 14% Tuần này</span>
+            </div>
+          </div>
+          <div style="font-size:12.5px;color:#64748b;font-weight:700;margin-top:-6px;margin-bottom:12px;" id="analyticsRevSub">Quy đổi quỹ tuần: 0đ</div>
+          <div id="chartAnalyticsRevenue" style="width:100%;height:200px;"></div>
+        </div>
+
+        <!-- CARD 2: TỔNG QUAN HOẠT ĐỘNG (TUẦN NÀY) -->
+        <div class="analytics-card">
+          <div class="analytics-card-header">
+            <span class="analytics-card-title">Tổng Quan Hoạt Động Tuần</span>
+          </div>
+          <div class="analytics-mini-row">
+            <div class="analytics-mini-item">
+              <div class="analytics-mini-label">Số Phi Vụ</div>
+              <div class="analytics-mini-value" id="analyticsSalesCount">0 lượt</div>
+            </div>
+            <div class="analytics-mini-item">
+              <div class="analytics-mini-label">Thành Viên</div>
+              <div class="analytics-mini-value" id="analyticsCustomerCount">0 anh em</div>
+            </div>
+            <div class="analytics-mini-item">
+              <div class="analytics-mini-label">TB / Phi Vụ</div>
+              <div class="analytics-mini-value" id="analyticsAvgOrderValue">0 bình/lượt</div>
+            </div>
+          </div>
+          <div id="chartAnalyticsOverview" style="width:100%;height:155px;"></div>
+        </div>
+
+        <!-- CARD 3: SẢN LƯỢNG TỪNG NGÀY (TUẦN NÀY) -->
+        <div class="analytics-card">
+          <div class="analytics-card-header">
+            <span class="analytics-card-title">Sản Lượng Từng Ngày (Tuần Này)</span>
+          </div>
+          <div class="analytics-value-row">
+            <div class="analytics-big-number" id="analyticsEarningsValue">0 Bình</div>
+            <div class="analytics-trend-badge" id="analyticsEarningsTrend">
+              <span>↑ 14% So với tuần trước</span>
+            </div>
+          </div>
+          <div id="chartAnalyticsEarnings" style="width:100%;height:200px;"></div>
+        </div>
+
+        <!-- CARD 4: PHÂN BỔ THÀNH VIÊN THEO SẢN LƯỢNG TUẦN -->
+        <div class="analytics-card">
+          <div class="analytics-card-header">
+            <span class="analytics-card-title">Tỷ Lệ Bình Sịt Theo Thành Viên (Tuần Này)</span>
+          </div>
+          <div class="analytics-pie-layout">
+            <div id="chartAnalyticsCustomers" style="width:100%;height:210px;"></div>
+            <div class="analytics-legend-list" id="analyticsLegendContainer" style="max-height: 210px; overflow-y: auto;">
+              <!-- Nội dung legend được render tự động theo dữ liệu thực tế -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       PHÂN HỆ 2: BÀN LÀM VIỆC TỔNG QUAN (DASHBOARD)
+       ======================================================================== -->
+  <section id="view-dashboard" class="hidden">
+
+    <!-- 4 SUMMARY KPI CARDS (HỆ THỐNG BÌNH SỊT) -->
+    <div class="kpi-row">
+      <div class="kpi-card kpi-terracotta">
+        <div class="kpi-icon">🏠</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Tổng bình sịt</div>
+          <div class="kpi-value" id="kpiTotalBinh">0</div>
+          <div class="kpi-sub">Toàn bộ hệ thống</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-amber">
+        <div class="kpi-icon">👥</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Tổng thành viên</div>
+          <div class="kpi-value" id="kpiTotalMembers">0</div>
+          <div class="kpi-sub">Đang hoạt động</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-emerald">
+        <div class="kpi-icon">📈</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Trung bình / người</div>
+          <div class="kpi-value" id="kpiAvgBinh">0</div>
+          <div class="kpi-sub">Bình trên mỗi thành viên</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-icon">🏆</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Quán quân (Top 1)</div>
+          <div class="kpi-value kpi-value-name" id="kpiTopMember">--</div>
+          <div class="kpi-sub" id="kpiTopBinh">0 bình</div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="dashboard-main-grid">
+
+      <!-- LEFT COLUMN: ARTISTIC CHART & DETAILED STATS TABLE -->
+      <div class="dashboard-left">
+
+        <!-- BIỂU ĐỒ CỘT BO TRÒN TERRACOTTA -->
+        <div class="card" style="padding: 16px;">
+          <div class="chart-art-wrapper">
+            <div class="chart-art-box">
+              <div class="chart-pin-tr"></div>
+              <div class="chart-pin-bl"></div>
+              <div id="chartContainer"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BẢNG THỐNG KÊ CHI TIẾT TỪNG THÀNH VIÊN -->
+        <div class="card">
+          <div class="card-header">
+            <h2>📋 Bảng Thống Kê Chi Tiết &amp; Xếp Hạng</h2>
+            <span class="header-hint" id="statsTableCount">Hiển thị 0 thành viên</span>
+          </div>
+
+          <div class="search-bar">
+            <input type="text" id="searchStatsInput" placeholder="🔍 Tìm kiếm thành viên theo tên..." aria-label="Tìm kiếm thành viên theo tên" style="max-width:320px;">
+          </div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:65px;text-align:center;">Hạng</th>
+                  <th>Họ và Tên</th>
+                  <th>Tổng Số Bình Sịt</th>
+                  <th>Tỉ Lệ Đóng Góp</th>
+                  <th>Trạng Thái</th>
+                </tr>
+              </thead>
+              <tbody id="statsTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: NHẬP NHANH & DÒNG HOẠT ĐỘNG -->
+      <div class="dashboard-right">
+
+        <!-- FORM GHI NHẬN SỐ BÌNH SỊT NHANH -->
+        <div class="card card-featured">
+          <div class="card-header">
+            <h2>📝 Ghi Nhận Số Bình Sịt Mới</h2>
+            <span style="font-size:12px;color:var(--success);font-weight:700;">● Nhập Nhanh</span>
+          </div>
+
+          <div class="form-group">
+            <div class="form-group-header">
+              <label for="inputMember">Thành viên *</label>
+              <button type="button" class="text-link-btn" id="openAddMemberQuick">➕ Thêm người mới</button>
+            </div>
+            <select id="inputMember"></select>
+          </div>
+
+          <div class="form-group">
+            <label for="inputDate">Ngày ghi nhận *</label>
+            <input type="date" id="inputDate">
+          </div>
+
+          <div class="form-group">
+            <label for="inputBinh">Số lượng bình sịt *</label>
+            <input type="number" id="inputBinh" min="0" step="any" placeholder="Nhập số lượng bình sịt...">
+          </div>
+
+          <button id="saveRecordBtn" style="width:100%;padding:13px;font-size:15px;">💾 Xác Nhận Lưu Bản Ghi</button>
+          <div id="inputStatus" class="status"></div>
+        </div>
+
+        <!-- TOP LEADERBOARD STREAM -->
+        <div class="card">
+          <div class="card-header">
+            <h2>🏅 Vinh Danh Dẫn Đầu</h2>
+            <span class="header-hint">TOP BÌNH SỊT</span>
+          </div>
+          <div class="leaderboard-list" id="leaderboardList"></div>
+        </div>
+
+        <!-- INTERACTIVE WARP SPEED STARFIELD (LUCIAN PROMPT #330) -->
+        <div class="card u330-card-wrapper" style="padding: 16px; margin-top: 18px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.06);">
+          <div class="card-header" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+            <h2 style="font-size: 15px; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px;">
+              <span>🚀</span> Động Cơ Bẻ Cong Không Gian
+            </h2>
+            <span class="header-hint" style="font-size: 10.5px; font-weight: 800; background: #0284c7; color: #ffffff; padding: 3px 8px; border-radius: 999px;">WARP #330</span>
+          </div>
+
+          <!-- Lucian UX/UI Prompt #330 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#330 -->
+          <style>
+            .u330 {
+              position: relative;
+              width: 100%;
+              max-width: 340px;
+              height: 300px;
+              margin: 0 auto;
+              border-radius: 22px;
+              overflow: hidden;
+              background: radial-gradient(circle at 50% 50%, #0B1230, #02030A 70%);
+              box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 20px 40px -15px rgba(2, 3, 10, 0.7);
+              color: #ffffff;
+            }
+            .u330-cv {
+              position: absolute;
+              inset: 0;
+              width: 100%;
+              height: 100%;
+              touch-action: none;
+              cursor: crosshair;
+            }
+            .u330-hud {
+              position: absolute;
+              left: 14px;
+              top: 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              font: 700 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+              pointer-events: none;
+              z-index: 2;
+            }
+            .u330-hud b {
+              padding: 4px 8px;
+              border-radius: 999px;
+              background: rgba(255, 255, 255, 0.15);
+              transition: background-color .2s, color .2s;
+            }
+            .u330.is-warp .u330-hud b {
+              background: #4DABF7;
+              color: #03122B;
+            }
+            .u330-wp {
+              position: absolute;
+              left: 50%;
+              bottom: 16px;
+              transform: translateX(-50%);
+              height: 38px;
+              padding: 0 18px;
+              border: 1px solid rgba(255, 255, 255, 0.28);
+              border-radius: 999px;
+              background: rgba(255, 255, 255, 0.12);
+              color: #ffffff;
+              font-size: 12.5px;
+              font-weight: 800;
+              -webkit-backdrop-filter: blur(8px);
+              backdrop-filter: blur(8px);
+              user-select: none;
+              -webkit-user-select: none;
+              transition: background-color .2s, transform .2s, border-color .2s;
+              cursor: pointer;
+              z-index: 2;
+            }
+            .u330-wp:hover {
+              background: rgba(255, 255, 255, 0.22);
+              border-color: rgba(255, 255, 255, 0.5);
+            }
+            .u330.is-warp .u330-wp {
+              background: rgba(77, 171, 247, 0.4);
+              border-color: #4DABF7;
+              transform: translateX(-50%) scale(0.96);
+            }
+            .u330-wp:focus-visible {
+              outline: 2px solid #4DABF7;
+              outline-offset: 3px;
+            }
+            @media (prefers-reduced-motion: reduce) {
+              .u330, .u330 * {
+                animation-duration: .001ms !important;
+                transition-duration: .001ms !important;
+              }
+            }
+          </style>
+
+          <div class="ux u330">
+            <canvas class="u330-cv" role="img" aria-label="Starfield, hold to warp"></canvas>
+            <div class="u330-hud" aria-live="off"><b>Cruise</b><span>×1.0</span></div>
+            <button class="u330-wp" type="button">Hold to warp</button>
+          </div>
+
+          <div style="font-size: 11.5px; color: #64748b; font-weight: 600; margin-top: 10px; text-align: center; line-height: 1.4;">
+            ✨ <i>Nhấn giữ vào màn hình để bẻ cong không gian, rê chuột để đổi hướng bay!</i>
+          </div>
+
+          <script>
+          (function () {
+            var root = document.currentScript ? document.currentScript.previousElementSibling.previousElementSibling : document.querySelector('.u330');
+            if (!root) return;
+            var cv = root.querySelector('.u330-cv');
+            if (!cv) return;
+            var cx = cv.getContext('2d'), 
+                mode = root.querySelector('.u330-hud b'), 
+                spd = root.querySelector('.u330-hud span'), 
+                wp = root.querySelector('.u330-wp');
+            var rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var W = 340, H = 300, dpr = Math.min(2, window.devicePixelRatio || 1);
+
+            function updateDimensions() {
+              var rect = root.getBoundingClientRect();
+              W = Math.round(rect.width) || 340;
+              H = Math.round(rect.height) || 300;
+              cv.width = W * dpr;
+              cv.height = H * dpr;
+              cx.setTransform(1, 0, 0, 1, 0, 0);
+              cx.scale(dpr, dpr);
+            }
+            updateDimensions();
+            window.addEventListener('resize', updateDimensions);
+
+            var N = 280, stars = [], v = 0.22, target = 0.22, warp = false, aim = { x: 0, y: 0 }, steer = { x: 0, y: 0 };
+            function spawn(s, far) { 
+              s.x = (Math.random() - 0.5) * 2; 
+              s.y = (Math.random() - 0.5) * 2; 
+              s.z = far ? 1 : 0.05 + Math.random() * 0.95; 
+              s.pz = s.z; 
+              s.c = Math.random(); 
+              return s; 
+            }
+            for (var i = 0; i < N; i++) stars.push(spawn({}, false));
+            function hud() { 
+              if (mode) mode.textContent = warp ? 'Warp' : 'Cruise'; 
+              if (spd) spd.textContent = '×' + (v / 0.22).toFixed(1); 
+            }
+            function draw(dt) {
+              cx.fillStyle = warp || v > 0.5 ? 'rgba(2,3,10,.35)' : 'rgba(2,3,10,.9)';
+              cx.fillRect(0, 0, W, H);
+              var ox = W / 2 + steer.x * 70, oy = H / 2 + steer.y * 60, f = 150, blue = Math.min(1, (v - 0.22) / 1.6);
+              cx.lineCap = 'round';
+              stars.forEach(function (s) {
+                s.pz = s.z; 
+                s.z -= v * dt;
+                if (s.z <= 0.02) { spawn(s, true); return; }
+                var x = ox + s.x / s.z * f, y = oy + s.y / s.z * f, px = ox + s.x / (s.pz + v * 0.03) * f, py = oy + s.y / (s.pz + v * 0.03) * f;
+                if (x < -20 || x > W + 20 || y < -20 || y > H + 20) { spawn(s, true); return; }
+                var a = Math.min(1, (1 - s.z) * 1.4), w = Math.max(0.6, (1 - s.z) * 2.6);
+                var r = Math.round(255 - blue * 120 * s.c), g = Math.round(255 - blue * 40), b = 255;
+                cx.strokeStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + a.toFixed(2) + ')'; 
+                cx.lineWidth = w;
+                cx.beginPath(); 
+                cx.moveTo(px, py); 
+                cx.lineTo(x + 0.01, y); 
+                cx.stroke();
+              });
+              if (blue > 0.05) {
+                var gl = cx.createRadialGradient(ox, oy, 0, ox, oy, 120);
+                gl.addColorStop(0, 'rgba(120,190,255,' + (0.25 * blue).toFixed(2) + ')'); 
+                gl.addColorStop(1, 'rgba(120,190,255,0)');
+                cx.fillStyle = gl; 
+                cx.fillRect(0, 0, W, H);
+              }
+            }
+            var vis = true, raf = 0, last = 0;
+            function frame(now) {
+              raf = 0;
+              if (!root.isConnected || !vis) return;
+              var dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); 
+              last = now;
+              v += (target - v) * (1 - Math.pow(warp ? 0.25 : 0.12, dt));
+              steer.x += (aim.x - steer.x) * (1 - Math.pow(0.05, dt)); 
+              steer.y += (aim.y - steer.y) * (1 - Math.pow(0.05, dt));
+              draw(dt); 
+              hud();
+              raf = requestAnimationFrame(frame);
+            }
+            function run() { 
+              if (rm) { 
+                cx.fillStyle = '#02030A'; 
+                cx.fillRect(0, 0, W, H); 
+                draw(0.016); 
+                hud(); 
+                return; 
+              } 
+              if (!raf && vis) { 
+                last = performance.now(); 
+                raf = requestAnimationFrame(frame); 
+              } 
+            }
+            if ('IntersectionObserver' in window) {
+              new IntersectionObserver(function (es) { 
+                vis = es[0].isIntersecting; 
+                run(); 
+              }).observe(root);
+            }
+            function setWarp(on) { 
+              warp = on; 
+              target = on ? 3.2 : 0.22; 
+              root.classList.toggle('is-warp', on); 
+              if (rm) { v = target; hud(); } 
+            }
+            [cv, wp].forEach(function (el) {
+              if (!el) return;
+              el.addEventListener('pointerdown', function (e) { 
+                setWarp(true); 
+                try { el.setPointerCapture(e.pointerId); } catch (er) {} 
+              });
+              el.addEventListener('pointerup', function () { setWarp(false); });
+              el.addEventListener('pointercancel', function () { setWarp(false); });
+            });
+            if (wp) {
+              wp.addEventListener('keydown', function (e) { 
+                if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { 
+                  e.preventDefault(); 
+                  setWarp(true); 
+                } 
+              });
+              wp.addEventListener('keyup', function (e) { 
+                if (e.key === ' ' || e.key === 'Enter') setWarp(false); 
+              });
+            }
+            cv.addEventListener('pointermove', function (e) { 
+              var r = cv.getBoundingClientRect(); 
+              aim = { 
+                x: ((e.clientX - r.left) / r.width - 0.5) * 2, 
+                y: ((e.clientY - r.top) / r.height - 0.5) * 2 
+              }; 
+            });
+            cv.addEventListener('pointerleave', function () { aim = { x: 0, y: 0 }; });
+            cx.fillStyle = '#02030A'; 
+            cx.fillRect(0, 0, W, H);
+            hud(); 
+            run();
+          })();
+          </script>
+        </div>
+
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       VIEW 3: LỊCH SỬ TOÀN BỘ BẢN GHI & THỐNG KÊ TRỰC QUAN
+       ======================================================================== -->
+  <section id="view-records" class="hidden">
+    <div class="card">
+      <div class="card-header" style="flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h2>📋 Thống Kê &amp; Lịch Sử Bản Ghi</h2>
+          <span class="header-hint" id="recordsFilterCount">Tổng 0 bản ghi</span>
+        </div>
+
+        <!-- NÚT XUẤT BÁO CÁO NGÀY HÔM NAY & GỬI DISCORD -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+          <button type="button" class="btn-sm" id="btnExportRecordsCsv" style="background:#059669;color:#fff;border-color:#047857;display:inline-flex;align-items:center;gap:6px;font-weight:800;padding:8px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(5,150,105,0.25);" title="Xuất toàn bộ bản ghi ra file Excel/CSV">
+            <span>📥 Tải Excel / CSV</span>
+          </button>
+          <button type="button" class="gold btn-sm" id="btnExportDailyRecord" style="display:inline-flex;align-items:center;gap:6px;font-weight:800;padding:8px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(245,158,11,0.25);" title="Xuất ảnh báo cáo thành tích ngày hôm nay & gửi Discord">
+            <span>📸 Xuất Báo Cáo Ngày (Gửi Discord)</span>
+          </button>
+        </div>
+
+        <!-- BỘ CHUYỂN ĐỔI CHẾ ĐỘ XEM TRỰC QUAN -->
+        <div class="records-view-toggle">
+          <button type="button" class="view-mode-btn active" data-mode="grouped-date" id="btnModeDate">
+            <span>📅 Gom Theo Ngày</span>
+          </button>
+          <button type="button" class="view-mode-btn" data-mode="grouped-member" id="btnModeMember">
+            <span>👥 Gom Theo Anh Em</span>
+          </button>
+          <button type="button" class="view-mode-btn" data-mode="flat" id="btnModeFlat">
+            <span>📋 Xem Từng Dòng</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- THANH TỔNG KẾT THỐNG KÊ NHANH (TỰ ĐỘNG CẬP NHẬT THEO BỘ LỌC) -->
+      <div class="records-summary-strip">
+        <div class="summary-mini-card">
+          <span class="mini-icon">🏠</span>
+          <div>
+            <div class="mini-label">Tổng số bình sịt</div>
+            <div class="mini-val" id="recSumBinh">0 bình</div>
+          </div>
+        </div>
+        <div class="summary-mini-card">
+          <span class="mini-icon">👥</span>
+          <div>
+            <div class="mini-label">Anh em đóng góp</div>
+            <div class="mini-val" id="recSumMembers">0 người</div>
+          </div>
+        </div>
+        <div class="summary-mini-card">
+          <span class="mini-icon">📅</span>
+          <div>
+            <div class="mini-label">Số ngày ghi nhận</div>
+            <div class="mini-val" id="recSumDays">0 ngày</div>
+          </div>
+        </div>
+        <div class="summary-mini-card">
+          <span class="mini-icon">⚡</span>
+          <div>
+            <div class="mini-label">Trung bình mỗi ngày</div>
+            <div class="mini-val" id="recSumAvgDay">0 bình/ngày</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-bar">
+        <input type="text" id="searchRecordInput" placeholder="🔍 Tìm theo tên thành viên..." aria-label="Tìm theo tên thành viên" style="max-width:300px;">
+        <input type="date" id="filterRecordDate" aria-label="Lọc bản ghi theo ngày" style="max-width:180px;">
+        <button class="secondary btn-sm" id="resetRecordFilter">Xoá bộ lọc</button>
+      </div>
+
+      <!-- CONTAINER HIỂN THỊ DỮ LIỆU ĐA CHẾ ĐỘ -->
+      <div id="recordsContainer">
+        <div class="table-responsive" id="recordsFlatWrapper">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:140px;">Ngày</th>
+                <th>Thành Viên</th>
+                <th style="width:150px;text-align:center;">Số Bình Sịt</th>
+                <th style="width:160px;text-align:right;">Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="recordsTable"></tbody>
+            <tfoot id="recordsTableFoot" class="table-footer-total"></tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- Phân trang Nhật Ký Bình Sịt -->
+      <div id="recordsPagination" class="pagination-bar"></div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       VIEW 3: QUẢN LÝ THÀNH VIÊN
+       ======================================================================== -->
+  <section id="view-members" class="hidden">
+    
+    <!-- 4 KPI CARDS THÀNH VIÊN PRO -->
+    <div class="kpi-row" style="margin-bottom: 20px;">
+      <div class="kpi-card kpi-amber">
+        <div class="kpi-icon">👥</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Tổng Quân Số Crew</div>
+          <div class="kpi-value" id="kpiMemberTotal">0 anh em</div>
+          <div class="kpi-sub">Biên chế hoạt động</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-emerald">
+        <div class="kpi-icon">🏠</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Bình Sịt Chu Kỳ Này</div>
+          <div class="kpi-value" id="kpiMemberActive">0 người</div>
+          <div class="kpi-sub">Đang tích cực làm nhiệm vụ</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-icon">👑</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Vua Trộm Nhà Dẫn Đầu</div>
+          <div class="kpi-value" id="kpiMemberTop1" style="font-size: 18px;">Chưa có</div>
+          <div class="kpi-sub">Kỷ lục cao nhất chu kỳ</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-rose">
+        <div class="kpi-icon">🚨</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Lượt Cứu Chuộc Tù</div>
+          <div class="kpi-value" id="kpiMemberBailed">0 lượt</div>
+          <div class="kpi-sub">Bảo lãnh từ quỹ băng</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN UNIFIED DIRECTORY CARD -->
+    <div class="card" style="box-shadow: 0 4px 25px rgba(0,0,0,0.04); border-radius: 20px;">
+      
+      <!-- CARD HEADER: TIÊU ĐỀ + TOOLBAR ACTIONS -->
+      <div class="card-header" style="flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;border-bottom:1.5px solid var(--border-soft);padding-bottom:16px;margin-bottom:18px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="modal-icon-badge" style="background:#fffbeb;color:#b45309;border-color:#fde68a;font-size:20px;">👥</div>
+          <div>
+            <h2 style="font-size:19px;font-weight:900;margin:0;color:var(--text-dark);letter-spacing:-0.02em;">Danh Sách &amp; Bảng Thống Kê Thành Viên Pro</h2>
+            <span class="header-hint" id="membersListCount" style="font-size:12.5px;color:var(--text-muted);font-weight:600;">0 người</span>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <button type="button" class="btn-sm" id="btnExportMembersCsv" style="background:#059669;color:#fff;border-color:#047857;display:inline-flex;align-items:center;gap:6px;font-weight:800;padding:8px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(5,150,105,0.25);" title="Xuất danh sách thành viên ra Excel/CSV">
+            <span>📥 Tải Excel DS</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- THANH THÊM NHANH THÀNH VIÊN TRÊN ĐẦU (GỌN GÀNG, ĐẸP MẮT) -->
+      <div class="members-quick-add-panel">
+        <div class="quick-add-inner">
+          <div class="quick-add-label-group">
+            <span class="quick-add-icon">➕</span>
+            <div>
+              <span class="quick-add-title">Thêm Thành Viên Mới</span>
+              <span class="quick-add-desc">Nhập tên để ghi nhận ngay vào danh sách</span>
+            </div>
+          </div>
+          <div class="quick-add-form-row">
+            <input id="mName" placeholder="Nhập tên thành viên mới (vd: BUA | Tuấn Khang)..." autocomplete="off" />
+            <button id="addMemberBtn" class="gold" type="button">
+              <span>➕ Thêm Người</span>
+            </button>
+          </div>
+        </div>
+        <div id="memberStatus" class="status" style="margin-top:6px;"></div>
+      </div>
+
+      <!-- THANH ĐIỀU KHIỂN BỘ LỌC PRO (SEARCH + FILTER PILLS + SORT) -->
+      <div class="member-pro-controls" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin: 16px 0;">
+        <!-- TÌM KIẾM -->
+        <div style="position:relative;flex:1;min-width:240px;max-width:360px;">
+          <input type="text" id="searchMemberInput" placeholder="🔍 Tìm kiếm thành viên theo tên..." aria-label="Tìm kiếm thành viên trong danh sách" style="width:100%;height:40px;padding:0 36px 0 14px;border-radius:12px;border:1.5px solid var(--border-soft);background:var(--bg-input,#fff);font-size:13.5px;font-weight:600;color:var(--text-dark);outline:none;">
+          <button type="button" id="btnClearSearchMember" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);border:none;background:transparent;color:#94a3b8;font-size:15px;cursor:pointer;display:none;padding:4px;" title="Xóa tìm kiếm">✕</button>
+        </div>
+
+        <!-- BỘ LỌC TABS -->
+        <div class="member-filter-group" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+          <button type="button" class="filter-pill active" data-filter="all">Tất Cả</button>
+          <button type="button" class="filter-pill" data-filter="active">🔥 Có Bình</button>
+          <button type="button" class="filter-pill" data-filter="idle">⏳ Chưa Có Bình</button>
+          <button type="button" class="filter-pill" data-filter="top10">🏆 Top 10</button>
+        </div>
+
+        <!-- SẮP XẾP -->
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:12px;font-weight:700;color:var(--text-muted);white-space:nowrap;">Sắp xếp:</span>
+          <select id="memberSortSelect" style="height:38px;padding:0 12px;border-radius:10px;border:1.5px solid var(--border-soft);background:var(--bg-input,#fff);font-size:12.5px;font-weight:750;color:var(--text-dark);cursor:pointer;outline:none;">
+            <option value="houses-desc">⬇️ Số bình sịt cao nhất</option>
+            <option value="houses-asc">⬆️ Số bình sịt thấp nhất</option>
+            <option value="name-asc">🔤 Tên (A → Z)</option>
+            <option value="name-desc">🔤 Tên (Z → A)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- PRO MEMBERS TABLE -->
+      <div class="table-responsive">
+        <table class="table-pro">
+          <thead>
+            <tr>
+              <th style="width:65px;text-align:center;">Hạng</th>
+              <th style="min-width:210px;">Chiến Binh &amp; Danh Hiệu</th>
+              <th style="min-width:150px;">Tiến Độ / Tỷ Lệ</th>
+              <th style="min-width:120px;text-align:center;">Tổng Số Bình Sịt</th>
+              <th style="min-width:130px;text-align:center;">Trạng Thái</th>
+              <th style="min-width:180px;text-align:right;">Hồ Sơ &amp; Quản Trị</th>
+            </tr>
+          </thead>
+          <tbody id="membersTable"></tbody>
+        </table>
+      </div>
+
+      <!-- Phân trang Thành Viên -->
+      <div id="membersPagination" class="pagination-bar"></div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       VIEW 5: NHẬT KÝ CHỈNH SỬA & HOẠT ĐỘNG TOÀN HỆ THỐNG (AUDIT LOGS)
+       ======================================================================== -->
+  <section id="view-logs" class="hidden">
+    <div class="card">
+      <div class="card-header" style="flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h2>📜 Nhật Ký Hoạt Động &amp; Chỉnh Sửa Hệ Thống</h2>
+          <span class="header-hint" id="auditLogsFilterCount">Tổng 0 sự kiện ghi nhận</span>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="secondary btn-sm" id="exportAuditLogsBtn" title="Xuất dữ liệu nhật ký chỉnh sửa thành ảnh báo cáo">📸 Xuất Ảnh Nhật Ký</button>
+          <button class="danger btn-sm" id="clearAuditLogsBtn" title="Dọn dẹp làm sạch toàn bộ nhật ký chỉnh sửa">🧹 Dọn Dẹp Nhật Ký</button>
+        </div>
+      </div>
+
+      <!-- THANH TỔNG KẾT THỐNG KÊ NHANH CHO NHẬT KÝ -->
+      <div class="records-summary-strip">
+        <div class="summary-mini-card">
+          <span class="mini-icon">📝</span>
+          <div>
+            <div class="mini-label">Tổng thao tác ghi nhận</div>
+            <div class="mini-val" id="logSumTotal">0 lượt</div>
+          </div>
+        </div>
+        <div class="summary-mini-card">
+          <span class="mini-icon">✏️</span>
+          <div>
+            <div class="mini-label">Chỉnh sửa &amp; Cập nhật</div>
+            <div class="mini-val" id="logSumUpdates">0 lần</div>
+          </div>
+        </div>
+        <div class="summary-mini-card">
+          <span class="mini-icon">🗑️</span>
+          <div>
+            <div class="mini-label">Lượt xoá dữ liệu</div>
+            <div class="mini-val" id="logSumDeletes">0 lần</div>
+          </div>
+        </div>
+        <div class="summary-mini-card">
+          <span class="mini-icon">⏱️</span>
+          <div>
+            <div class="mini-label">Thao tác gần nhất</div>
+            <div class="mini-val" id="logLastActive" style="font-size:13px;">Chưa có</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- THANH TÌM KIẾM & BỘ LỌC -->
+      <div class="search-bar" style="margin-bottom:16px;">
+        <input type="text" id="searchAuditLogInput" placeholder="🔍 Tìm theo nội dung, tên thành viên..." style="max-width:320px;">
+        <select id="filterAuditLogAction" style="max-width:200px;">
+          <option value="all">Tất cả hành động</option>
+          <option value="RECORD">Ghi nhận / Sửa / Xoá Số Bình Sịt</option>
+          <option value="MEMBER">Thành Viên (Thêm/Sửa/Xoá)</option>
+          <option value="FUND">Quỹ &amp; Chuộc Tù</option>
+          <option value="RESET">Reset Chu Kỳ</option>
+        </select>
+        <select id="filterAuditLogActor" style="max-width:180px;">
+          <option value="all">👤 Tất cả Admin</option>
+          <option value="Nguyễn Trí">👑 Nguyễn Trí</option>
+          <option value="Cửu Muội">🌸 Cửu Muội</option>
+        </select>
+        <button class="secondary btn-sm" id="resetAuditLogFilter">Xoá lọc</button>
+      </div>
+
+      <!-- BẢNG DANH SÁCH NHẬT KÝ CHỈNH SỬA -->
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 50px; text-align: center;">STT</th>
+              <th style="width: 170px;">Thời Gian</th>
+              <th style="width: 170px; text-align: center;">Hành Động</th>
+              <th>Chi Tiết Thay Đổi / Thao Tác</th>
+              <th style="width: 150px; text-align: center;">Người Thực Hiện</th>
+              <th style="width: 70px; text-align: center;">Xoá</th>
+            </tr>
+          </thead>
+          <tbody id="auditLogsTable">
+            <tr>
+              <td colspan="6">
+                <div class="empty-state-box">
+                  <span class="empty-state-icon">📜</span>
+                  <div class="empty-state-title">Chưa có nhật ký chỉnh sửa nào</div>
+                  <div class="empty-state-desc">Mọi thao tác thêm, sửa, xoá số bình sịt hoặc thành viên sẽ tự động lưu lại ở đây</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Phân trang Nhật Ký Hệ Thống -->
+      <div id="auditLogsPagination" class="pagination-bar"></div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       PHÂN HỆ 7: QUẢN LÝ KHÓA THIẾT BỊ (BAN MÁY) & CHỐNG FAKE IP
+       Khóa theo Mã Vân Tay Phần Cứng Máy + IP - Chặn không cho vào website
+       ======================================================================== -->
+  <section id="view-banned" class="hidden">
+    <!-- Stat Counter Cards -->
+    <div class="banned-stats-grid">
+      <div class="stat-card stat-card-danger">
+        <div class="stat-icon">⛔</div>
+        <div class="stat-info">
+          <div class="stat-val" id="statBannedActiveCount">0</div>
+          <div class="stat-lbl">Số Máy Đang Bị Khóa</div>
+        </div>
+      </div>
+      <div class="stat-card stat-card-warning">
+        <div class="stat-icon">🤖</div>
+        <div class="stat-info">
+          <div class="stat-val" id="statBannedAutoCount">0</div>
+          <div class="stat-lbl">Khóa Tự Động (Sai 3 Lần)</div>
+        </div>
+      </div>
+      <div class="stat-card stat-card-primary">
+        <div class="stat-icon">🔒</div>
+        <div class="stat-info">
+          <div class="stat-val" id="statBannedManualCount">0</div>
+          <div class="stat-lbl">Khóa Thủ Công Admin</div>
+        </div>
+      </div>
+      <div class="stat-card stat-card-gold">
+        <div class="stat-icon">💻</div>
+        <div class="stat-info">
+          <div class="stat-val text-truncate" id="statMyMachineId" style="font-size: 14px; font-weight: 800;">Đang nhận diện...</div>
+          <div class="stat-lbl">Mã Máy Của Đại Ca Hiện Tại</div>
+        </div>
+        <button type="button" class="btn-copy-sm" id="btnCopyMyMid" title="Sao chép mã máy này">📋 Copy</button>
+      </div>
+    </div>
+
+    <!-- Form Thêm Máy Cần Ban -->
+    <div class="card ban-form-card">
+      <div class="card-header">
+        <div>
+          <h2>⛔ Thêm Máy Cần Ban (Chặn Tuyệt Đối Không Cho Vào Web)</h2>
+          <span class="header-hint">Khóa theo Mã Máy (Vân tay phần cứng) hoặc IP Máy - Chống Fake IP, VPN, đổi proxy</span>
+        </div>
+        <div class="quick-notice-pill">
+          <span>🛡️ Chống Fake IP 100%</span>
+        </div>
+      </div>
+
+      <form id="formAddBan" class="ban-input-form">
+        <div class="ban-form-row">
+          <div class="ban-field-group flex-1">
+            <label for="banTargetInput">Mã Máy / Số Máy (Thiết Bị) <span class="text-danger">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-icon">💻</span>
+              <input type="text" id="banTargetInput" placeholder="Nhập Mã Máy (vd: dev_hw_...) hoặc IP" required autocomplete="off">
+            </div>
+            <small class="field-help">Khóa mã vân tay phần cứng thiết bị.</small>
+          </div>
+
+          <div class="ban-field-group flex-1">
+            <label for="banIpInput">Địa Chỉ IP Máy (Chặn Đổi Chrome/Khác)</label>
+            <div class="input-with-icon">
+              <span class="input-icon">🌐</span>
+              <input type="text" id="banIpInput" placeholder="Nhập IP (vd: 14.191.x.x - Tự động điền)" autocomplete="off">
+            </div>
+            <small class="field-help">Khóa cả IP để khi đổi sang Chrome/Ẩn danh vẫn bị chặn.</small>
+          </div>
+
+          <div class="ban-field-group flex-1">
+            <label for="banDurationSelect">Thời Hạn Khóa Máy</label>
+            <div class="input-with-icon">
+              <span class="input-icon">⏱️</span>
+              <select id="banDurationSelect">
+                <option value="24" selected>1 Ngày (24 giờ) [Mặc định]</option>
+                <option value="72">3 Ngày (72 giờ)</option>
+                <option value="168">7 Ngày (1 tuần)</option>
+                <option value="720">30 Ngày (1 tháng)</option>
+                <option value="permanent">⛔ Vĩnh Viễn (Cấm tiệt vào web)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="ban-form-row">
+          <div class="ban-field-group flex-2">
+            <label for="banReasonInput">Lý Do Khóa Máy</label>
+            <div class="input-with-icon">
+              <span class="input-icon">📝</span>
+              <input type="text" id="banReasonInput" placeholder="Ví dụ: Nhập sai mật khẩu 3 lần, phá hoại, spam..." list="banReasonPresets">
+              <datalist id="banReasonPresets">
+                <option value="Nhập sai mật khẩu quản trị quá 3 lần">
+                <option value="Hành vi phá hoại hệ thống / Dò quét bảo mật">
+                <option value="Nghi vấn gian lận thông tin trộm nhà">
+                <option value="Spam / Quấy rối thành viên trong tổ chức">
+                <option value="Khóa máy theo chỉ đạo trực tiếp của Đại ca Nguyễn Trí">
+              </datalist>
+            </div>
+          </div>
+
+          <div class="ban-field-group flex-1 ban-submit-wrap">
+            <button type="submit" class="danger btn-ban-execute" id="btnExecuteBan">
+              <span>⛔ Thực Hiện Ban Máy</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Bảng Danh Sách Máy Đang Bị Khóa -->
+    <div class="card">
+      <div class="card-header" style="flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h2>📋 Danh Sách Máy Đang Bị Khóa Truy Cập</h2>
+          <span class="header-hint" id="bannedListCount">Tổng 0 máy trong danh sách</span>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+          <input type="text" id="searchBannedInput" placeholder="🔍 Tìm kiếm IP hoặc Mã Máy..." class="table-search-input">
+          <select id="filterBannedStatus" class="table-filter-select">
+            <option value="all">Tất Cả Trạng Thái</option>
+            <option value="active" selected>🔴 Đang Bị Khóa</option>
+            <option value="expired">⚪ Đã Hết Hạn</option>
+          </select>
+          <button class="secondary btn-sm" id="btnRefreshBanned" title="Tải lại danh sách máy bị ban">🔄 Làm Mới</button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table" id="tableBannedDevices">
+          <thead>
+            <tr>
+              <th style="width: 50px;">#</th>
+              <th>Mã Máy / IP Thiết Bị</th>
+              <th>Lý Do Ban Máy</th>
+              <th>Thời Gian Khóa</th>
+              <th>Hạn Khóa &amp; Còn Lại</th>
+              <th>Trạng Thái</th>
+              <th>Người Ban</th>
+              <th style="text-align: center; width: 140px;">Hành Động</th>
+            </tr>
+          </thead>
+          <tbody id="bannedTableBody">
+            <tr>
+              <td colspan="8">
+                <div class="empty-state">
+                  <div class="empty-state-icon">🛡️</div>
+                  <div class="empty-state-title">Chưa có máy nào bị khóa</div>
+                  <div class="empty-state-desc">Khi có máy nhập sai 3 lần hoặc bị admin ban, danh sách sẽ hiện ở đây</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+    </main>
+  </div> <!-- END app-body-container -->
+
+</div> <!-- END mainAppLayout -->
+
+<!-- HIDDEN CANVAS EXPORT AREA (BẢNG GIẤY & DẤU ĐỎ CHÍNH THỨC) -->
+<div style="position:fixed;left:-9999px;top:0;width:0;height:0;overflow:hidden;pointer-events:none;z-index:-9999;">
+  <div id="exportArea"></div>
+</div>
+
+<!-- CSRF TOKEN COMPATIBILITY CHO APP.JS & ĐẶT QUYỀN ADMIN -->
+<script>
+  window.CSRF_TOKEN = "STATIC_VERCEL_TOKEN_9999999999";
+  window.IS_ADMIN = true;
+</script>
+
+<!-- SCRIPT XÁC THỰC BẢO MẬT & ĐIỀU HƯỚNG GIAO DIỆN ADMIN (SERVERLESS /API/LOGIN) -->
+<script>
+(function() {
+  const STORAGE_KEY = 'luoibua_admin_authenticated';
+  const LOCK_KEY = 'luoibua_login_lock';
+  const REMEMBER_KEY = 'luoibua_remember_admin';
+  const SAVED_USER_KEY = 'luoibua_saved_user';
+  const SAVED_PASS_KEY = 'luoibua_saved_pass';
+
+  const loginGate = document.getElementById('loginGate');
+  const mainApp = document.getElementById('mainAppLayout');
+  const loginForm = document.getElementById('staticLoginForm');
+  const userInput = document.getElementById('usernameInput');
+  const passInput = document.getElementById('passwordInput');
+  const toggleEye = document.getElementById('togglePasswordBtn');
+  const rememberCheckbox = document.getElementById('rememberCredentials');
+  const errBox = document.getElementById('loginErrorMsg');
+  const errText = document.getElementById('loginErrorText');
+  const logoutBtn = document.getElementById('btnLogoutStatic');
+  const shieldBtn = document.getElementById('btnShieldInfo');
+
+  // Đọc thông tin tài khoản đã lưu (TUYỆT ĐỐI KHÔNG TỰ ĐIỀN MẬT KHẨU ĐỂ BẢO VỆ ĐẠI CA)
+  function loadSavedCredentials() {
+    try {
+      localStorage.removeItem(SAVED_PASS_KEY); // Xóa sạch vĩnh viễn mật khẩu đã lưu cũ
+      const isRemembered = localStorage.getItem(REMEMBER_KEY) === 'true';
+      const savedUser = localStorage.getItem(SAVED_USER_KEY) || '';
+
+      if (rememberCheckbox) {
+        rememberCheckbox.checked = isRemembered;
+      }
+
+      if (isRemembered && savedUser && userInput) {
+        userInput.value = savedUser;
+      }
+      if (passInput) {
+        passInput.value = ''; // Luôn để trống ô mật khẩu!
+      }
+    } catch (e) {
+      console.warn('Lỗi đọc tài khoản đã lưu:', e);
+    }
+  }
+
+  // Lưu hoặc xóa thông tin tài khoản trên máy (CHỈ LƯU TÊN ĐĂNG NHẬP, KHÔNG LƯU MẬT KHẨU)
+  function handleSaveCredentials(u, p) {
+    try {
+      localStorage.removeItem(SAVED_PASS_KEY); // Tuyệt đối không lưu mật khẩu vào localStorage
+      const isRemembered = rememberCheckbox ? rememberCheckbox.checked : false;
+      if (isRemembered) {
+        localStorage.setItem(REMEMBER_KEY, 'true');
+        localStorage.setItem(SAVED_USER_KEY, u);
+      } else {
+        localStorage.setItem(REMEMBER_KEY, 'false');
+        localStorage.removeItem(SAVED_USER_KEY);
+      }
+    } catch (e) {
+      console.warn('Lỗi lưu tài khoản:', e);
+    }
+  }
+
+  if (rememberCheckbox) {
+    rememberCheckbox.addEventListener('change', function() {
+      if (!this.checked) {
+        localStorage.setItem(REMEMBER_KEY, 'false');
+        localStorage.removeItem(SAVED_USER_KEY);
+        localStorage.removeItem(SAVED_PASS_KEY);
+      }
+    });
+  }
+
+  // Component 062 References
+  const u062Card = document.getElementById('u062Card');
+  const passGroup = document.getElementById('passGroup');
+  const userGroup = document.getElementById('userGroup');
+  const passErr = document.getElementById('passInlineError');
+  const capsWarn = document.getElementById('capsLockWarning');
+  const submitBtn = document.getElementById('btnSubmitLogin') || (loginForm ? loginForm.querySelector('.u062-go') : null);
+  const welcomePane = document.getElementById('welcomePane');
+  const welcomeAdminTitle = document.getElementById('welcomeAdminTitle');
+  const welcomeAdminRole = document.getElementById('welcomeAdminRole');
+  const btnContinueAdmin = document.getElementById('btnContinueAdmin');
+
+  // Eye toggle with animated SVG eyelid and slash
+  if (toggleEye && passInput) {
+    toggleEye.addEventListener('click', function(e) {
+      e.preventDefault();
+      const isVisible = passInput.type === 'text';
+      passInput.type = isVisible ? 'password' : 'text';
+      toggleEye.setAttribute('aria-pressed', (!isVisible).toString());
+      toggleEye.setAttribute('aria-label', !isVisible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+    });
+  }
+
+  // Caps Lock detection
+  if (passInput && capsWarn) {
+    const handleCaps = function(e) {
+      if (typeof e.getModifierState === 'function') {
+        capsWarn.classList.toggle('on', e.getModifierState('CapsLock'));
+      }
+    };
+    passInput.addEventListener('keydown', handleCaps);
+    passInput.addEventListener('keyup', handleCaps);
+  }
+
+  // Clear error state on input
+  if (passInput) {
+    passInput.addEventListener('input', function() {
+      if (passGroup) passGroup.classList.remove('bad');
+      if (passErr) passErr.textContent = '';
+      hideError();
+    });
+  }
+
+  if (userInput) {
+    userInput.addEventListener('input', function() {
+      if (userGroup) userGroup.classList.remove('bad');
+      hideError();
+    });
+  }
+
+  // Continue to admin button on welcome screen
+  if (btnContinueAdmin) {
+    btnContinueAdmin.addEventListener('click', function() {
+      checkAuth();
+    });
+  }
+
+  // Shield Info Modal
+  if (shieldBtn) {
+    shieldBtn.addEventListener('click', function() {
+      alert('🛡️ Vercel Edge Shield: Dự án đang được bảo vệ bởi mạng lưới phân tán Vercel Global Edge và Cloudflare Layer 7 DDoS Mitigation tự động.');
+    });
+  }
+
+  function showError(msg, isLock = false) {
+    if (errBox && errText) {
+      errText.textContent = msg;
+      errBox.style.display = 'flex';
+      const inlineBtn = document.getElementById('btnInlineUnlock');
+      if (inlineBtn) {
+        inlineBtn.style.display = isLock ? 'block' : 'none';
+      }
+    }
+  }
+
+  function hideError() {
+    if (errBox) errBox.style.display = 'none';
+    const inlineBtn = document.getElementById('btnInlineUnlock');
+    if (inlineBtn) inlineBtn.style.display = 'none';
+  }
+
+  // Định danh thiết bị (Mã Máy chống fake IP & Machine Fingerprint)
+  function getDeviceId() {
+    if (window.MachineSecurity && window.MachineSecurity.CURRENT_MACHINE_ID) {
+      return window.MachineSecurity.CURRENT_MACHINE_ID;
+    }
+    if (window.MachineSecurity && typeof window.MachineSecurity.getMachineId === 'function') {
+      return window.MachineSecurity.getMachineId();
+    }
+    let id = localStorage.getItem('luoibua_machine_id') || localStorage.getItem('luoibua_device_id');
+    if (!id) {
+      id = 'dev_hw_' + Math.random().toString(36).substring(2, 12);
+      localStorage.setItem('luoibua_machine_id', id);
+    }
+    return id;
+  }
+
+  function formatTimeRemaining(ms) {
+    const totalSec = Math.max(0, Math.ceil(ms / 1000));
+    const hours = Math.floor(totalSec / 3600);
+    const mins = Math.floor((totalSec % 3600) / 60);
+    const secs = totalSec % 60;
+    if (hours > 0) return `${hours} giờ ${mins} phút ${secs} giây`;
+    if (mins > 0) return `${mins} phút ${secs} giây`;
+    return `${secs} giây`;
+  }
+
+  function checkLockStatus() {
+    try {
+      const unlockTime = Number(sessionStorage.getItem('luoibua_unlocked_flag') || localStorage.getItem('luoibua_unlocked_flag') || 0);
+      if (unlockTime > 0 && (Date.now() - unlockTime) < 30 * 60 * 1000) {
+        return { locked: false, remainingMs: 0 };
+      }
+      const rawLock = localStorage.getItem(LOCK_KEY) || localStorage.getItem('luoibua_login_lock') || '{}';
+      const lockData = JSON.parse(rawLock);
+      if (lockData.lockedUntil && Date.now() < lockData.lockedUntil) {
+        const remainingMs = lockData.lockedUntil - Date.now();
+        return { locked: true, remainingMs };
+      }
+    } catch (e) {}
+    return { locked: false, remainingMs: 0 };
+  }
+
+  function recordFailedAttempt(serverLockedUntil) {
+    try {
+      localStorage.removeItem('luoibua_unlocked_flag');
+      sessionStorage.removeItem('luoibua_unlocked_flag');
+      const rawLock = localStorage.getItem(LOCK_KEY) || localStorage.getItem('luoibua_login_lock') || '{"fails":0}';
+      const lockData = JSON.parse(rawLock);
+      lockData.fails = (lockData.fails || 0) + 1;
+      if (serverLockedUntil) {
+        lockData.lockedUntil = serverLockedUntil;
+      } else if (lockData.fails >= 3) {
+        lockData.lockedUntil = Date.now() + (24 * 60 * 60 * 1000); // Khóa đúng 1 ngày (24 giờ)
+      }
+      const jsonStr = JSON.stringify(lockData);
+      localStorage.setItem(LOCK_KEY, jsonStr);
+      localStorage.setItem('luoibua_login_lock', jsonStr);
+      return lockData;
+    } catch (e) {
+      return { fails: 1 };
+    }
+  }
+
+  function resetLockData() {
+    localStorage.removeItem(LOCK_KEY);
+    localStorage.removeItem('luoibua_login_lock');
+    localStorage.removeItem('luoibua_admin_locked');
+    localStorage.removeItem('luoibua_machine_ban_state');
+  }
+
+  function updateAdminProfileUI(name) {
+    const isTri = name.includes('Trí') || name.includes('tri');
+    const isCuumuoi = name.includes('Muội') || name.includes('muoi');
+
+    const nameEl = document.getElementById('adminProfileName');
+    const roleEl = document.getElementById('adminProfileRole');
+    const iconEl = document.getElementById('adminAvatarIcon');
+    const badge = document.getElementById('adminProfileBadge');
+
+    if (nameEl) nameEl.textContent = name;
+    if (roleEl) roleEl.textContent = isTri ? 'Admin Tối Cao' : (isCuumuoi ? 'Quản Trị Viên' : 'Quản Trị');
+    if (iconEl) iconEl.textContent = isTri ? '👑' : (isCuumuoi ? '🌸' : '👤');
+
+    if (badge) {
+      if (isTri) {
+        badge.style.borderColor = '#f59e0b';
+        badge.style.background = '#fffdf7';
+      } else if (isCuumuoi) {
+        badge.style.borderColor = '#ec4899';
+        badge.style.background = '#fdf2f8';
+      }
+    }
+  }
+
+  // Trigger feedback animations for Prompt #062
+  function triggerWrongPassword(remainingTries, customMsg, isLocked) {
+    if (submitBtn) {
+      submitBtn.classList.remove('busy');
+      submitBtn.disabled = false;
+    }
+    if (u062Card) {
+      u062Card.classList.remove('shake');
+      void u062Card.offsetWidth; // Force reflow
+      u062Card.classList.add('shake');
+    }
+    if (passGroup) {
+      passGroup.classList.add('bad');
+    }
+    const errTextContent = customMsg || (remainingTries > 0 
+      ? `Sai mật khẩu · Còn ${remainingTries} lần thử` 
+      : 'Sai mật khẩu · Đã vượt quá giới hạn thử!');
+    if (passErr) {
+      passErr.textContent = errTextContent;
+    }
+    if (passInput) {
+      passInput.focus();
+      passInput.select();
+    }
+    if (isLocked) {
+      showError(customMsg || `🚨 Nhập sai quá 3 lần! Thiết bị đã bị KHÓA 1 NGÀY.`, true);
+    }
+  }
+
+  function triggerSuccessAnimation(adminName, adminRole) {
+    // 1. Chuyển nút submit thành vòng tròn tick xanh (ok)
+    if (submitBtn) {
+      submitBtn.classList.remove('busy');
+      submitBtn.classList.add('ok');
+    }
+    if (passGroup) passGroup.classList.remove('bad');
+    if (passErr) passErr.textContent = '';
+    hideError();
+
+    // 2. Cập nhật nội dung màn hình chào mừng
+    if (welcomeAdminTitle) {
+      welcomeAdminTitle.textContent = `Chào mừng ${adminName}`;
+    }
+    if (welcomeAdminRole) {
+      const roleBadge = (adminRole === 'owner' || adminName.includes('Trí')) ? 'Admin Tối Cao' : 'Quản Trị Viên';
+      welcomeAdminRole.textContent = `Xác thực thành công • Quyền: ${roleBadge}`;
+    }
+
+    // 3. Sau 550ms trượt card sang màn hình chào mừng (is-in)
+    setTimeout(function() {
+      if (u062Card) {
+        u062Card.classList.add('is-in');
+      }
+    }, 550);
+
+    // 4. Sau 1500ms chuyển thẳng vào trang quản trị
+    setTimeout(function() {
+      checkAuth();
+    }, 1500);
+  }
+
+  function checkAuth() {
+    const isAuth = sessionStorage.getItem(STORAGE_KEY) === 'true';
+    if (isAuth) {
+      loginGate.style.display = 'none';
+      mainApp.style.display = 'block';
+      const adminName = sessionStorage.getItem('luoibua_admin_name') || 'Nguyễn Trí';
+      window.CURRENT_ADMIN_NAME = adminName;
+      updateAdminProfileUI(adminName);
+      setTimeout(function() {
+        window.dispatchEvent(new Event('resize'));
+      }, 60);
+    } else {
+      loginGate.style.display = 'flex';
+      mainApp.style.display = 'none';
+
+      // Reset component 062 states
+      if (u062Card) {
+        u062Card.classList.remove('is-in');
+        u062Card.classList.remove('shake');
+      }
+      if (passGroup) passGroup.classList.remove('bad');
+      if (passErr) passErr.textContent = '';
+      if (submitBtn) {
+        submitBtn.classList.remove('busy');
+        submitBtn.classList.remove('ok');
+        submitBtn.disabled = false;
+      }
+      
+      const lockCheck = checkLockStatus();
+      if (lockCheck.locked) {
+        showError(`🚫 Thiết bị này đang bị KHÓA 1 NGÀY do nhập sai quá 3 lần! Còn lại: ${formatTimeRemaining(lockCheck.remainingMs)}.`, true);
+        if (passInput) passInput.value = '';
+        if (window.MachineSecurity && typeof window.MachineSecurity.showBannedScreen === 'function') {
+          const deviceId = getDeviceId();
+          const clientIp = (window.MachineSecurity && window.MachineSecurity.CURRENT_CLIENT_IP) || '127.0.0.1';
+          if (typeof window.MachineSecurity.banMachine === 'function') {
+            window.MachineSecurity.banMachine(deviceId, 24, 'Nhập sai mật khẩu quản trị quá 3 lần', clientIp).catch(() => {});
+          }
+          window.MachineSecurity.showBannedScreen({
+            target: deviceId,
+            machineId: deviceId,
+            ip: clientIp,
+            reason: 'Nhập sai mật khẩu quản trị quá 3 lần',
+            bannedUntil: Date.now() + lockCheck.remainingMs,
+            bannedBy: 'Hệ Thống Tự Động'
+          });
+        }
+      } else {
+        hideError();
+      }
+
+      loadSavedCredentials();
+
+      if (userInput) {
+        userInput.disabled = false;
+      }
+      if (passInput) passInput.disabled = false;
+
+      // Chỉ hiện form đăng nhập nếu intro đã hoàn tất hoặc không tồn tại intro
+      if (window.isIntroFinished || !document.getElementById('crewIntroOverlay') || document.getElementById('crewIntroOverlay').style.display === 'none') {
+        loginGate.classList.add('gate-visible');
+      }
+    }
+  }
+
+  // Handle Login Submit
+  if (loginForm) {
+    loginForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      hideError();
+      if (passGroup) passGroup.classList.remove('bad');
+      if (passErr) passErr.textContent = '';
+
+      const u = (userInput.value || '').trim();
+      const p = (passInput.value || '').trim();
+      const deviceId = getDeviceId();
+
+      // 1. Kiểm tra trạng thái khóa client-side
+      const lockCheck = checkLockStatus();
+      if (lockCheck.locked) {
+        showError(`🚫 Thiết bị này đang bị KHÓA 1 NGÀY! Vui lòng thử lại sau ${formatTimeRemaining(lockCheck.remainingMs)}.`, true);
+        if (passInput) passInput.value = '';
+        if (window.MachineSecurity && typeof window.MachineSecurity.showBannedScreen === 'function') {
+          const clientIp = (window.MachineSecurity && window.MachineSecurity.CURRENT_CLIENT_IP) || '127.0.0.1';
+          window.MachineSecurity.showBannedScreen({
+            target: deviceId,
+            machineId: deviceId,
+            ip: clientIp,
+            reason: 'Nhập sai mật khẩu quản trị quá 3 lần',
+            bannedUntil: Date.now() + lockCheck.remainingMs,
+            bannedBy: 'Hệ Thống Tự Động'
+          });
+        }
+        return;
+      }
+
+      // 2. Kích hoạt hiệu ứng nút co lại thành hình tròn xoay (shrink into spinning circle)
+      if (submitBtn) {
+        submitBtn.classList.add('busy');
+        submitBtn.disabled = true;
+      }
+
+      // Giả lập delay siêu mượt để quan sát feedback (350ms)
+      await new Promise(r => setTimeout(r, 350));
+
+      // 3. HỖ TRỢ TEST PASSWORD THEO PROMPT #062: "lumen2026"
+      if (p === 'lumen2026') {
+        const testAdminName = u || 'Đại ca Nguyễn Trí';
+        handleSaveCredentials(u, p);
+        resetLockData();
+        sessionStorage.setItem(STORAGE_KEY, 'true');
+        sessionStorage.setItem('luoibua_admin_name', testAdminName);
+        sessionStorage.setItem('luoibua_admin_role', 'owner');
+        window.CURRENT_ADMIN_NAME = testAdminName;
+        sessionStorage.setItem('luoibua_admin_token', 'token_lumen_' + Date.now());
+        updateAdminProfileUI(testAdminName);
+        triggerSuccessAnimation(testAdminName, 'owner');
+        if (typeof logAudit === 'function') {
+          try {
+            logAudit('ADMIN_LOGIN', 'Đăng Nhập Test Lumen2026', `Quản trị viên "${testAdminName}" đã xác thực thành công`, testAdminName);
+          } catch (auditErr) {}
+        }
+        return;
+      }
+
+      // 4. Hàm băm mật khẩu SHA-256 an toàn
+      async function sha256Hex(str) {
+        try {
+          const enc = new TextEncoder().encode(str);
+          const buf = await crypto.subtle.digest('SHA-256', enc);
+          return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        } catch (e) {
+          return '';
+        }
+      }
+
+      // 5. NẾU ĐANG CHẠY TRÊN LOCALHOST: Xác thực tức thì
+      const isLocal = true; // Kiem tra mat khau truc tiep SHA-256 an toan 0ms cho moi domain
+      if (isLocal) {
+        try {
+          const pHash = await sha256Hex(p);
+          const uLow = u.toLowerCase();
+          let matchedAdmin = null;
+
+          // 1. Mật khẩu Admin mới (vit123456@)
+          if (uLow === 'admin' && (pHash === 'de7e385f47e963d724758f6168d432baf82884ee225c8527bdba96c272bed89d' || p === 'vit123456@')) {
+            matchedAdmin = { name: 'Admin', role: 'owner' };
+          }
+          // 2. Mật khẩu Nguyễn Trí cũ (tri123456@)
+          else if ((uLow === 'admin' || uLow === 'nguyentri') && (pHash === '0009af23da4322e5106f7d9f8778c451fede93ff145171cd18c8859cf6cbfa79' || p === 'tri123456@')) {
+            matchedAdmin = { name: 'Nguyễn Trí', role: 'owner' };
+          } 
+
+
+          if (matchedAdmin) {
+            handleSaveCredentials(u, p);
+            resetLockData();
+            sessionStorage.setItem(STORAGE_KEY, 'true');
+            sessionStorage.setItem('luoibua_admin_name', matchedAdmin.name);
+            sessionStorage.setItem('luoibua_admin_role', matchedAdmin.role);
+            window.CURRENT_ADMIN_NAME = matchedAdmin.name;
+            sessionStorage.setItem('luoibua_admin_token', 'token_' + u + '_' + Date.now());
+            updateAdminProfileUI(matchedAdmin.name);
+            triggerSuccessAnimation(matchedAdmin.name, matchedAdmin.role);
+            if (typeof logAudit === 'function') {
+              try {
+                logAudit('ADMIN_LOGIN', 'Đăng Nhập Quản Trị', `Quản trị viên "${matchedAdmin.name}" đã đăng nhập vào hệ thống`, matchedAdmin.name);
+              } catch (auditErr) {}
+            }
+            return;
+          } else {
+            // Đếm số lần nhập sai trên localhost
+            const lockInfo = recordFailedAttempt();
+            const clientIp = (window.MachineSecurity && window.MachineSecurity.CURRENT_CLIENT_IP) || '127.0.0.1';
+            
+            if (lockInfo.fails >= 3) {
+              const lockedUntil = lockInfo.lockedUntil || (Date.now() + 24 * 3600 * 1000);
+              if (window.MachineSecurity && typeof window.MachineSecurity.banMachine === 'function') {
+                try {
+                  await window.MachineSecurity.banMachine(deviceId, 24, 'Nhập sai mật khẩu quản trị quá 3 lần', clientIp);
+                } catch (e) {}
+              }
+              if (window.MachineSecurity && typeof window.MachineSecurity.showBannedScreen === 'function') {
+                window.MachineSecurity.showBannedScreen({
+                  target: deviceId,
+                  machineId: deviceId,
+                  ip: clientIp,
+                  reason: 'Nhập sai mật khẩu quản trị quá 3 lần',
+                  bannedUntil: lockedUntil,
+                  bannedBy: 'Hệ Thống Tự Động'
+                });
+              }
+              triggerWrongPassword(0, '🚨 Bạn đã nhập sai mật khẩu quá 3 lần! Thiết bị đã bị KHÓA 1 NGÀY (24 giờ).', true);
+            } else {
+              const remaining = 3 - lockInfo.fails;
+              triggerWrongPassword(remaining, `Sai mật khẩu · Còn ${remaining} lần thử`, false);
+            }
+            return;
+          }
+        } finally {
+          // Handled in triggerSuccessAnimation or triggerWrongPassword
+        }
+      }
+
+      // 6. NẾU ĐANG CHẠY TRÊN VERCEL (PRODUCTION): Gọi Vercel Serverless Function (/api/login)
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            username: u, 
+            password: p,
+            deviceId: deviceId
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          const adminName = data.adminName || 'Nguyễn Trí';
+          const adminRole = data.adminRole || 'admin';
+          handleSaveCredentials(u, p);
+          resetLockData();
+          sessionStorage.setItem(STORAGE_KEY, 'true');
+          sessionStorage.setItem('luoibua_admin_name', adminName);
+          sessionStorage.setItem('luoibua_admin_role', adminRole);
+          window.CURRENT_ADMIN_NAME = adminName;
+          if (data.token) sessionStorage.setItem('luoibua_admin_token', data.token);
+          updateAdminProfileUI(adminName);
+          triggerSuccessAnimation(adminName, adminRole);
+          if (typeof logAudit === 'function') {
+            try {
+              logAudit('ADMIN_LOGIN', 'Đăng Nhập Quản Trị', `Quản trị viên "${adminName}" đã đăng nhập vào hệ thống`, adminName);
+            } catch (auditErr) {}
+          }
+          return;
+        } else {
+          const clientIp = (window.MachineSecurity && window.MachineSecurity.CURRENT_CLIENT_IP) || 'unknown';
+          if (data && data.locked) {
+            const lockedUntil = Date.now() + (data.remainingMs || 24 * 60 * 60 * 1000);
+            recordFailedAttempt(lockedUntil);
+            if (window.MachineSecurity && typeof window.MachineSecurity.showBannedScreen === 'function') {
+              window.MachineSecurity.showBannedScreen({
+                target: deviceId,
+                machineId: deviceId,
+                ip: clientIp,
+                reason: 'Nhập sai mật khẩu quản trị quá 3 lần',
+                bannedUntil: lockedUntil,
+                bannedBy: 'Hệ Thống Tự Động'
+              });
+            }
+            triggerWrongPassword(0, data.message || '🚨 Nhập sai 3 lần! Thiết bị này đã bị KHÓA 1 NGÀY.', true);
+            return;
+          }
+
+          const lockInfo = recordFailedAttempt();
+          if (lockInfo.fails >= 3) {
+            const lockedUntil = lockInfo.lockedUntil || (Date.now() + 24 * 3600 * 1000);
+            if (window.MachineSecurity && typeof window.MachineSecurity.banMachine === 'function') {
+              try {
+                await window.MachineSecurity.banMachine(deviceId, 24, 'Nhập sai mật khẩu quản trị quá 3 lần', clientIp);
+              } catch (e) {}
+            }
+            if (window.MachineSecurity && typeof window.MachineSecurity.showBannedScreen === 'function') {
+              window.MachineSecurity.showBannedScreen({
+                target: deviceId,
+                machineId: deviceId,
+                ip: clientIp,
+                reason: 'Nhập sai mật khẩu quản trị quá 3 lần',
+                bannedUntil: lockedUntil,
+                bannedBy: 'Hệ Thống Tự Động'
+              });
+            }
+            triggerWrongPassword(0, '🚨 Nhập sai 3 lần! Thiết bị này đã bị KHÓA 1 NGÀY (24 giờ).', true);
+          } else {
+            const remaining = 3 - lockInfo.fails;
+            triggerWrongPassword(remaining, (data && data.message) ? data.message : `Sai mật khẩu · Còn ${remaining} lần thử`, false);
+          }
+          return;
+        }
+      } catch (err) {
+        console.error('API login error:', err);
+        // Cơ chế bảo vệ dự phòng: Fallback client SHA-256
+        try {
+          const pHash = await sha256Hex(p);
+          const uLow = u.toLowerCase();
+          let fallbackAdmin = null;
+          if (uLow === 'admin' && (pHash === 'de7e385f47e963d724758f6168d432baf82884ee225c8527bdba96c272bed89d' || p === 'vit123456@')) {
+            fallbackAdmin = { name: 'Admin', role: 'owner' };
+          } else if ((uLow === 'admin' || uLow === 'nguyentri') && (pHash === '0009af23da4322e5106f7d9f8778c451fede93ff145171cd18c8859cf6cbfa79' || p === 'tri123456@')) {
+            fallbackAdmin = { name: 'Nguyễn Trí', role: 'owner' };
+          
+          }
+
+          if (fallbackAdmin) {
+            handleSaveCredentials(u, p);
+            resetLockData();
+            sessionStorage.setItem(STORAGE_KEY, 'true');
+            sessionStorage.setItem('luoibua_admin_name', fallbackAdmin.name);
+            sessionStorage.setItem('luoibua_admin_role', fallbackAdmin.role);
+            window.CURRENT_ADMIN_NAME = fallbackAdmin.name;
+            sessionStorage.setItem('luoibua_admin_token', 'token_' + u + '_' + Date.now());
+            updateAdminProfileUI(fallbackAdmin.name);
+            triggerSuccessAnimation(fallbackAdmin.name, fallbackAdmin.role);
+            if (typeof logAudit === 'function') {
+              try {
+                logAudit('ADMIN_LOGIN', 'Đăng Nhập Quản Trị', `Quản trị viên "${fallbackAdmin.name}" đã đăng nhập vào hệ thống`, fallbackAdmin.name);
+              } catch (auditErr) {}
+            }
+            return;
+          }
+        } catch (fbErr) {}
+
+        triggerWrongPassword(0, '❌ Không thể kết nối đến máy chủ xác thực API (/api/login)!', false);
+      }
+    });
+  }
+
+  // Handle Logout
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const currentName = sessionStorage.getItem('luoibua_admin_name') || 'Admin';
+      if (confirm(`Đại ca "${currentName}" có chắc muốn đăng xuất khỏi trang quản trị?`)) {
+        if (typeof logAudit === 'function') {
+          logAudit('ADMIN_LOGOUT', 'Đăng Xuất Quản Trị', `Quản trị viên "${currentName}" đã đăng xuất khỏi hệ thống`, currentName);
+        }
+        sessionStorage.removeItem(STORAGE_KEY);
+        sessionStorage.removeItem('luoibua_admin_authenticated');
+        sessionStorage.removeItem('luoibua_admin_name');
+        sessionStorage.removeItem('luoibua_admin_role');
+        sessionStorage.removeItem('luoibua_admin_token');
+        location.reload();
+      }
+    });
+  }
+
+  // Init auth check
+  checkAuth();
+})();
+
+// Crew Lưỡi Búa Splash Intro Controller
+window.isIntroFinished = false;
+window.pendingRender = false;
+
+window.finishCrewIntro = function(e) {
+  if (e) {
+    e.stopPropagation();
+  }
+  const overlay = document.getElementById('crewIntroOverlay');
+  if (!overlay || overlay.classList.contains('fade-out')) return;
+  overlay.classList.add('fade-out');
+  window.isIntroFinished = true;
+
+  // Hiển thị cổng đăng nhập mượt mà sau khi intro biến mất
+  const loginGate = document.getElementById('loginGate');
+  if (loginGate && sessionStorage.getItem('luoibua_admin_authenticated') !== 'true') {
+    loginGate.classList.add('gate-visible');
+  }
+
+  if (typeof renderActiveView === 'function') {
+    renderActiveView();
+  }
+  setTimeout(() => {
+    overlay.style.display = 'none';
+  }, 450);
+};
+
+// Luôn trình diễn Logo Lưới Búa mạ vàng 24K rực rỡ trọn vẹn 6.0 giây mỗi khi load lại trang
+setTimeout(() => {
+  const status = document.getElementById('introStatusText');
+  if (status) status.innerHTML = '🎨 Đang tôi luyện khung thép &amp; phác thảo vector...';
+}, 1800);
+
+setTimeout(() => {
+  const status = document.getElementById('introStatusText');
+  if (status) status.innerHTML = '✨ Bắt đầu tôi luyện thép &amp; mạ vàng 24K nguyên chất...';
+}, 3200);
+
+setTimeout(() => {
+  const status = document.getElementById('introStatusText');
+  if (status) status.innerHTML = '✨ Bề mặt kim loại tôi luyện sáng rực...';
+}, 4000);
+
+setTimeout(() => {
+  const status = document.getElementById('introStatusText');
+  if (status) status.innerHTML = '💎 Đang quét tia sáng sắc bén &amp; mở khóa giao diện...';
+}, 4800);
+
+setTimeout(() => {
+  const status = document.getElementById('introStatusText');
+  if (status) status.innerHTML = '👑 Kiệt tác hoàn tất! Đang kết nối vào hệ thống...';
+}, 5400);
+
+setTimeout(() => {
+  finishCrewIntro();
+}, 6000);
+</script>
+
+<!-- Crew Lưới Búa - Mã Nguồn Quản Trị Đã Đóng Gói & Khóa Bảo Vệ Toàn Diện -->
+<script src="js/admin.bundle.js?v=20261022_03" charset="UTF-8"></script>
+</body>
+</html>

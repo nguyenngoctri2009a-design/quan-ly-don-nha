@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="STATIC_VERCEL_TOKEN_9999999999">
+  <!-- Clean Address Bar URL Routing (Tự động chuyển index.html -> / và điều hướng /admin) -->
+  <script>
+    (function() {
+      try {
+        var p = window.location.pathname;
+        if (p.endsWith('/admin')) {
+          window.location.replace('admin.html');
+          return;
+        }
+        if (p.endsWith('/index.html') || p.endsWith('/index')) {
+          var clean = p.replace(/\/(index\.html|index)$/, '/');
+          if (!clean) clean = '/';
+          window.history.replaceState(null, '', clean + window.location.search + window.location.hash);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <title>Crew Lưới Búa - Bảng Xếp Hạng &amp; Thống Kê Bình Sịt</title>
+  
+  <!-- ============================================================================== -->
+  <!-- 1. SEO TIÊU CHUẨN GOOGLE (GOOGLE SEARCH CONSOLE & CÔNG CỤ TÌM KIẾM) -->
+  <!-- ============================================================================== -->
+  <meta name="description" content="Hệ thống quản lý bình sịt, bảng xếp hạng thành viên và quỹ chuộc tù Crew Lưới Búa thời gian thực 24/7. Được phát triển và bảo vệ bởi Nguyễn Trí.">
+  <meta name="keywords" content="Lưới Búa, Crew Lưới Búa, Bảng Xếp Hạng Lưới Búa, Quỹ Chuộc Tù, Bình Sịt, Nguyễn Trí, Cửu Muội">
+  <meta name="author" content="Nguyễn Trí">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="./">
+  <meta name="theme-color" content="#f59e0b">
+  <meta name="msapplication-TileColor" content="#f59e0b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Lưới Búa">
+
+  <!-- ============================================================================== -->
+  <!-- 2. OPEN GRAPH CHO FACEBOOK, MESSENGER & ZALO (CHIA SẺ LINK HIỆN BANNER ĐẸP) -->
+  <!-- ============================================================================== -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:site_name" content="Crew Lưới Búa">
+  <meta property="og:title" content="Crew Lưới Búa - Hệ Thống Quản Lý Bình Sịt">
+  <meta property="og:description" content="Xem bảng xếp hạng bình sịt, theo dõi quỹ chuộc tù và lịch sử hoạt động thành viên Crew Lưới Búa thời gian thực 24/7.">
+  <meta property="og:image" content="og-image.png">
+  <meta property="og:image:secure_url" content="og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Banner Crew Lưới Búa - Hệ Thống Quản Lý Bình Sịt">
+
+  <!-- ============================================================================== -->
+  <!-- 3. ZALO CRAWLER & BOT PREVIEW (TỐI ƯU GỬI LINK TRÊN ZALO) -->
+  <!-- ============================================================================== -->
+  <meta property="zalo:image" content="og-image.png">
+  <meta property="zalo:title" content="Crew Lưới Búa - Hệ Thống Quản Lý Bình Sịt">
+  <meta property="zalo:description" content="Xem bảng xếp hạng bình sịt, theo dõi quỹ chuộc tù và lịch sử hoạt động thành viên Crew Lưới Búa thời gian thực 24/7.">
+
+  <!-- ============================================================================== -->
+  <!-- 4. DISCORD RICH EMBED (HIỂN THỊ EMBED VIỀN VÀNG HỔ PHÁCH #f59e0b SANG TRỌNG) -->
+  <!-- ============================================================================== -->
+  <!-- Discord tự động lấy theme-color #f59e0b để tô màu viền bên trái của Embed Card -->
+  <!-- Discord hiển thị đầy đủ og:site_name, og:title, og:description và og:image -->
+
+  <!-- ============================================================================== -->
+  <!-- 5. TWITTER / X CARDS (THẺ PREVIEW LỚN TRÊN MẠNG XÃ HỘI X) -->
+  <!-- ============================================================================== -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Crew Lưới Búa - Hệ Thống Quản Lý Bình Sịt">
+  <meta name="twitter:description" content="Bảng xếp hạng thành viên, thống kê bình sịt và quản lý quỹ chuộc tù thời gian thực 24/7.">
+  <meta name="twitter:image" content="og-image.png">
+  <meta name="twitter:image:alt" content="Banner Crew Lưới Búa">
+  
+  <!-- Favicon Tab Trình Duyệt (Icon Bình Sịt Vàng) -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1">
+  <link rel="alternate icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='18' fill='%23f59e0b'/><text x='50%25' y='54%25' font-size='38' text-anchor='middle' dominant-baseline='central'>🏠</text></svg>">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <!-- PWA Manifest & Cài Đặt App Desktop PC "Thống Kê Bình Sịt" -->
+  <link rel="manifest" href="manifest.json">
+  <!-- Google Fonts: Plus Jakarta Sans & Inter (Native Vietnamese Typography) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&family=Great+Vibes&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="css/style.css?v=20261020_45">
+
+  <style>
+    .member-badge {
+      display: inline-flex;
+      align-items: center;
+      background: #dcfce7;
+      color: #15803d;
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border: 1px solid #bbf7d0;
+      white-space: nowrap;
+      flex-shrink: 0;
+      line-height: 1.4;
+    }
+    .readonly-banner {
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      border: 1.5px solid #fde68a;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .readonly-banner-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .readonly-banner-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+    .readonly-banner-text h3 {
+      font-size: 15px;
+      font-weight: 800;
+      color: #92400e;
+      margin-bottom: 3px;
+    }
+    .readonly-banner-text p {
+      font-size: 12.5px;
+      color: #b45309;
+      font-weight: 600;
+      margin: 0;
+    }
+    .btn-admin-login {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff !important;
+      font-weight: 750;
+      padding: 0 14px;
+      height: 38px;
+      box-sizing: border-box;
+      border-radius: 9px;
+      text-decoration: none;
+      font-size: 13px;
+      box-shadow: 0 1px 3px rgba(245, 158, 11, 0.25);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-admin-login:hover {
+      background: linear-gradient(135deg, #d97706, #b45309);
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.35);
+      transform: translateY(-1px);
+    }
+  </style>
+
+  <!-- Preconnect & DNS Prefetch Tăng Tốc Độ Kết Nối CDN & Firebase -->
+  <link rel="preconnect" href="https://code.highcharts.com">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://www.gstatic.com">
+  <link rel="dns-prefetch" href="https://tiktok-46d94-default-rtdb.asia-southeast1.firebasedatabase.app">
+
+  <!-- Crew Lưới Búa - Tường Lửa Bảo Vệ Mã Nguồn & Chống Soi Code -->
+  <script src="js/code-shield.js"></script>
+  <!-- Crew Lưới Búa - Hộp Thoại Xác Nhận & Thông Báo Siêu Sang Trọng (Confirm / Alert / Prompt) -->
+  <script src="js/custom-modal.js"></script>
+
+  <!-- Phân luồng tài nguyên: Preload Bundle Ứng Dụng -->
+  <link rel="preload" href="js/worker-calc.js" as="worker">
+  <link rel="preload" href="js/app.bundle.js?v=20261022_03" as="script">
+
+  <!-- Highcharts & Canvas Export Libraries (Tải cục bộ tốc độ 0ms) -->
+  <script src="js/highcharts.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- Firebase Realtime Database SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script>
+    if (typeof firebase !== 'undefined' && (!firebase.apps || !firebase.apps.length)) {
+      try {
+        firebase.initializeApp({
+          databaseURL: "https://tiktok-46d94-default-rtdb.asia-southeast1.firebasedatabase.app"
+        });
+        window.db = firebase.database();
+      } catch (e) {}
+    }
+  </script>
+  <!-- Anti-Fake IP & Machine Banning Security Module -->
+  <script src="js/machine-security.js"></script>
+</head>
+<body>
+
+<!-- CREW LƯỠI BÚA - CINEMATIC SPLASH INTRO (6.0S HOÀNG GIA ĐẲNG CẤP) -->
+<div class="crew-intro-overlay" id="crewIntroOverlay">
+  <button class="intro-skip-btn" id="btnSkipIntro" onclick="finishCrewIntro(event)">Bỏ qua ➔</button>
+  <div class="intro-center-box">
+    <svg class="intro-axe-svg" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Nền khiên trắng ngọc / ngà hoàng gia sang trọng -->
+        <linearGradient id="shieldPlateGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="60%" stop-color="#f8fafc"/>
+          <stop offset="100%" stop-color="#edf2f7"/>
+        </linearGradient>
+
+        <!-- Viền vàng kim 24K cực sang -->
+        <linearGradient id="gold24kGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#fef08a"/>
+          <stop offset="25%" stop-color="#f59e0b"/>
+          <stop offset="70%" stop-color="#d97706"/>
+          <stop offset="100%" stop-color="#92400e"/>
+        </linearGradient>
+
+        <!-- Thép lưỡi búa Titanium xám ánh bạc 3D nổi khối -->
+        <linearGradient id="steelBladeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#475569"/>
+          <stop offset="35%" stop-color="#1e293b"/>
+          <stop offset="70%" stop-color="#334155"/>
+          <stop offset="100%" stop-color="#0f172a"/>
+        </linearGradient>
+
+        <!-- Lưỡi chém sắc lạnh Chrome Cyan -->
+        <linearGradient id="chromeRazorGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#0284c7"/>
+          <stop offset="35%" stop-color="#38bdf8"/>
+          <stop offset="65%" stop-color="#e0f2fe"/>
+          <stop offset="100%" stop-color="#0284c7"/>
+        </linearGradient>
+
+        <!-- Ngọc Đỏ Ruby trung tâm -->
+        <radialGradient id="rubyGlowGrad" cx="40%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#fda4af"/>
+          <stop offset="45%" stop-color="#e11d48"/>
+          <stop offset="85%" stop-color="#9f1239"/>
+          <stop offset="100%" stop-color="#4c0519"/>
+        </radialGradient>
+
+        <!-- Hào quang mềm sau lưng -->
+        <radialGradient id="sunGlow" cx="50%" cy="45%" r="50%">
+          <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.22"/>
+          <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.09"/>
+          <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Ánh sáng chớp loé quét lưỡi búa (Specular Glint) -->
+        <linearGradient id="glintGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+          <stop offset="40%" stop-color="#ffffff" stop-opacity="0.95"/>
+          <stop offset="60%" stop-color="#ffffff" stop-opacity="0.95"/>
+          <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+        </linearGradient>
+
+        <!-- Chữ vàng 3D -->
+        <linearGradient id="titleGoldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#fef08a"/>
+          <stop offset="35%" stop-color="#f59e0b"/>
+          <stop offset="70%" stop-color="#d97706"/>
+          <stop offset="100%" stop-color="#78350f"/>
+        </linearGradient>
+
+        <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+        <filter id="shieldShadow" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12"/>
+        </filter>
+      </defs>
+
+      <!-- Hào quang nền sáng -->
+      <circle cx="250" cy="220" r="195" fill="url(#sunGlow)"/>
+
+      <!-- ============================================== -->
+      <!-- TẦNG 1: TÔ MÀU SẮC (Sẽ hiện ra ở giây thứ 2.35) -->
+      <!-- ============================================== -->
+      <g class="axe-color-fills">
+        <!-- Khung Khiên Huy Hiệu (Shield Crest) -->
+        <path d="M250 35 L385 65 C395 160 385 240 340 310 L250 395 L160 310 C115 240 105 160 115 65 Z"
+              fill="url(#shieldPlateGrad)" stroke="url(#gold24kGrad)" stroke-width="4"/>
+        
+        <!-- Đường viền trang trí & vân hoa văn khắc chìm trong khiên -->
+        <path d="M250 50 L370 77 C378 155 370 230 330 295 L250 375 L170 295 C130 230 122 155 130 77 Z"
+              fill="none" stroke="url(#gold24kGrad)" stroke-width="1.8" stroke-dasharray="6 4" opacity="0.8"/>
+        <path d="M250 82 L345 145 M250 82 L155 145" stroke="url(#gold24kGrad)" stroke-width="1.4" stroke-opacity="0.45"/>
+        <path d="M250 102 L325 155 M250 102 L175 155" stroke="url(#gold24kGrad)" stroke-width="1.2" stroke-opacity="0.3"/>
+
+        <!-- Đinh tán vàng kim hoàng gia 4 góc khiên -->
+        <circle cx="128" cy="74" r="3.5" fill="url(#gold24kGrad)"/>
+        <circle cx="372" cy="74" r="3.5" fill="url(#gold24kGrad)"/>
+        <circle cx="180" cy="285" r="3" fill="url(#gold24kGrad)"/>
+        <circle cx="320" cy="285" r="3" fill="url(#gold24kGrad)"/>
+        <circle cx="250" cy="380" r="3" fill="url(#gold24kGrad)"/>
+
+        <!-- Cán Búa (Handle Shaft) -->
+        <rect x="244" y="80" width="12" height="280" rx="4" fill="url(#steelBladeGrad)"/>
+        <!-- Đai vàng trang trí trên cán -->
+        <rect x="241" y="105" width="18" height="6" rx="2" fill="url(#gold24kGrad)"/>
+        <rect x="241" y="175" width="18" height="6" rx="2" fill="url(#gold24kGrad)"/>
+        <rect x="241" y="240" width="18" height="6" rx="2" fill="url(#gold24kGrad)"/>
+        <rect x="241" y="300" width="18" height="6" rx="2" fill="url(#gold24kGrad)"/>
+
+        <!-- Đuôi Cán & Chuôi Nhọn (Pommel) -->
+        <path d="M239 355 L261 355 L257 375 L250 388 L243 375 Z" fill="url(#gold24kGrad)"/>
+        <circle cx="250" cy="368" r="3" fill="url(#rubyGlowGrad)"/>
+
+        <!-- Mũi Kích Đỉnh (Top Spear Tip) -->
+        <path d="M250 45 L264 88 L250 96 L236 88 Z" fill="url(#chromeRazorGrad)"/>
+        <path d="M250 45 L250 96" stroke="#ffffff" stroke-width="1.5"/>
+
+        <!-- LƯỠI BÚA TRÁI (Left Battleaxe Blade) -->
+        <path d="M243 118 C200 102, 140 82, 85 75 C45 125, 45 195, 85 245 C140 235, 200 205, 243 175 Z" fill="url(#steelBladeGrad)"/>
+        <!-- Viền Lưỡi Cắt Trái Sắc Lạnh -->
+        <path d="M85 75 C45 125, 45 195, 85 245 C98 225, 95 95, 85 75 Z" fill="url(#chromeRazorGrad)"/>
+        <!-- Hoa văn viền vàng trên lưỡi trái -->
+        <path d="M243 118 C205 106, 160 92, 115 88 C135 98, 175 110, 243 126 Z" fill="url(#gold24kGrad)"/>
+        <path d="M243 165 C200 185, 160 205, 115 228 C135 215, 175 195, 243 175 Z" fill="url(#gold24kGrad)"/>
+        <!-- Cổ tự / Rune Cyan Trái -->
+        <path d="M125 130 L185 136 L135 162 Z" fill="#0284c7"/>
+
+        <!-- LƯỠI BÚA PHẢI (Right Battleaxe Blade) -->
+        <path d="M257 118 C300 102, 360 82, 415 75 C455 125, 455 195, 415 245 C360 235, 300 205, 257 175 Z" fill="url(#steelBladeGrad)"/>
+        <!-- Viền Lưỡi Cắt Phải Sắc Lạnh -->
+        <path d="M415 75 C455 125, 455 195, 415 245 C402 225, 405 95, 415 75 Z" fill="url(#chromeRazorGrad)"/>
+        <!-- Hoa văn viền vàng trên lưỡi phải -->
+        <path d="M257 118 C295 106, 340 92, 385 88 C365 98, 325 110, 257 126 Z" fill="url(#gold24kGrad)"/>
+        <path d="M257 165 C300 185, 340 205, 385 228 C365 215, 325 195, 257 175 Z" fill="url(#gold24kGrad)"/>
+        <!-- Cổ tự / Rune Cyan Phải -->
+        <path d="M375 130 L315 136 L365 162 Z" fill="#0284c7"/>
+
+        <!-- Vệt sáng loé quét lưỡi búa (Blade Glint) -->
+        <path class="blade-shine-sweep" d="M140 60 L180 60 L100 240 L60 240 Z" fill="url(#glintGrad)"/>
+        <path class="blade-shine-sweep" d="M360 60 L320 60 L400 240 L440 240 Z" fill="url(#glintGrad)"/>
+
+        <!-- Khối Giáp Tâm & Viên Ngọc Ruby Hoàng Gia -->
+        <rect x="228" y="112" width="44" height="68" rx="6" fill="url(#steelBladeGrad)" stroke="url(#gold24kGrad)" stroke-width="2.5"/>
+        <circle cx="250" cy="146" r="23" fill="url(#gold24kGrad)"/>
+        <circle cx="250" cy="146" r="18" fill="#1e293b" stroke="#ffffff" stroke-width="1.2"/>
+        <circle cx="250" cy="146" r="15" fill="none" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="3 2" opacity="0.85"/>
+        <circle cx="250" cy="146" r="11" fill="url(#rubyGlowGrad)"/>
+        <circle cx="248" cy="143" r="3" fill="#ffffff" opacity="0.95"/>
+      </g>
+
+      <!-- ============================================== -->
+      <!-- TẦNG 2: VẼ KHUNG NÉT PHÁC THẢO (120FPS GPU)    -->
+      <!-- ============================================== -->
+      <g class="axe-frame-stroke">
+        <!-- Khung khiên ngoài -->
+        <path class="p-stroke p-shield-out" pathLength="1000" d="M250 35 L385 65 C395 160 385 240 340 310 L250 395 L160 310 C115 240 105 160 115 65 Z"/>
+        <!-- Khung khiên trong -->
+        <path class="p-stroke p-shield-in" pathLength="1000" d="M250 50 L370 77 C378 155 370 230 330 295 L250 375 L170 295 C130 230 122 155 130 77 Z"/>
+        <!-- Mũi giáo -->
+        <path class="p-stroke p-spear" pathLength="1000" d="M250 45 L264 88 L250 96 L236 88 Z"/>
+        <!-- Lưỡi búa trái -->
+        <path class="p-stroke p-blade-l" pathLength="1000" d="M243 118 C200 102, 140 82, 85 75 C45 125, 45 195, 85 245 C140 235, 200 205, 243 175 Z"/>
+        <path class="p-stroke p-blade-l" pathLength="1000" d="M85 75 C45 125, 45 195, 85 245"/>
+        <path class="p-stroke p-rune" pathLength="1000" d="M125 130 L185 136 L135 162 Z"/>
+        <!-- Lưỡi búa phải -->
+        <path class="p-stroke p-blade-r" pathLength="1000" d="M257 118 C300 102, 360 82, 415 75 C455 125, 455 195, 415 245 C360 235, 300 205, 257 175 Z"/>
+        <path class="p-stroke p-blade-r" pathLength="1000" d="M415 75 C455 125, 455 195, 415 245"/>
+        <path class="p-stroke p-rune" pathLength="1000" d="M375 130 L315 136 L365 162 Z"/>
+        <!-- Thân cán búa -->
+        <path class="p-stroke p-shaft" pathLength="1000" d="M244 80 L244 360"/>
+        <path class="p-stroke p-shaft" pathLength="1000" d="M256 80 L256 360"/>
+        <!-- Tâm ngọc ruby -->
+        <path class="p-stroke p-core" pathLength="1000" d="M234 112 L266 112 A6 6 0 0 1 272 118 L272 174 A6 6 0 0 1 266 180 L234 180 A6 6 0 0 1 228 174 L228 118 A6 6 0 0 1 234 112 Z"/>
+        <path class="p-stroke p-core" pathLength="1000" d="M250 123 A23 23 0 1 1 249.9 123 Z"/>
+        <path class="p-stroke p-core" pathLength="1000" d="M250 134 A12 12 0 1 1 249.9 134 Z"/>
+        <!-- Đuôi cán -->
+        <path class="p-stroke p-shaft" pathLength="1000" d="M239 355 L261 355 L257 375 L250 388 L243 375 Z"/>
+        <!-- Bệ đỡ chữ -->
+        <path class="p-stroke p-banner" pathLength="1000" d="M143 434 L357 434 A8 8 0 0 1 365 442 L365 472 A8 8 0 0 1 357 480 L143 480 A8 8 0 0 1 135 472 L135 442 A8 8 0 0 1 143 434 Z"/>
+      </g>
+
+      <!-- ============================================== -->
+      <!-- TẦNG 3: TYPOGRAPHY (CHỮ CREW LƯỠI BÚA)        -->
+      <!-- ============================================== -->
+      <g class="axe-text-layer">
+        <!-- Bệ đỡ chữ viền vàng sang trọng -->
+        <rect x="135" y="434" width="230" height="46" rx="8" fill="#0f172a" stroke="url(#gold24kGrad)" stroke-width="2"/>
+        <text x="250" y="420" font-size="13" font-weight="800" fill="#64748b" letter-spacing="8" text-anchor="middle">CREW</text>
+        <text x="250" y="466" font-size="26" font-weight="900" fill="url(#titleGoldGrad)" letter-spacing="5" text-anchor="middle">LƯỠI BÚA</text>
+      </g>
+    </svg>
+
+    <!-- Hộp trạng thái tiến trình (6.0s) -->
+    <div class="intro-status-box">
+      <div class="intro-status-text" id="introStatusText">✍️ [1/4] Đang vẽ phác thảo khung khiên Crew Lưỡi Búa...</div>
+      <div class="intro-progress-bar">
+        <div class="intro-progress-fill"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GIAO DIỆN CHÍNH DÀNH CHO THÀNH VIÊN (TRUY CẬP TRỰC TIẾP KHÔNG CẦN LOGIN) -->
+<div class="app-layout" id="mainAppLayout">
+
+  <!-- TOP HEADER NAVBAR -->
+  <header class="navbar">
+    <div class="nav-left-group">
+      <!-- 3 GẠCH HAMBURGER TOGGLE BUTTON -->
+      <button type="button" class="btn-sidebar-toggle" id="btnToggleSidebar" aria-label="Đóng/Mở Danh Mục (3 gạch)" title="Đóng/Mở Danh Mục (3 gạch - Phím tắt Ctrl+B)">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <div class="nav-brand">
+        <div class="brand-icon">
+          <img src="icons/brand-logo.png" alt="Logo Crew Lưới Búa" class="brand-logo-img" width="36" height="36" decoding="async">
+        </div>
+        <div class="brand-text">
+          <div class="brand-title-wrap">
+            <h1 class="brand-title">
+              <span class="text-slate">QUẢN LÝ </span>
+              <span class="text-gold">BÌNH SỊT</span>
+            </h1>
+            <span class="member-badge">Thành Viên</span>
+          </div>
+          <span class="brand-sub">Bảng xếp hạng &amp; thống kê bình sịt (Chế độ xem)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-meta">
+      <div class="nav-cluster nav-status-cluster">
+        <button class="shield-badge" id="btnShieldInfo" title="Hạ tầng bảo vệ Vercel Edge &amp; Cloudflare">🛡️ Edge Shield</button>
+        <div class="time-badge" id="liveClock">--:--:--</div>
+      </div>
+      <div class="nav-divider"></div>
+      <div class="nav-cluster nav-action-cluster">
+        <button type="button" class="btn-spotlight-nav" id="btnOpenSpotlight" title="Tìm kiếm nhanh (Ctrl+K)">
+          <span>🔍</span>
+          <span class="spotlight-nav-label">Tìm Kiếm</span>
+          <kbd class="spotlight-kbd">Ctrl+K</kbd>
+        </button>
+        <button type="button" class="btn-sound-toggle" id="btnSoundToggle" title="Bật/Tắt Âm Thanh Hiệu Ứng">
+          <span>🔊</span>
+        </button>
+        <button class="btn-nav-export" id="exportImgTopBtn" title="Xuất báo cáo bình sịt &amp; quỹ">📸 Xuất Báo Cáo</button>
+        <a href="admin.html" class="btn-admin-login" title="Đăng nhập tài khoản Quản Trị Viên">
+          🔑 Quản Trị
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- APP BODY CONTAINER (SIDEBAR BÊN TRÁI + NỘI DUNG CHÍNH BÊN PHẢI) -->
+  <div class="app-body-container" id="appBodyContainer">
+
+    <!-- MOBILE SIDEBAR BACKDROP -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- LEFT SIDEBAR (DANH MỤC THU GỌN / ẨN ĐƯỢC) -->
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-inner">
+        <!-- Sidebar Header: ▍ DANH MỤC -->
+        <div class="sidebar-section-header">
+          <div class="sidebar-category-title">
+            <span class="category-indicator">▍</span>
+            <span>DANH MỤC</span>
+          </div>
+          <button type="button" class="sidebar-close-btn" id="btnCloseSidebar" aria-label="Đóng danh mục" title="Thu gọn danh mục">✕</button>
+        </div>
+
+        <!-- Sidebar Navigation Menu -->
+        <nav class="sidebar-menu" role="tablist" aria-label="Điều hướng các phân hệ">
+          <button type="button" class="sidebar-nav-item view-tab-btn active" data-view="analytics" role="tab" aria-selected="true">
+            <span class="nav-item-icon">📈</span>
+            <span class="nav-item-text">Thống Kê Dashboard</span>
+            <span class="tab-pill-badge pill-pro">PRO</span>
+          </button>
+
+          <button type="button" class="sidebar-nav-item view-tab-btn" data-view="dashboard" role="tab" aria-selected="false">
+            <span class="nav-item-icon">🏠</span>
+            <span class="nav-item-text">Bàn Làm Việc</span>
+            <span class="nav-item-arrow">›</span>
+          </button>
+          <button type="button" class="sidebar-nav-item view-tab-btn" data-view="records" role="tab" aria-selected="false">
+            <span class="nav-item-icon">📋</span>
+            <span class="nav-item-text">Lịch Sử Bản Ghi</span>
+            <span class="tab-pill" id="badgeRecords">0</span>
+            <span class="nav-item-arrow">›</span>
+          </button>
+          <button type="button" class="sidebar-nav-item view-tab-btn" data-view="members" role="tab" aria-selected="false">
+            <span class="nav-item-icon">👥</span>
+            <span class="nav-item-text">Thành Viên</span>
+            <span class="tab-pill" id="badgeMembers">0</span>
+            <span class="nav-item-arrow">›</span>
+          </button>
+        </nav>
+
+        <!-- Sidebar Quick Actions Section -->
+        <div class="sidebar-quick-actions">
+          <div class="sidebar-category-title" style="margin-bottom: 8px;">
+            <span class="category-indicator">▍</span>
+            <span>TIỆN ÍCH NHANH</span>
+          </div>
+          <div class="sidebar-action-grid">
+            <button type="button" class="sidebar-action-pill btn-install-pc" id="sidebarInstallBtn" data-action="install-pwa" title="Cài đặt App Thống Kê Bình Sịt trên máy tính PC">
+              <img src="icons/icon-192.png" alt="Logo" class="btn-icon-app" width="18" height="18" decoding="async">
+              <span>💻 Cài App Trên PC</span>
+            </button>
+            <button type="button" class="sidebar-action-pill" id="sidebarExportBtn" title="Chụp ảnh xuất báo cáo">
+              <span>📸 Xuất Ảnh</span>
+            </button>
+            <a href="admin.html" class="sidebar-action-pill" title="Đăng nhập tài khoản Quản Trị Viên">
+              <span>🔑 Quản Trị</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Sidebar Footer / Status -->
+        <div class="sidebar-footer">
+          <div class="sidebar-footer-online">
+            <span class="live-dot"></span>
+            <span>Trực Tuyến • Chế độ xem</span>
+          </div>
+          <div class="sidebar-footer-info">Crew Lưới Búa • v2026.10</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="app-main-content" id="appMainContent">
+
+  <!-- 4 SUMMARY KPI CARDS (HỆ THỐNG BÌNH SỊT) -->
+  <div class="kpi-row">
+    <div class="kpi-card kpi-terracotta">
+      <div class="kpi-icon">🏠</div>
+      <div class="kpi-info">
+        <div class="kpi-label">Tổng bình sịt</div>
+        <div class="kpi-value" id="kpiTotalBinh">0</div>
+        <div class="kpi-sub">Toàn bộ hệ thống</div>
+      </div>
+    </div>
+
+    <div class="kpi-card kpi-amber">
+      <div class="kpi-icon">👥</div>
+      <div class="kpi-info">
+        <div class="kpi-label">Tổng thành viên</div>
+        <div class="kpi-value" id="kpiTotalMembers">0</div>
+        <div class="kpi-sub">Đang hoạt động</div>
+      </div>
+    </div>
+
+    <div class="kpi-card kpi-emerald">
+      <div class="kpi-icon">📈</div>
+      <div class="kpi-info">
+        <div class="kpi-label">Trung bình / người</div>
+        <div class="kpi-value" id="kpiAvgBinh">0</div>
+        <div class="kpi-sub">Bình trên mỗi thành viên</div>
+      </div>
+    </div>
+
+    <div class="kpi-card kpi-blue">
+      <div class="kpi-icon">🏆</div>
+      <div class="kpi-info">
+        <div class="kpi-label">Quán quân (Top 1)</div>
+        <div class="kpi-value kpi-value-name" id="kpiTopMember">--</div>
+        <div class="kpi-sub" id="kpiTopBinh">0 bình</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================
+       VIEW 1: BÀN LÀM VIỆC TỔNG QUAN (DASHBOARD)
+       ======================================================================== -->
+  <section id="view-analytics">
+    <div class="analytics-wrapper">
+      
+      <!-- Top Title Bar -->
+      <div class="analytics-header-bar">
+        <div class="analytics-title-group">
+          <h2>📈 BẢNG THỐNG KÊ DOANH SỐ &amp; NĂNG SUẤT BÌNH SỊT</h2>
+          <span>Phân tích dữ liệu thời gian thực theo mô hình quản trị thông minh</span>
+        </div>
+      </div>
+
+      <!-- 4 Cards Grid Layout (2x2) -->
+      <div class="analytics-grid">
+
+        <!-- CARD 1: DOANH SỐ BÌNH SỊT (TUẦN NÀY) -->
+        <div class="analytics-card">
+          <div class="analytics-card-header">
+            <span class="analytics-card-title">Doanh Số Bình Sịt (Tuần Này)</span>
+          </div>
+          <div class="analytics-value-row">
+            <div class="analytics-big-number" id="analyticsRevValue">0 Bình</div>
+            <div class="analytics-trend-badge" id="analyticsRevTrend">
+              <span>↑ 14% Tuần này</span>
+            </div>
+          </div>
+          <div style="font-size:12.5px;color:#64748b;font-weight:700;margin-top:-6px;margin-bottom:12px;" id="analyticsRevSub">Quy đổi quỹ tuần: 0đ</div>
+          <div id="chartAnalyticsRevenue" style="width:100%;height:200px;"></div>
+        </div>
+
+        <!-- CARD 2: TỔNG QUAN HOẠT ĐỘNG (TUẦN NÀY) -->
+        <div class="analytics-card">
+          <div class="analytics-card-header">
+            <span class="analytics-card-title">Tổng Quan Hoạt Động Tuần</span>
+          </div>
+          <div class="analytics-mini-row">
+            <div class="analytics-mini-item">
+              <div class="analytics-mini-label">Số Phi Vụ</div>
+              <div class="analytics-mini-value" id="analyticsSalesCount">0 lượt</div>
+            </div>
+            <div class="analytics-mini-item">
+              <div class="analytics-mini-label">Thành Viên</div>
+              <div class="analytics-mini-value" id="analyticsCustomerCount">0 anh em</div>
+            </div>
+            <div class="analytics-mini-item">
+              <div class="analytics-mini-label">TB / Phi Vụ</div>
+              <div class="analytics-mini-value" id="analyticsAvgOrderValue">0 bình/lượt</div>
+            </div>
+          </div>
+          <div id="chartAnalyticsOverview" style="width:100%;height:155px;"></div>
+        </div>
+
+        <!-- CARD 3: SẢN LƯỢNG TỪNG NGÀY (TUẦN NÀY) -->
+        <div class="analytics-card">
+          <div class="analytics-card-header">
+            <span class="analytics-card-title">Sản Lượng Từng Ngày (Tuần Này)</span>
+          </div>
+          <div class="analytics-value-row">
+            <div class="analytics-big-number" id="analyticsEarningsValue">0 Bình</div>
+            <div class="analytics-trend-badge" id="analyticsEarningsTrend">
+              <span>↑ 14% So với tuần trước</span>
+            </div>
+          </div>
+          <div id="chartAnalyticsEarnings" style="width:100%;height:200px;"></div>
+        </div>
+
+        <!-- CARD 4: PHÂN BỔ THÀNH VIÊN THEO SẢN LƯỢNG TUẦN -->
+        <div class="analytics-card">
+          <div class="analytics-card-header">
+            <span class="analytics-card-title">Tỷ Lệ Bình Sịt Theo Thành Viên (Tuần Này)</span>
+          </div>
+          <div class="analytics-pie-layout">
+            <div id="chartAnalyticsCustomers" style="width:100%;height:210px;"></div>
+            <div class="analytics-legend-list" id="analyticsLegendContainer" style="max-height: 210px; overflow-y: auto;">
+              <!-- Nội dung legend được render tự động theo dữ liệu thực tế -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="view-dashboard" class="hidden">
+    <div class="dashboard-main-grid">
+
+      <!-- LEFT COLUMN: ARTISTIC CHART & DETAILED STATS TABLE -->
+      <div class="dashboard-left">
+
+        <!-- BIỂU ĐỒ CỘT BO TRÒN TERRACOTTA -->
+        <div class="card" style="padding: 16px;">
+          <div class="chart-art-wrapper">
+            <div class="chart-art-box">
+              <div class="chart-pin-tr"></div>
+              <div class="chart-pin-bl"></div>
+              <div id="chartContainer"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BẢNG THỐNG KÊ CHI TIẾT TỪNG THÀNH VIÊN -->
+        <div class="card">
+          <div class="card-header">
+            <h2>📋 Bảng Thống Kê Chi Tiết &amp; Xếp Hạng</h2>
+            <span class="header-hint" id="statsTableCount">Hiển thị 0 thành viên</span>
+          </div>
+
+          <div class="search-bar">
+            <input type="text" id="searchStatsInput" placeholder="🔍 Tìm kiếm thành viên theo tên..." aria-label="Tìm kiếm thành viên theo tên" style="max-width:320px;">
+          </div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:65px;text-align:center;">Hạng</th>
+                  <th>Họ và Tên</th>
+                  <th>Tổng Số Bình Sịt</th>
+                  <th>Tỉ Lệ Đóng Góp</th>
+                  <th>Trạng Thái</th>
+                </tr>
+              </thead>
+              <tbody id="statsTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: VINH DANH DẪN ĐẦU -->
+      <div class="dashboard-right">
+
+        <!-- TOP LEADERBOARD STREAM -->
+        <div class="card">
+          <div class="card-header">
+            <h2>🏅 Vinh Danh Dẫn Đầu</h2>
+            <span class="header-hint">TOP BÌNH SỊT</span>
+          </div>
+          <div class="leaderboard-list" id="leaderboardList"></div>
+        </div>
+
+        <!-- INTERACTIVE WARP SPEED STARFIELD (LUCIAN PROMPT #330) -->
+        <div class="card u330-card-wrapper" style="padding: 16px; margin-top: 18px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.06);">
+          <div class="card-header" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+            <h2 style="font-size: 15px; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px;">
+              <span>🚀</span> Động Cơ Bẻ Cong Không Gian
+            </h2>
+            <span class="header-hint" style="font-size: 10.5px; font-weight: 800; background: #0284c7; color: #ffffff; padding: 3px 8px; border-radius: 999px;">WARP #330</span>
+          </div>
+
+          <!-- Lucian UX/UI Prompt #330 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#330 -->
+          <style>
+            .u330 {
+              position: relative;
+              width: 100%;
+              max-width: 340px;
+              height: 300px;
+              margin: 0 auto;
+              border-radius: 22px;
+              overflow: hidden;
+              background: radial-gradient(circle at 50% 50%, #0B1230, #02030A 70%);
+              box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 20px 40px -15px rgba(2, 3, 10, 0.7);
+              color: #ffffff;
+            }
+            .u330-cv {
+              position: absolute;
+              inset: 0;
+              width: 100%;
+              height: 100%;
+              touch-action: none;
+              cursor: crosshair;
+            }
+            .u330-hud {
+              position: absolute;
+              left: 14px;
+              top: 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              font: 700 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+              pointer-events: none;
+              z-index: 2;
+            }
+            .u330-hud b {
+              padding: 4px 8px;
+              border-radius: 999px;
+              background: rgba(255, 255, 255, 0.15);
+              transition: background-color .2s, color .2s;
+            }
+            .u330.is-warp .u330-hud b {
+              background: #4DABF7;
+              color: #03122B;
+            }
+            .u330-wp {
+              position: absolute;
+              left: 50%;
+              bottom: 16px;
+              transform: translateX(-50%);
+              height: 38px;
+              padding: 0 18px;
+              border: 1px solid rgba(255, 255, 255, 0.28);
+              border-radius: 999px;
+              background: rgba(255, 255, 255, 0.12);
+              color: #ffffff;
+              font-size: 12.5px;
+              font-weight: 800;
+              -webkit-backdrop-filter: blur(8px);
+              backdrop-filter: blur(8px);
+              user-select: none;
+              -webkit-user-select: none;
+              transition: background-color .2s, transform .2s, border-color .2s;
+              cursor: pointer;
+              z-index: 2;
+            }
+            .u330-wp:hover {
+              background: rgba(255, 255, 255, 0.22);
+              border-color: rgba(255, 255, 255, 0.5);
+            }
+            .u330.is-warp .u330-wp {
+              background: rgba(77, 171, 247, 0.4);
+              border-color: #4DABF7;
+              transform: translateX(-50%) scale(0.96);
+            }
+            .u330-wp:focus-visible {
+              outline: 2px solid #4DABF7;
+              outline-offset: 3px;
+            }
+            @media (prefers-reduced-motion: reduce) {
+              .u330, .u330 * {
+                animation-duration: .001ms !important;
+                transition-duration: .001ms !important;
+              }
+            }
+          </style>
+
+          <div class="ux u330">
+            <canvas class="u330-cv" role="img" aria-label="Starfield, hold to warp"></canvas>
+            <div class="u330-hud" aria-live="off"><b>Cruise</b><span>×1.0</span></div>
+            <button class="u330-wp" type="button">Hold to warp</button>
+          </div>
+
+          <div style="font-size: 11.5px; color: #64748b; font-weight: 600; margin-top: 10px; text-align: center; line-height: 1.4;">
+            ✨ <i>Nhấn giữ vào màn hình để bẻ cong không gian, rê chuột để đổi hướng bay!</i>
+          </div>
+
+          <script>
+          (function () {
+            var root = document.currentScript ? document.currentScript.previousElementSibling.previousElementSibling : document.querySelector('.u330');
+            if (!root) return;
+            var cv = root.querySelector('.u330-cv');
+            if (!cv) return;
+            var cx = cv.getContext('2d'), 
+                mode = root.querySelector('.u330-hud b'), 
+                spd = root.querySelector('.u330-hud span'), 
+                wp = root.querySelector('.u330-wp');
+            var rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var W = 340, H = 300, dpr = Math.min(2, window.devicePixelRatio || 1);
+
+            function updateDimensions() {
+              var rect = root.getBoundingClientRect();
+              W = Math.round(rect.width) || 340;
+              H = Math.round(rect.height) || 300;
+              cv.width = W * dpr;
+              cv.height = H * dpr;
+              cx.setTransform(1, 0, 0, 1, 0, 0);
+              cx.scale(dpr, dpr);
+            }
+            updateDimensions();
+            window.addEventListener('resize', updateDimensions);
+
+            var N = 280, stars = [], v = 0.22, target = 0.22, warp = false, aim = { x: 0, y: 0 }, steer = { x: 0, y: 0 };
+            function spawn(s, far) { 
+              s.x = (Math.random() - 0.5) * 2; 
+              s.y = (Math.random() - 0.5) * 2; 
+              s.z = far ? 1 : 0.05 + Math.random() * 0.95; 
+              s.pz = s.z; 
+              s.c = Math.random(); 
+              return s; 
+            }
+            for (var i = 0; i < N; i++) stars.push(spawn({}, false));
+            function hud() { 
+              if (mode) mode.textContent = warp ? 'Warp' : 'Cruise'; 
+              if (spd) spd.textContent = '×' + (v / 0.22).toFixed(1); 
+            }
+            function draw(dt) {
+              cx.fillStyle = warp || v > 0.5 ? 'rgba(2,3,10,.35)' : 'rgba(2,3,10,.9)';
+              cx.fillRect(0, 0, W, H);
+              var ox = W / 2 + steer.x * 70, oy = H / 2 + steer.y * 60, f = 150, blue = Math.min(1, (v - 0.22) / 1.6);
+              cx.lineCap = 'round';
+              stars.forEach(function (s) {
+                s.pz = s.z; 
+                s.z -= v * dt;
+                if (s.z <= 0.02) { spawn(s, true); return; }
+                var x = ox + s.x / s.z * f, y = oy + s.y / s.z * f, px = ox + s.x / (s.pz + v * 0.03) * f, py = oy + s.y / (s.pz + v * 0.03) * f;
+                if (x < -20 || x > W + 20 || y < -20 || y > H + 20) { spawn(s, true); return; }
+                var a = Math.min(1, (1 - s.z) * 1.4), w = Math.max(0.6, (1 - s.z) * 2.6);
+                var r = Math.round(255 - blue * 120 * s.c), g = Math.round(255 - blue * 40), b = 255;
+                cx.strokeStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + a.toFixed(2) + ')'; 
+                cx.lineWidth = w;
+                cx.beginPath(); 
+                cx.moveTo(px, py); 
+                cx.lineTo(x + 0.01, y); 
+                cx.stroke();
+              });
+              if (blue > 0.05) {
+                var gl = cx.createRadialGradient(ox, oy, 0, ox, oy, 120);
+                gl.addColorStop(0, 'rgba(120,190,255,' + (0.25 * blue).toFixed(2) + ')'); 
+                gl.addColorStop(1, 'rgba(120,190,255,0)');
+                cx.fillStyle = gl; 
+                cx.fillRect(0, 0, W, H);
+              }
+            }
+            var vis = true, raf = 0, last = 0;
+            function frame(now) {
+              raf = 0;
+              if (!root.isConnected || !vis) return;
+              var dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); 
+              last = now;
+              v += (target - v) * (1 - Math.pow(warp ? 0.25 : 0.12, dt));
+              steer.x += (aim.x - steer.x) * (1 - Math.pow(0.05, dt)); 
+              steer.y += (aim.y - steer.y) * (1 - Math.pow(0.05, dt));
+              draw(dt); 
+              hud();
+              raf = requestAnimationFrame(frame);
+            }
+            function run() { 
+              if (rm) { 
+                cx.fillStyle = '#02030A'; 
+                cx.fillRect(0, 0, W, H); 
+                draw(0.016); 
+                hud(); 
+                return; 
+              } 
+              if (!raf && vis) { 
+                last = performance.now(); 
+                raf = requestAnimationFrame(frame); 
+              } 
+            }
+            if ('IntersectionObserver' in window) {
+              new IntersectionObserver(function (es) { 
+                vis = es[0].isIntersecting; 
+                run(); 
+              }).observe(root);
+            }
+            function setWarp(on) { 
+              warp = on; 
+              target = on ? 3.2 : 0.22; 
+              root.classList.toggle('is-warp', on); 
+              if (rm) { v = target; hud(); } 
+            }
+            [cv, wp].forEach(function (el) {
+              if (!el) return;
+              el.addEventListener('pointerdown', function (e) { 
+                setWarp(true); 
+                try { el.setPointerCapture(e.pointerId); } catch (er) {} 
+              });
+              el.addEventListener('pointerup', function () { setWarp(false); });
+              el.addEventListener('pointercancel', function () { setWarp(false); });
+            });
+            if (wp) {
+              wp.addEventListener('keydown', function (e) { 
+                if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { 
+                  e.preventDefault(); 
+                  setWarp(true); 
+                } 
+              });
+              wp.addEventListener('keyup', function (e) { 
+                if (e.key === ' ' || e.key === 'Enter') setWarp(false); 
+              });
+            }
+            cv.addEventListener('pointermove', function (e) { 
+              var r = cv.getBoundingClientRect(); 
+              aim = { 
+                x: ((e.clientX - r.left) / r.width - 0.5) * 2, 
+                y: ((e.clientY - r.top) / r.height - 0.5) * 2 
+              }; 
+            });
+            cv.addEventListener('pointerleave', function () { aim = { x: 0, y: 0 }; });
+            cx.fillStyle = '#02030A'; 
+            cx.fillRect(0, 0, W, H);
+            hud(); 
+            run();
+          })();
+          </script>
+        </div>
+
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       VIEW 2: LỊCH SỬ TOÀN BỘ BẢN GHI & THỐNG KÊ TRỰC QUAN
+       ======================================================================== -->
+  <section id="view-records" class="hidden">
+    <div class="card">
+      <div class="card-header" style="flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h2>📋 Thống Kê &amp; Lịch Sử Bản Ghi</h2>
+          <span class="header-hint" id="recordsFilterCount">Tổng 0 bản ghi</span>
+        </div>
+
+        <!-- NÚT XUẤT BÁO CÁO NGÀY HÔM NAY (DÀNH CHO ANH EM XEM & TẢI ẢNH) -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+          <button type="button" class="btn-sm" id="btnExportRecordsCsv" style="background:#059669;color:#fff;border-color:#047857;display:inline-flex;align-items:center;gap:6px;font-weight:800;padding:8px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(5,150,105,0.25);" title="Xuất toàn bộ bản ghi ra file Excel/CSV">
+            <span>📥 Tải Excel / CSV</span>
+          </button>
+          <button type="button" class="gold btn-sm" id="btnExportDailyRecord" style="display:inline-flex;align-items:center;gap:6px;font-weight:800;padding:8px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(245,158,11,0.25);" title="Xem và tải ảnh báo cáo thành tích ngày hôm nay">
+            <span>📸 Xuất Báo Cáo Ngày</span>
+          </button>
+        </div>
+
+        <!-- BỘ CHUYỂN ĐỔI CHẾ ĐỘ XEM TRỰC QUAN -->
+        <div class="records-view-toggle">
+          <button type="button" class="view-mode-btn active" data-mode="grouped-date" id="btnModeDate">
+            <span>📅 Gom Theo Ngày</span>
+          </button>
+          <button type="button" class="view-mode-btn" data-mode="grouped-member" id="btnModeMember">
+            <span>👥 Gom Theo Anh Em</span>
+          </button>
+          <button type="button" class="view-mode-btn" data-mode="flat" id="btnModeFlat">
+            <span>📋 Xem Từng Dòng</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- THANH TỔNG KẾT THỐNG KÊ NHANH (TỰ ĐỘNG CẬP NHẬT THEO BỘ LỌC) -->
+      <div class="records-summary-strip">
+        <div class="summary-mini-card">
+          <span class="mini-icon">🏠</span>
+          <div>
+            <div class="mini-label">Tổng số bình sịt</div>
+            <div class="mini-val" id="recSumBinh">0 bình</div>
+          </div>
+        </div>
+        <div class="summary-mini-card">
+          <span class="mini-icon">👥</span>
+          <div>
+            <div class="mini-label">Anh em đóng góp</div>
+            <div class="mini-val" id="recSumMembers">0 người</div>
+          </div>
+        </div>
+        <div class="summary-mini-card">
+          <span class="mini-icon">📅</span>
+          <div>
+            <div class="mini-label">Số ngày ghi nhận</div>
+            <div class="mini-val" id="recSumDays">0 ngày</div>
+          </div>
+        </div>
+        <div class="summary-mini-card">
+          <span class="mini-icon">⚡</span>
+          <div>
+            <div class="mini-label">Trung bình mỗi ngày</div>
+            <div class="mini-val" id="recSumAvgDay">0 bình/ngày</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-bar">
+        <input type="text" id="searchRecordInput" placeholder="🔍 Tìm theo tên thành viên..." aria-label="Tìm theo tên thành viên" style="max-width:300px;">
+        <input type="date" id="filterRecordDate" aria-label="Lọc bản ghi theo ngày" style="max-width:180px;">
+        <button class="secondary btn-sm" id="resetRecordFilter">Xoá bộ lọc</button>
+      </div>
+
+      <!-- CONTAINER HIỂN THỊ DỮ LIỆU ĐA CHẾ ĐỘ (READ-ONLY) -->
+      <div id="recordsContainer">
+        <div class="table-responsive" id="recordsFlatWrapper">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:140px;">Ngày</th>
+                <th>Thành Viên</th>
+                <th style="width:150px;text-align:center;">Số Bình Sịt</th>
+              </tr>
+            </thead>
+            <tbody id="recordsTable"></tbody>
+            <tfoot id="recordsTableFoot" class="table-footer-total"></tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- Phân trang Nhật Ký Bình Sịt -->
+      <div id="recordsPagination" class="pagination-bar"></div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       VIEW 3: DANH SÁCH THÀNH VIÊN (CHẾ ĐỘ XEM)
+       ======================================================================== -->
+  <section id="view-members" class="hidden">
+    
+    <!-- 4 KPI CARDS THỐNG KÊ TỔNG QUAN THÀNH VIÊN PRO -->
+    <div class="kpi-row" style="margin-bottom: 20px;">
+      <div class="kpi-card kpi-amber">
+        <div class="kpi-icon">👥</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Tổng Quân Số Crew</div>
+          <div class="kpi-value" id="kpiMemberTotal">0 anh em</div>
+          <div class="kpi-sub">Biên chế hoạt động</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-emerald">
+        <div class="kpi-icon">🏠</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Đang Giữ Bình</div>
+          <div class="kpi-value" id="kpiMemberActive">0 người</div>
+          <div class="kpi-sub">Đang tích cực làm nhiệm vụ</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-icon">👑</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Vua Bình Sịt (Top 1)</div>
+          <div class="kpi-value" id="kpiMemberTop1" style="font-size: 18px;">Chưa có</div>
+          <div class="kpi-sub">Kỷ lục cao nhất hiện tại</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-rose">
+        <div class="kpi-icon">🚨</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Lượt Cứu Chuộc Tù</div>
+          <div class="kpi-value" id="kpiMemberBailed">0 lượt</div>
+          <div class="kpi-sub">Bảo lãnh từ quỹ băng</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN UNIFIED DIRECTORY CARD -->
+    <div class="card" style="box-shadow: 0 4px 25px rgba(0,0,0,0.04); border-radius: 20px;">
+      
+      <!-- CARD HEADER: TIÊU ĐỀ + TOOLBAR ACTIONS -->
+      <div class="card-header" style="flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;border-bottom:1.5px solid var(--border-soft);padding-bottom:16px;margin-bottom:18px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="modal-icon-badge" style="background:#fffbeb;color:#b45309;border-color:#fde68a;font-size:20px;">👥</div>
+          <div>
+            <h2 style="font-size:19px;font-weight:900;margin:0;color:var(--text-dark);letter-spacing:-0.02em;">
+              Bảng Thống Kê Năng Suất Thành Viên
+            </h2>
+            <span class="header-hint" id="membersListCount" style="font-size:12.5px;color:var(--text-muted);font-weight:600;">0 thành viên</span>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <button type="button" class="btn-sm" id="btnExportMembersCsv" style="background:#059669;color:#fff;border-color:#047857;display:inline-flex;align-items:center;gap:6px;font-weight:800;padding:8px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(5,150,105,0.25);" title="Xuất danh sách thành viên ra Excel/CSV">
+            <span>📥 Xuất Excel DS</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- THANH ĐIỀU KHIỂN BỘ LỌC PRO (SEARCH + FILTER PILLS + SORT) -->
+      <div class="member-pro-controls" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <!-- TÌM KIẾM -->
+        <div style="position:relative;flex:1;min-width:240px;max-width:360px;">
+          <input type="text" id="searchMemberInput" placeholder="🔍 Tìm kiếm thành viên theo tên..." aria-label="Tìm kiếm thành viên trong danh sách" style="width:100%;height:40px;padding:0 36px 0 14px;border-radius:12px;border:1.5px solid var(--border-soft);background:var(--bg-input,#fff);font-size:13.5px;font-weight:600;color:var(--text-dark);outline:none;">
+          <button type="button" id="btnClearSearchMember" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);border:none;background:transparent;color:#94a3b8;font-size:15px;cursor:pointer;display:none;padding:4px;" title="Xóa tìm kiếm">✕</button>
+        </div>
+
+        <!-- BỘ LỌC TABS -->
+        <div class="member-filter-group" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+          <button type="button" class="filter-pill active" data-filter="all">Tất Cả</button>
+          <button type="button" class="filter-pill" data-filter="active">🔥 Có Bình</button>
+          <button type="button" class="filter-pill" data-filter="idle">⏳ Chưa Có Bình</button>
+          <button type="button" class="filter-pill" data-filter="top10">🏆 Top 10</button>
+        </div>
+
+        <!-- SẮP XẾP -->
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:12px;font-weight:700;color:var(--text-muted);white-space:nowrap;">Sắp xếp:</span>
+          <select id="memberSortSelect" style="height:38px;padding:0 12px;border-radius:10px;border:1.5px solid var(--border-soft);background:var(--bg-input,#fff);font-size:12.5px;font-weight:750;color:var(--text-dark);cursor:pointer;outline:none;">
+            <option value="houses-desc">⬇️ Số bình sịt cao nhất</option>
+            <option value="houses-asc">⬆️ Số bình sịt thấp nhất</option>
+            <option value="name-asc">🔤 Tên (A → Z)</option>
+            <option value="name-desc">🔤 Tên (Z → A)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- PRO MEMBERS TABLE -->
+      <div class="table-responsive">
+        <table class="table-pro">
+          <thead>
+            <tr>
+              <th style="width:65px;text-align:center;">Hạng</th>
+              <th style="min-width:210px;">Chiến Binh &amp; Danh Hiệu</th>
+              <th style="min-width:150px;">Tiến Độ / Tỷ Lệ</th>
+              <th style="min-width:120px;text-align:center;">Tổng Số Bình Sịt</th>
+              <th style="min-width:130px;text-align:center;">Trạng Thái</th>
+              <th style="min-width:120px;text-align:right;">Hồ Sơ Chi Tiết</th>
+            </tr>
+          </thead>
+          <tbody id="membersTable"></tbody>
+        </table>
+      </div>
+
+      <!-- Phân trang Thành Viên -->
+      <div id="membersPagination" class="pagination-bar"></div>
+    </div>
+  </section>
+
+  </main>
+  </div> <!-- END app-body-container -->
+
+</div>
+
+<!-- HIDDEN CANVAS EXPORT AREA (BẢNG GIẤY & DẤU ĐỎ CHÍNH THỨC) -->
+<div style="position:fixed;left:-9999px;top:0;width:0;height:0;overflow:hidden;pointer-events:none;z-index:-9999;">
+  <div id="exportArea"></div>
+</div>
+
+<!-- CSRF TOKEN COMPATIBILITY CHO APP.JS & ĐẶT QUYỀN THÀNH VIÊN -->
+<script>
+  window.CSRF_TOKEN = "STATIC_VERCEL_TOKEN_9999999999";
+  window.IS_ADMIN = false;
+
+  // Shield Info Modal
+  document.getElementById('btnShieldInfo')?.addEventListener('click', function() {
+    alert('🛡️ Vercel Edge Shield: Dự án đang được bảo vệ bởi mạng lưới phân tán Vercel Global Edge và Cloudflare Layer 7 DDoS Mitigation tự động.');
+  });
+
+  // Crew Lưỡi Búa Splash Intro Controller
+  window.isIntroFinished = false;
+
+  window.finishCrewIntro = function(e) {
+    if (e) e.stopPropagation();
+    const overlay = document.getElementById('crewIntroOverlay');
+    if (!overlay || overlay.classList.contains('fade-out')) return;
+    overlay.classList.add('fade-out');
+    window.isIntroFinished = true;
+    if (typeof renderActiveView === 'function') {
+      renderActiveView();
+    }
+    setTimeout(() => {
+      overlay.style.display = 'none';
+    }, 450);
+  };
+
+  // Luôn trình diễn Logo Lưới Búa mạ vàng 24K rực rỡ trọn vẹn 6.0 giây mỗi khi load lại trang
+  setTimeout(() => {
+    const status = document.getElementById('introStatusText');
+    if (status) status.innerHTML = '🎨 Đang tôi luyện khung thép &amp; phác thảo vector...';
+  }, 1800);
+
+  setTimeout(() => {
+    const status = document.getElementById('introStatusText');
+    if (status) status.innerHTML = '✨ Bắt đầu tôi luyện thép &amp; mạ vàng 24K nguyên chất...';
+  }, 3200);
+
+  setTimeout(() => {
+    const status = document.getElementById('introStatusText');
+    if (status) status.innerHTML = '✨ Bề mặt kim loại tôi luyện sáng rực...';
+  }, 4000);
+
+  setTimeout(() => {
+    const status = document.getElementById('introStatusText');
+    if (status) status.innerHTML = '💎 Đang quét tia sáng sắc bén &amp; mở khóa giao diện...';
+  }, 4800);
+
+  setTimeout(() => {
+    const status = document.getElementById('introStatusText');
+    if (status) status.innerHTML = '👑 Kiệt tác hoàn tất! Chào mừng Đại ca...';
+  }, 5400);
+
+  setTimeout(() => {
+    finishCrewIntro();
+  }, 6000);
+</script>
+
+<!-- Crew Lưới Búa - Mã Nguồn Đã Đóng Gói & Khóa Bảo Vệ Toàn Diện -->
+<script src="js/app.bundle.js?v=20261022_03" charset="UTF-8"></script>
+</body>
+</html>
