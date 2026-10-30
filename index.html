@@ -153,10 +153,11 @@
     .btn-admin-login {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 7px;
-      background: var(--bg-btn-3d) padding-box, var(--border-rainbow-pastel) border-box !important;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 245, 255, 0.92) 55%, rgba(243, 232, 255, 0.95) 100%) padding-box, var(--border-purple-pastel) border-box !important;
       border: 1.8px solid transparent !important;
-      color: #0f172a !important;
+      color: #6b21a8 !important;
       font-weight: 850;
       padding: 0 18px;
       height: 38px;
@@ -167,16 +168,22 @@
       box-shadow: var(--shadow-neumorph-3d) !important;
       transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
       white-space: nowrap;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
     }
     .btn-admin-login:hover {
       background: var(--bg-btn-3d-hover) padding-box, var(--border-rainbow-hover) border-box !important;
       box-shadow: var(--shadow-neumorph-hover) !important;
-      transform: translateY(-2px);
-      color: #0284c7 !important;
+      transform: translateY(-3px);
+      color: #581c87 !important;
     }
     .btn-admin-login:active {
-      transform: translateY(1.5px) scale(0.98);
+      transform: translateY(2px) scale(0.98);
       box-shadow: var(--shadow-neumorph-active) !important;
+    }
+    .btn-admin-login:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.4), var(--shadow-neumorph-hover) !important;
     }
   </style>
 
@@ -1003,10 +1010,10 @@
 
         <!-- NÚT XUẤT BÁO CÁO NGÀY HÔM NAY (DÀNH CHO ANH EM XEM & TẢI ẢNH) -->
         <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-          <button type="button" class="btn-sm" id="btnExportRecordsCsv" style="background:#059669;color:#fff;border-color:#047857;display:inline-flex;align-items:center;gap:6px;font-weight:800;padding:8px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(5,150,105,0.25);" title="Xuất toàn bộ bản ghi ra file Excel/CSV">
+          <button type="button" class="btn-export-csv" id="btnExportRecordsCsv" title="Xuất toàn bộ bản ghi ra file Excel/CSV">
             <span>📥 Tải Excel / CSV</span>
           </button>
-          <button type="button" class="gold btn-sm" id="btnExportDailyRecord" style="display:inline-flex;align-items:center;gap:6px;font-weight:800;padding:8px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(245,158,11,0.25);" title="Xem và tải ảnh báo cáo thành tích ngày hôm nay">
+          <button type="button" class="btn-export-report" id="btnExportDailyRecord" title="Xem và tải ảnh báo cáo thành tích ngày hôm nay">
             <span>📸 Xuất Báo Cáo Ngày</span>
           </button>
         </div>
@@ -1217,10 +1224,10 @@
         </span>
       </div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-        <button class="btn-sm" id="exportFundCsvBtn" style="background:#059669;color:#fff;border-color:#047857;display:inline-flex;align-items:center;gap:6px;font-weight:800;" title="Tải toàn bộ lịch sử biến động quỹ ra Excel/CSV">
+        <button type="button" class="btn-export-csv" id="exportFundCsvBtn" title="Tải toàn bộ lịch sử biến động quỹ ra Excel/CSV">
           <span>📥 Xuất Excel/CSV</span>
         </button>
-        <button class="green btn-sm" id="exportFundBtn" style="display:inline-flex;align-items:center;gap:6px;">
+        <button type="button" class="btn-export-report" id="exportFundBtn">
           <span>📸 Xuất Báo Cáo Quỹ</span>
         </button>
       </div>

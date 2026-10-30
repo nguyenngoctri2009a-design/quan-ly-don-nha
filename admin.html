@@ -1639,7 +1639,7 @@
 
         <!-- NÚT XUẤT BÁO CÁO NGÀY HÔM NAY & GỬI DISCORD -->
         <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-          <button type="button" class="btn-sm" id="btnExportRecordsCsv" style="background:#059669;color:#fff;border-color:#047857;display:inline-flex;align-items:center;gap:6px;font-weight:800;padding:8px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(5,150,105,0.25);" title="Xuất toàn bộ bản ghi ra file Excel/CSV">
+          <button type="button" class="btn-export-csv" id="btnExportRecordsCsv" title="Xuất toàn bộ bản ghi ra file Excel/CSV">
             <span>📥 Tải Excel / CSV</span>
           </button>
           <button type="button" class="gold btn-sm" id="btnExportDailyRecord" style="display:inline-flex;align-items:center;gap:6px;font-weight:800;padding:8px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(245,158,11,0.25);" title="Xuất ảnh báo cáo thành tích ngày hôm nay & gửi Discord">
@@ -1878,10 +1878,10 @@
         <button class="btn-deposit btn-sm" id="fundDepositBtn" style="display:inline-flex;align-items:center;gap:6px;">
           <span>➕ Nạp Quỹ</span>
         </button>
-        <button class="btn-sm" id="exportFundCsvBtn" style="background:#059669;color:#fff;border-color:#047857;display:inline-flex;align-items:center;gap:6px;font-weight:800;" title="Tải toàn bộ lịch sử biến động quỹ ra Excel/CSV">
+        <button type="button" class="btn-export-csv" id="exportFundCsvBtn" title="Tải toàn bộ lịch sử biến động quỹ ra Excel/CSV">
           <span>📥 Xuất Excel/CSV</span>
         </button>
-        <button class="green btn-sm" id="exportFundBtn" style="display:inline-flex;align-items:center;gap:6px;">
+        <button type="button" class="btn-export-report" id="exportFundBtn">
           <span>📸 Xuất Báo Cáo Quỹ</span>
         </button>
       </div>
