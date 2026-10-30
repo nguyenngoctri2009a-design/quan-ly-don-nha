@@ -5,41 +5,53 @@
 
 :root {
   /* ==========================================================================
-     SOFT UI / NEUMORPHISM 3D + GLASSMORPHISM PASTEL SYSTEM (CREW LƯỠI BÚA)
-     Canvas: #EAF0F8 | Button: #F2F5FA | Text: #0F172A (Xanh Đen Đậm)
-     Pastel Gradient Borders: Pink (#F472B6), Lavender (#C084FC), Sky (#60A5FA), Cyan (#22D3EE)
-     Multi-layer 3D Shadows: Ánh sáng phía trên (inset trắng), bóng đổ mềm phía dưới
+     PREMIUM SOFT 3D NEUMORPHISM (CREW LƯỠI BÚA)
+     Canvas: #EAF0F8 | Button Base: #F3F6FC | Light Surface: #FFFFFF | Dark Shadow: #C8D3E3
+     Text: #26364B | Viền mảnh trắng bạc: rgba(255, 255, 255, 0.95)
      ========================================================================== */
   --bg-page: #eaf0f8;
-  --bg-btn-3d: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(242, 245, 250, 0.92) 55%, rgba(228, 235, 246, 0.95) 100%);
-  --bg-btn-3d-hover: linear-gradient(180deg, #ffffff 0%, rgba(247, 249, 253, 0.98) 55%, rgba(237, 242, 249, 0.98) 100%);
-  --bg-btn-3d-active: linear-gradient(180deg, #e1e7f0 0%, #ebf0f7 100%);
+  --bg-btn-3d: linear-gradient(145deg, #ffffff 0%, #f3f6fc 55%, #e9f0f9 100%);
+  --bg-btn-3d-hover: linear-gradient(145deg, #ffffff 0%, #f8fafd 55%, #eff4fb 100%);
+  --bg-btn-3d-active: linear-gradient(145deg, #e4ecf7 0%, #edf2fa 100%);
 
-  /* Viền Chuyển Màu Pastel */
-  --border-rainbow-pastel: linear-gradient(135deg, #f472b6 0%, #c084fc 32%, #60a5fa 68%, #22d3ee 100%);
-  --border-rainbow-hover: linear-gradient(135deg, #ec4899 0%, #a855f7 32%, #3b82f6 68%, #06b6d4 100%);
-  --border-cyan-pastel: linear-gradient(135deg, #06b6d4 0%, #38bdf8 45%, #c084fc 100%);
-  --border-emerald-pastel: linear-gradient(135deg, #34d399 0%, #10b981 40%, #06b6d4 75%, #38bdf8 100%);
-  --border-purple-pastel: linear-gradient(135deg, #c084fc 0%, #a855f7 40%, #f472b6 75%, #38bdf8 100%);
-  --border-danger-pastel: linear-gradient(135deg, #fb7185 0%, #f43f5e 50%, #e11d48 100%);
+  /* Viền mảnh màu trắng bạc tinh tế - KHÔNG CẦU VỒNG, KHÔNG SẶC SỠ */
+  --border-btn-silver: 1px solid rgba(255, 255, 255, 0.95);
+  --border-btn-subtle: 1px solid rgba(200, 211, 227, 0.6);
 
-  /* Đúc Nổi 3D Neumorphism: Ánh sáng mép trên & bóng tối mép dưới */
+  /* Chữ sang trọng */
+  --text-neu: #26364b;
+
+  /* Điểm nhấn màu sắc tinh tế cho chức năng */
+  --accent-cyan: #0891b2;
+  --accent-blue: #1d4ed8;
+  --accent-emerald: #059669;
+  --accent-purple: #7c3aed;
+  --accent-rose: #be123c;
+
+  /* ĐÚC NỔI 3D NEUMORPHISM THẬT: Ánh sáng trắng góc trên-trái, Bóng tối góc dưới-phải */
   --shadow-neumorph-3d: 
-    0 10px 24px -5px rgba(148, 163, 184, 0.45),
-    0 4px 10px -2px rgba(15, 23, 42, 0.06),
-    inset 0 2px 2px rgba(255, 255, 255, 1),
-    inset 0 -2.5px 4px rgba(165, 180, 252, 0.22);
+    -4px -4px 10px #ffffff,
+    4px 5px 12px #c8d3e3,
+    inset 1px 1.5px 1px #ffffff,
+    inset -1px -1px 2px rgba(200, 211, 227, 0.35);
 
   --shadow-neumorph-hover: 
-    0 16px 36px -6px rgba(148, 163, 184, 0.55),
-    0 6px 16px -2px rgba(192, 132, 252, 0.28),
-    inset 0 2.5px 3px rgba(255, 255, 255, 1),
-    inset 0 -2.5px 4px rgba(165, 180, 252, 0.35);
+    -6px -7px 16px #ffffff,
+    6px 9px 18px #bccadf,
+    inset 1.5px 2px 1.5px #ffffff,
+    inset -1px -1px 2px rgba(200, 211, 227, 0.25);
 
   --shadow-neumorph-active: 
-    0 2px 6px rgba(148, 163, 184, 0.35),
-    inset 0 2.5px 5px rgba(100, 116, 139, 0.25),
-    inset 0 -1px 2px rgba(255, 255, 255, 0.85);
+    -1px -1px 3px #ffffff,
+    1px 2px 4px #c8d3e3,
+    inset 2.5px 2.5px 6px #c8d3e3,
+    inset -2.5px -2.5px 6px #ffffff;
+
+  --shadow-neumorph-focus: 
+    0 0 0 2.5px rgba(6, 182, 212, 0.45),
+    -4px -4px 10px #ffffff,
+    4px 5px 12px #c8d3e3,
+    inset 1px 1.5px 1px #ffffff;
   /* ==========================================================================
      LIGHT GLASSMORPHISM 3D DESIGN SYSTEM (LIGHT MODE PREMIUM)
      Tone: Nền Trắng Sáng (#F7FAFF), Panel Trắng Sữa Trong Suốt (Milky Glass),
@@ -1970,7 +1982,7 @@ button:active:not(:disabled),
     transparent 100%
   );
   transform: translateX(-150%) skewX(-20deg);
-  animation: lucianShimmerGlint 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  /* animation: lucianShimmerGlint */ display: none; /* 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
   will-change: transform;
 }
@@ -5721,4 +5733,643 @@ section:not(.hidden) {
     0 14px 34px -6px rgba(160, 180, 215, 0.4),
     0 4px 12px -2px rgba(15, 23, 42, 0.08),
     inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+}
+
+
+/* ==========================================================================
+   MASTER PREMIUM SOFT 3D NEUMORPHISM BUTTON OVERHAUL
+   Tuân thủ nghiêm ngặt: Nền #F3F6FC, Viền trắng bạc, Bóng đổ #C8D3E3 & #FFFFFF,
+   Chữ #26364B, Hiệu ứng nổi 3D thực sự, Tuyệt đối KHÔNG viền cầu vồng.
+   ========================================================================== */
+
+/* 1. Base Neumorphism Button System */
+button,
+.btn,
+.btn-sm,
+.btn-action,
+.submit-login-btn,
+.btn-login-secondary,
+.pg-btn,
+.view-mode-btn,
+.filter-pill,
+.preset-chip,
+.type-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  background: var(--bg-btn-3d) !important;
+  border: var(--border-btn-silver) !important;
+  color: var(--text-neu) !important;
+  border-radius: 999px !important;
+  font-weight: 800 !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  transform: translateY(0) !important;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.2s ease,
+              border-color 0.2s ease,
+              color 0.2s ease !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  white-space: nowrap !important;
+  position: relative !important;
+  overflow: hidden !important;
+  text-decoration: none !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+}
+
+button:hover,
+.btn:hover,
+.btn-sm:hover,
+.btn-action:hover,
+.submit-login-btn:hover,
+.btn-login-secondary:hover,
+.pg-btn:hover,
+.view-mode-btn:hover,
+.filter-pill:hover,
+.preset-chip:hover,
+.type-chip:hover {
+  transform: translateY(-3px) !important;
+  background: var(--bg-btn-3d-hover) !important;
+  border-color: #ffffff !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+  color: #0f172a !important;
+}
+
+button:active,
+.btn:active,
+.btn-sm:active,
+.btn-action:active,
+.submit-login-btn:active,
+.btn-login-secondary:active,
+.pg-btn:active,
+.view-mode-btn:active,
+.filter-pill:active,
+.preset-chip:active,
+.type-chip:active {
+  transform: translateY(2px) scale(0.985) !important;
+  background: var(--bg-btn-3d-active) !important;
+  border-color: rgba(200, 211, 227, 0.7) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+
+button:focus-visible,
+.btn:focus-visible {
+  outline: none !important;
+  box-shadow: var(--shadow-neumorph-focus) !important;
+}
+
+/* 2. Edge Shield Nổi Khối 3D */
+.shield-badge,
+#btnShieldInfo {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 0 16px !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f3f7fd 55%, #e8f1fc 100%) !important;
+  border: var(--border-btn-silver) !important;
+  border-radius: 999px !important;
+  color: #1d4ed8 !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  transform: translateY(0) !important;
+}
+.shield-badge:hover,
+#btnShieldInfo:hover {
+  transform: translateY(-3px) !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafd 55%, #edf4fc 100%) !important;
+  color: #1e40af !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+}
+.shield-badge:active,
+#btnShieldInfo:active {
+  transform: translateY(2px) scale(0.985) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+
+/* 3. Tìm Kiếm Nổi Khối 3D */
+.btn-spotlight-nav,
+#btnOpenSpotlight {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 0 16px !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f1f9fc 55%, #e6f4fa 100%) !important;
+  border: var(--border-btn-silver) !important;
+  border-radius: 999px !important;
+  color: #0891b2 !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  transform: translateY(0) !important;
+}
+.btn-spotlight-nav:hover,
+#btnOpenSpotlight:hover {
+  transform: translateY(-3px) !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f7fcfe 55%, #eff8fb 100%) !important;
+  color: #0e7490 !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+}
+.btn-spotlight-nav:active,
+#btnOpenSpotlight:active {
+  transform: translateY(2px) scale(0.985) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+.btn-spotlight-nav .spotlight-shortcut {
+  background: rgba(8, 145, 178, 0.1) !important;
+  color: #0891b2 !important;
+  border: 1px solid rgba(8, 145, 178, 0.22) !important;
+  border-radius: 6px !important;
+  padding: 2px 6px !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+}
+
+/* 4. Nút Âm Thanh 3D */
+.btn-sound-toggle,
+#btnSoundToggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  background: var(--bg-btn-3d) !important;
+  border: var(--border-btn-silver) !important;
+  border-radius: 999px !important;
+  color: var(--text-neu) !important;
+  font-size: 15px !important;
+  cursor: pointer !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  transform: translateY(0) !important;
+}
+.btn-sound-toggle:hover,
+#btnSoundToggle:hover {
+  transform: translateY(-3px) !important;
+  background: var(--bg-btn-3d-hover) !important;
+  color: #0284c7 !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+}
+.btn-sound-toggle:active,
+#btnSoundToggle:active {
+  transform: translateY(2px) scale(0.985) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+
+/* 5. Nút Thành Viên 3D */
+.btn-nav-member,
+#btnOpenMemberSpotlight {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 0 16px !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+  background: var(--bg-btn-3d) !important;
+  border: var(--border-btn-silver) !important;
+  border-radius: 999px !important;
+  color: #0284c7 !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  transform: translateY(0) !important;
+}
+.btn-nav-member:hover,
+#btnOpenMemberSpotlight:hover {
+  transform: translateY(-3px) !important;
+  background: var(--bg-btn-3d-hover) !important;
+  color: #0369a1 !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+}
+.btn-nav-member:active,
+#btnOpenMemberSpotlight:active {
+  transform: translateY(2px) scale(0.985) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+
+/* 6. Xuất Báo Cáo 3D (Điểm nhấn Xanh Ngọc) */
+.btn-nav-export,
+.btn-export-report,
+#exportImgTopBtn,
+#btnExportDailyRecord,
+#exportFundBtn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f2fbf7 55%, #e6f6ee 100%) !important;
+  border: var(--border-btn-silver) !important;
+  border-radius: 999px !important;
+  color: #059669 !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  transform: translateY(0) !important;
+}
+.btn-nav-export:hover,
+.btn-export-report:hover,
+#exportImgTopBtn:hover,
+#btnExportDailyRecord:hover,
+#exportFundBtn:hover {
+  transform: translateY(-3px) !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f7fdfa 55%, #edf9f3 100%) !important;
+  color: #047857 !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+}
+.btn-nav-export:active,
+.btn-export-report:active,
+#exportImgTopBtn:active,
+#btnExportDailyRecord:active,
+#exportFundBtn:active {
+  transform: translateY(2px) scale(0.985) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+
+/* 7. Quản Trị 3D (Điểm nhấn Tím Pastel) */
+.btn-admin-login,
+#adminPageBtn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f6fd 55%, #eee8fc 100%) !important;
+  border: var(--border-btn-silver) !important;
+  border-radius: 999px !important;
+  color: #7c3aed !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  transform: translateY(0) !important;
+}
+.btn-admin-login:hover,
+#adminPageBtn:hover {
+  transform: translateY(-3px) !important;
+  background: linear-gradient(145deg, #ffffff 0%, #fbf9fe 55%, #f4effd 100%) !important;
+  color: #6d28d9 !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+}
+.btn-admin-login:active,
+#adminPageBtn:active {
+  transform: translateY(2px) scale(0.985) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+
+/* 8. Reset Chu Kỳ 3D (Điểm nhấn Rose Pastel) */
+.btn-nav-reset,
+#resetCycleBtn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 0 16px !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+  background: linear-gradient(145deg, #ffffff 0%, #fff1f2 55%, #ffe4e6 100%) !important;
+  border: var(--border-btn-silver) !important;
+  border-radius: 999px !important;
+  color: #be123c !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  transform: translateY(0) !important;
+}
+.btn-nav-reset:hover,
+#resetCycleBtn:hover {
+  transform: translateY(-3px) !important;
+  background: linear-gradient(145deg, #ffffff 0%, #fff5f6 55%, #ffeaec 100%) !important;
+  color: #9f1239 !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+}
+.btn-nav-reset:active,
+#resetCycleBtn:active {
+  transform: translateY(2px) scale(0.985) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+
+/* 9. Xuất Excel/CSV 3D (Điểm nhấn Teal / Xanh Ngọc) */
+.btn-export-csv,
+#btnExportRecordsCsv,
+#btnExportMembersCsv,
+#exportFundCsvBtn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 8px 16px !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f0fdf9 55%, #e3f8f3 100%) !important;
+  border: var(--border-btn-silver) !important;
+  border-radius: 999px !important;
+  color: #0f766e !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  transform: translateY(0) !important;
+}
+.btn-export-csv:hover,
+#btnExportRecordsCsv:hover,
+#btnExportMembersCsv:hover,
+#exportFundCsvBtn:hover {
+  transform: translateY(-3px) !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f5fefb 55%, #ecfcf8 100%) !important;
+  color: #115e59 !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+}
+.btn-export-csv:active,
+#btnExportRecordsCsv:active,
+#btnExportMembersCsv:active,
+#exportFundCsvBtn:active {
+  transform: translateY(2px) scale(0.985) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+
+/* 10. Sao Lưu Chu Kỳ 3D (Điểm nhấn Xanh Dương) */
+.btn-nav-backup,
+#backupCycleBtn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 0 16px !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f2f7fd 55%, #e5f0fc 100%) !important;
+  border: var(--border-btn-silver) !important;
+  border-radius: 999px !important;
+  color: #2563eb !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  transform: translateY(0) !important;
+}
+.btn-nav-backup:hover,
+#backupCycleBtn:hover {
+  transform: translateY(-3px) !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f7fafd 55%, #edf5fd 100%) !important;
+  color: #1d4ed8 !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+}
+.btn-nav-backup:active,
+#backupCycleBtn:active {
+  transform: translateY(2px) scale(0.985) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+
+/* 11. Xóa Lọc 3D (Điểm nhấn Rose) */
+.btn-clear-filter,
+#resetRecordFilter,
+#resetFundFilter,
+#btnClearSearchMember {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 8px 16px !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+  background: linear-gradient(145deg, #ffffff 0%, #fff1f2 55%, #ffe4e6 100%) !important;
+  border: var(--border-btn-silver) !important;
+  border-radius: 999px !important;
+  color: #be123c !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  transform: translateY(0) !important;
+}
+.btn-clear-filter:hover,
+#resetRecordFilter:hover,
+#resetFundFilter:hover,
+#btnClearSearchMember:hover {
+  transform: translateY(-3px) !important;
+  background: linear-gradient(145deg, #ffffff 0%, #fff5f6 55%, #ffeaec 100%) !important;
+  color: #9f1239 !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+}
+.btn-clear-filter:active,
+#resetRecordFilter:active,
+#resetFundFilter:active,
+#btnClearSearchMember:active {
+  transform: translateY(2px) scale(0.985) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+
+/* 12. Nút Sidebar & Tab Điều Hướng 3D */
+.sidebar-nav-item,
+.view-tab-btn {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 11px 16px !important;
+  min-height: 46px !important;
+  border-radius: 14px !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  color: var(--text-neu) !important;
+  font-size: 14px !important;
+  font-weight: 750 !important;
+  cursor: pointer !important;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  transform: translateY(0) !important;
+  box-shadow: none !important;
+}
+.sidebar-nav-item:hover,
+.view-tab-btn:hover {
+  background: var(--bg-btn-3d) !important;
+  border: var(--border-btn-silver) !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  transform: translateY(-2px) !important;
+  color: #0284c7 !important;
+}
+.sidebar-nav-item.active,
+.view-tab-btn.active {
+  background: linear-gradient(145deg, #ffffff 0%, #f1f6fd 100%) !important;
+  border: var(--border-btn-silver) !important;
+  color: #0284c7 !important;
+  font-weight: 900 !important;
+  box-shadow: 
+    -3px -3px 8px #ffffff,
+    4px 5px 12px #c8d3e3,
+    inset 1px 1px 1.5px #ffffff !important;
+  transform: translateY(0) !important;
+}
+.sidebar-nav-item.active .nav-item-arrow,
+.view-tab-btn.active .nav-item-arrow {
+  color: #0284c7 !important;
+  opacity: 1 !important;
+  transform: translateX(3px) !important;
+}
+
+/* Tiện ích nhanh Sidebar */
+.sidebar-action-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 9px 14px !important;
+  border-radius: 999px !important;
+  background: var(--bg-btn-3d) !important;
+  border: var(--border-btn-silver) !important;
+  color: var(--text-neu) !important;
+  font-size: 12.5px !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+.sidebar-action-pill:hover {
+  transform: translateY(-3px) !important;
+  background: var(--bg-btn-3d-hover) !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+}
+.sidebar-action-pill:active {
+  transform: translateY(2px) scale(0.985) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+
+/* Nút Cài App Desktop 3D */
+.btn-install-pc {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 9px 16px !important;
+  border-radius: 999px !important;
+  background: var(--bg-btn-3d) !important;
+  border: var(--border-btn-silver) !important;
+  color: #059669 !important;
+  font-weight: 850 !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+.btn-install-pc:hover {
+  transform: translateY(-3px) !important;
+  background: var(--bg-btn-3d-hover) !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+  color: #047857 !important;
+}
+.btn-install-pc:active {
+  transform: translateY(2px) scale(0.985) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+
+/* Nút 3 Gạch Hamburger 3D */
+.btn-sidebar-toggle {
+  display: inline-flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 12px !important;
+  background: var(--bg-btn-3d) !important;
+  border: var(--border-btn-silver) !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+  cursor: pointer !important;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+.btn-sidebar-toggle:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+}
+.btn-sidebar-toggle:active {
+  transform: translateY(1.5px) scale(0.96) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+.btn-sidebar-toggle .hamburger-line {
+  background: #0284c7 !important;
+  height: 2.2px !important;
+  width: 18px !important;
+  border-radius: 999px !important;
+}
+
+/* 13. Nút Modal & Nút Xác Nhận 3D */
+.btn-custom-confirm {
+  background: linear-gradient(145deg, #ffffff 0%, #f0f7fe 55%, #e1effc 100%) !important;
+  border: var(--border-btn-silver) !important;
+  color: #0284c7 !important;
+  font-weight: 850 !important;
+  border-radius: 999px !important;
+  padding: 10px 22px !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+}
+.btn-custom-confirm:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+  color: #0369a1 !important;
+}
+.btn-custom-confirm:active {
+  transform: translateY(2px) scale(0.985) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+
+.btn-custom-cancel {
+  background: var(--bg-btn-3d) !important;
+  border: var(--border-btn-silver) !important;
+  color: #64748b !important;
+  font-weight: 800 !important;
+  border-radius: 999px !important;
+  padding: 10px 22px !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+}
+.btn-custom-cancel:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+  color: #334155 !important;
+}
+.btn-custom-cancel:active {
+  transform: translateY(2px) scale(0.985) !important;
+  box-shadow: var(--shadow-neumorph-active) !important;
+}
+
+/* 14. Nạp Quỹ & Thao Tác Bảng 3D */
+.btn-deposit,
+#fundDepositBtn {
+  background: linear-gradient(145deg, #ffffff 0%, #f2fbf7 55%, #e6f6ee 100%) !important;
+  border: var(--border-btn-silver) !important;
+  color: #059669 !important;
+  border-radius: 999px !important;
+  box-shadow: var(--shadow-neumorph-3d) !important;
+}
+.btn-deposit:hover,
+#fundDepositBtn:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: var(--shadow-neumorph-hover) !important;
+}
+
+/* 15. Khung Động Cơ Không Gian 3D */
+.u330 {
+  border-radius: 20px !important;
+  background: radial-gradient(circle at 50% 50%, #0B1230, #02030A 70%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 
+    -4px -4px 12px #ffffff,
+    6px 8px 18px #c8d3e3,
+    inset 0 1px 2px rgba(255, 255, 255, 0.25) !important;
 }
