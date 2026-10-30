@@ -5,7 +5,7 @@
    MODULE 1: FIREBASE REALTIME DATABASE INITIALIZATION & GLOBAL STATE
    ========================================================================== */
 var firebaseConfig = {
-  databaseURL: "https://tiktok-46d94-default-rtdb.asia-southeast1.firebasedatabase.app"
+  databaseURL: "https://api1-9dc40-default-rtdb.asia-southeast1.firebasedatabase.app"
 };
 
 if (typeof firebase !== 'undefined' && !firebase.apps.length) {
@@ -670,7 +670,7 @@ window.calcWorker = calcWorker;
 function fastFetchParallelData() {
   return new Promise((resolve) => {
     try {
-      const restUrl = 'https://tiktok-46d94-default-rtdb.asia-southeast1.firebasedatabase.app/.json';
+      const restUrl = 'https://api1-9dc40-default-rtdb.asia-southeast1.firebasedatabase.app/.json';
       fetch(restUrl, { cache: 'no-store' })
         .then(res => res.json())
         .then(rootData => {
@@ -1056,14 +1056,14 @@ try {
     return `${yyyy}-${mm}-${dd}`;
   }
 
-  // 1. Xuất Danh Sách Số Bình Sịt & Lịch Sử Bản Ghi
+  // 1. Xuất Danh Sách Số Nhà & Lịch Sử Bản Ghi
   function exportRecordsToCsv(records = window.allRecords || []) {
     if (!records || !records.length) {
-      alert('⚠️ Không có bản ghi số bình sịt nào để xuất!');
+      alert('⚠️ Không có bản ghi số nhà nào để xuất!');
       return;
     }
 
-    const headers = ['Mã Bản Ghi', 'Ngày Ghi Nhận', 'Tên Thành Viên', 'Số Bình Sịt', 'Ghi Chú', 'Thời Gian Ghi Nhận'];
+    const headers = ['Mã Bản Ghi', 'Ngày Dọn Nhà', 'Tên Thành Viên', 'Số Nhà', 'Ghi Chú', 'Thời Gian Ghi Nhận'];
     const rows = [headers.map(escapeCsvCell).join(',')];
 
     records.forEach(r => {
@@ -1080,7 +1080,7 @@ try {
     });
 
     const csv = rows.join('\r\n');
-    downloadCsvFile(csv, `CrewLuoiBua_SoBinhSit_${getTodayIso()}.csv`);
+    downloadCsvFile(csv, `CrewLuoiBua_SoNha_${getTodayIso()}.csv`);
   }
 
   // 2. Xuất Sổ Cái Quỹ Chuộc Tù & Lịch Sử Giao Dịch
@@ -1127,7 +1127,7 @@ try {
       return;
     }
 
-    // Tính toán số bình sịt và số lần chuộc tù cho từng người
+    // Tính toán số nhà và số lần chuộc tù cho từng người
     const houseMap = {};
     let totalAllHouses = 0;
     records.forEach(r => {
@@ -1146,7 +1146,7 @@ try {
       }
     });
 
-    // Sắp xếp theo số bình sịt giảm dần
+    // Sắp xếp theo số nhà giảm dần
     const enriched = userList.map(u => ({
       id: u.id,
       name: u.name || 'Chưa rõ',
@@ -1155,13 +1155,13 @@ try {
       bailSpent: bailSpentMap[u.name] || 0
     })).sort((a, b) => b.houses - a.houses);
 
-    const headers = ['Hạng', 'Họ Và Tên', 'Cấp Bậc', 'Tổng Số Bình Sịt', 'Tỷ Lệ Đóng Góp (%)', 'Số Lần Chuộc Tù', 'Tổng Tiền Quỹ Đã Cứu (VNĐ)'];
+    const headers = ['Hạng', 'Họ Và Tên', 'Cấp Bậc', 'Tổng Số Nhà Dọn', 'Tỷ Lệ Đóng Góp (%)', 'Số Lần Chuộc Tù', 'Tổng Tiền Quỹ Đã Cứu (VNĐ)'];
     const rows = [headers.map(escapeCsvCell).join(',')];
 
     enriched.forEach((m, idx) => {
       const share = totalAllHouses > 0 ? ((m.houses / totalAllHouses) * 100).toFixed(1) + '%' : '0%';
       let rankTitle = 'Tân Binh';
-      if (m.houses >= 100) rankTitle = 'Vua Bình Sịt 👑';
+      if (m.houses >= 100) rankTitle = 'Vua Trộm Nhà 👑';
       else if (m.houses >= 50) rankTitle = 'Siêu Đạo Tặc 💎';
       else if (m.houses >= 25) rankTitle = 'Thợ Khoan Vàng 🥇';
       else if (m.houses >= 10) rankTitle = 'Chiến Binh 🥈';
@@ -1211,12 +1211,12 @@ try {
   }
 
   function getRankInfo(totalHouses) {
-    if (totalHouses >= 100) return { title: 'Vua Bình Sịt', icon: '👑', color: '#f59e0b', bg: '#fef3c7', desc: 'Bậc thầy xịt bình cấp tối cao' };
+    if (totalHouses >= 100) return { title: 'Vua Trộm Nhà', icon: '👑', color: '#f59e0b', bg: '#fef3c7', desc: 'Bậc thầy đột nhập cấp tối cao' };
     if (totalHouses >= 50) return { title: 'Siêu Đạo Tặc', icon: '💎', color: '#0284c7', bg: '#e0f2fe', desc: 'Tay thợ chuyên nghiệp hàng đầu' };
     if (totalHouses >= 25) return { title: 'Thợ Khoan Vàng', icon: '🥇', color: '#10b981', bg: '#d1fae5', desc: 'Năng suất ổn định, cống hiến bền bỉ' };
     if (totalHouses >= 10) return { title: 'Chiến Thần Đột Nhập', icon: '🥈', color: '#6366f1', bg: '#e0e7ff', desc: 'Chiến binh giàu kinh nghiệm' };
     if (totalHouses > 0) return { title: 'Tân Binh Triển Vọng', icon: '🥉', color: '#d97706', bg: '#fef3c7', desc: 'Tân binh đang vươn lên mạnh mẽ' };
-    return { title: 'Đang Nghỉ Ngơi', icon: '💤', color: '#64748b', bg: '#f1f5f9', desc: 'Chưa ghi nhận bình sịt trong chu kỳ' };
+    return { title: 'Đang Nghỉ Ngơi', icon: '💤', color: '#64748b', bg: '#f1f5f9', desc: 'Chưa ghi nhận số nhà trong chu kỳ' };
   }
 
   function openMemberProfileModal(userId) {
@@ -1259,7 +1259,7 @@ try {
     const rankIndex = sortedMembers.findIndex(([uid]) => uid === userId);
     const rankText = rankIndex !== -1 ? `#${rankIndex + 1}` : '--';
 
-    // 5 chuyến bình sịt gần nhất
+    // 5 chuyến dọn nhà gần nhất
     const recentRecords = [...userRecords]
       .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
       .slice(0, 5);
@@ -1305,10 +1305,10 @@ try {
           
           <div class="dossier-kpi-card" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1.5px solid #fde68a;">
             <div style="font-size: 12.5px; font-weight: 800; color: #92400e; display: flex; align-items: center; gap: 6px;">
-              <span>🥫</span> Tổng Số Bình Sịt
+              <span>🏠</span> Tổng Số Nhà Dọn
             </div>
             <div style="font-size: 28px; font-weight: 900; color: #b45309; margin: 4px 0 2px;">
-              ${roundedHouses} <span style="font-size: 14px; font-weight: 700;">bình</span>
+              ${roundedHouses} <span style="font-size: 14px; font-weight: 700;">nhà</span>
             </div>
             <div style="font-size: 12px; color: #b45309; opacity: 0.95; font-weight: 700;">Ghi nhận ${userRecords.length} lần</div>
           </div>
@@ -1318,7 +1318,7 @@ try {
               <span>⚡</span> Kỷ Lục 1 Ngày
             </div>
             <div style="font-size: 28px; font-weight: 900; color: #15803d; margin: 4px 0 2px;">
-              ${maxOneDay} <span style="font-size: 14px; font-weight: 700;">bình</span>
+              ${maxOneDay} <span style="font-size: 14px; font-weight: 700;">nhà</span>
             </div>
             <div style="font-size: 12px; color: #166534; opacity: 0.95; font-weight: 700;">${maxDayStr !== 'Chưa có' ? `Ngày: ${maxDayStr}` : 'Chưa thiết lập'}</div>
           </div>
@@ -1338,18 +1338,18 @@ try {
               <span>📊</span> Hiệu Suất / Lần
             </div>
             <div style="font-size: 28px; font-weight: 900; color: #0284c7; margin: 4px 0 2px;">
-              ${userRecords.length > 0 ? (roundedHouses / userRecords.length).toFixed(1) : 0} <span style="font-size: 14px; font-weight: 700;">bình/lần</span>
+              ${userRecords.length > 0 ? (roundedHouses / userRecords.length).toFixed(1) : 0} <span style="font-size: 14px; font-weight: 700;">nhà/lần</span>
             </div>
             <div style="font-size: 12px; color: #0369a1; font-weight: 700;">Trung bình mỗi chuyến</div>
           </div>
 
         </div>
 
-        <!-- 5 Chuyến Bình Sịt Gần Nhất (Bright Solid White Table Container) -->
+        <!-- 5 Chuyến Dọn Nhà Gần Nhất (Bright Solid White Table Container) -->
         <div style="margin-bottom: 16px;">
           <div style="font-size: 13.5px; font-weight: 900; color: #0f172a; margin-bottom: 8px; padding: 0 4px; display: flex; justify-content: space-between; align-items: center;">
             <span style="display: flex; align-items: center; gap: 6px;">
-              <span>📋</span> 5 Phi Vụ Bình Sịt Gần Nhất
+              <span>📋</span> 5 Phi Vụ Dọn Nhà Gần Nhất
             </span>
             <span style="font-size: 11px; color: #475569; background: #f1f5f9; border: 1px solid #e2e8f0; padding: 3px 9px; border-radius: 8px; font-weight: 800;">Nhật ký</span>
           </div>
@@ -1360,7 +1360,7 @@ try {
                 <thead>
                   <tr style="background: #f8fafc; text-align: left; color: #475569; border-bottom: 1.5px solid #e2e8f0; font-weight: 800; font-size: 12px;">
                     <th style="padding: 10px 14px;">Ngày</th>
-                    <th style="padding: 10px 14px;">Số Bình</th>
+                    <th style="padding: 10px 14px;">Số Nhà</th>
                     <th style="padding: 10px 14px;">Ghi Chú</th>
                   </tr>
                 </thead>
@@ -1370,7 +1370,7 @@ try {
                       <td style="padding: 10px 14px; font-weight: 800; color: #0f172a;">${r.date || ''}</td>
                       <td style="padding: 10px 14px;">
                         <span style="background: #fffbeb; color: #b45309; font-weight: 900; padding: 4px 9px; border-radius: 8px; font-size: 12.5px; border: 1px solid #fde68a;">
-                          +${r.binh} bình
+                          +${r.binh} nhà
                         </span>
                       </td>
                       <td style="padding: 10px 14px; color: #475569; font-size: 13px; font-weight: 600;">${escapeHtml(r.note || 'Không có ghi chú')}</td>
@@ -1381,8 +1381,8 @@ try {
             ` : `
               <div style="padding: 26px 16px; text-align: center; color: #64748b; font-size: 13.5px; background: #ffffff;">
                 <span style="font-size: 30px; display: block; margin-bottom: 6px;">🛌</span>
-                <b style="color: #1e293b; font-size: 14px;">Chưa có dữ liệu bình sịt gần đây</b>
-                <div style="font-size: 12px; margin-top: 3px; color: #64748b;">Chiến binh này chưa ghi nhận bình sịt trong chu kỳ hiện tại</div>
+                <b style="color: #1e293b; font-size: 14px;">Chưa có dữ liệu dọn nhà gần đây</b>
+                <div style="font-size: 12px; margin-top: 3px; color: #64748b;">Chiến binh này chưa ghi nhận số nhà trong chu kỳ hiện tại</div>
               </div>
             `}
           </div>
@@ -1446,14 +1446,15 @@ try {
 
   const SYSTEM_ACTIONS = [
     { type: 'action', title: '📈 Thống Kê Dashboard PRO', desc: 'Xem tổng quan năng suất & biểu đồ', icon: '📈', action: () => switchView('analytics') },
-    { type: 'action', title: '📊 Bàn Làm Việc (Nhập Nhanh)', desc: 'Ghi nhận số bình sịt mới & BXH', icon: '📊', action: () => switchView('dashboard') },
-    { type: 'action', title: '📋 Lịch Sử Bản Ghi', desc: 'Xem toàn bộ nhật trình bình sịt theo ngày', icon: '📋', action: () => switchView('records') },
+    { type: 'action', title: '📊 Bàn Làm Việc (Nhập Nhanh)', desc: 'Ghi nhận số nhà mới & BXH', icon: '📊', action: () => switchView('dashboard') },
+    { type: 'action', title: '💰 Quản Lý Quỹ & Chuộc Tù', desc: 'Kiểm tra số dư, nộp quỹ & chuộc tù', icon: '💰', action: () => switchView('fund') },
+    { type: 'action', title: '📋 Lịch Sử Bản Ghi', desc: 'Xem toàn bộ nhật trình dọn nhà theo ngày', icon: '📋', action: () => switchView('records') },
     { type: 'action', title: '👥 Quản Lý Thành Viên', desc: 'Danh sách thành viên & phân quyền', icon: '👥', action: () => switchView('members') },
     { type: 'action', title: '📜 Nhật Ký Hoạt Động (Audit)', desc: 'Lịch sử thao tác & kiểm tra an ninh', icon: '📜', action: () => switchView('logs') },
     { type: 'action', title: '🛡️ Ban Máy & Bảo Mật', desc: 'Quản lý thiết bị khóa & IP an ninh', icon: '🛡️', action: () => switchView('banned') },
-    { type: 'action', title: '📸 Xuất Báo Cáo Ảnh', desc: 'Mở hộp thoại tạo ảnh báo cáo sắc nét tải về máy tính', icon: '📸', action: () => window.openDailyExportModal && window.openDailyExportModal() },
-    { type: 'action', title: '💾 Sao Lưu Chu Kỳ (Tải Ảnh)', desc: 'Chụp ảnh tổng thể tải về máy tính', icon: '💾', action: () => (typeof window.triggerManualBackup === 'function' ? window.triggerManualBackup() : ($('sidebarBackupBtn') || $('manualBackupBtn'))?.click()) },
-    { type: 'action', title: '📥 Tải Bảng Tính Excel / CSV', desc: 'Tải toàn bộ số bình sịt về máy tính định dạng CSV', icon: '📥', action: () => window.CrewCsvExport && window.CrewCsvExport.exportRecordsToCsv() },
+    { type: 'action', title: '📸 Xuất Báo Cáo Ảnh (Gửi Discord)', desc: 'Mở hộp thoại tạo ảnh báo cáo sắc nét', icon: '📸', action: () => window.openDailyExportModal && window.openDailyExportModal() },
+    { type: 'action', title: '💾 Sao Lưu Chu Kỳ (Discord)', desc: 'Chụp ảnh tổng thể gửi thẳng về kênh sao lưu', icon: '💾', action: () => (typeof window.triggerManualBackup === 'function' ? window.triggerManualBackup() : ($('sidebarBackupBtn') || $('manualBackupBtn'))?.click()) },
+    { type: 'action', title: '📥 Tải Bảng Tính Excel / CSV', desc: 'Tải toàn bộ số nhà về máy tính định dạng CSV', icon: '📥', action: () => window.CrewCsvExport && window.CrewCsvExport.exportRecordsToCsv() },
     { type: 'action', title: '🔊 Bật / Tắt Âm Thanh', desc: 'Chuyển đổi hiệu ứng âm thanh hoàng gia', icon: '🔊', action: () => window.SoundFX && window.SoundFX.toggleSound() }
   ];
 
@@ -1483,7 +1484,7 @@ try {
           <input 
             type="text" 
             id="spotlightSearchInput" 
-            placeholder="Tìm thành viên, số bình sịt, phân hệ hoặc lệnh (Gõ 'tri', 'quy', 'báo cáo')..." 
+            placeholder="Tìm thành viên, số nhà, phân hệ hoặc lệnh (Gõ 'tri', 'quy', 'báo cáo')..." 
             style="flex:1; border:none; outline:none; font-size:16px; font-weight:600; color:#0f172a; background:transparent;"
             autocomplete="off"
             spellcheck="false"
@@ -1528,13 +1529,13 @@ try {
       const matchedUsers = users.filter(u => !q || (u.name || '').toLowerCase().includes(q));
 
       matchedUsers.slice(0, 5).forEach(u => {
-        // Tính số bình sịt của người này
+        // Tính số nhà của người này
         const userRecs = (window.allRecords || []).filter(r => r.userId === u.id);
         const total = Math.round(userRecs.reduce((s, r) => s + (Number(r.binh) || 0), 0) * 10) / 10;
         currentItems.push({
           type: 'member',
           title: u.name,
-          desc: `Thành viên Crew • Đã gom ${total} bình sịt (${userRecs.length} chuyến)`,
+          desc: `Thành viên Crew • Đã dọn ${total} nhà (${userRecs.length} chuyến)`,
           icon: '👤',
           action: () => {
             if (window.openMemberProfileModal) {
@@ -1714,16 +1715,16 @@ function renderStats() {
   }
 
   // Update KPI Cards
-  if ($('kpiTotalBinh')) $('kpiTotalBinh').textContent = `${roundedTotal.toLocaleString('vi-VN')} bình`;
+  if ($('kpiTotalBinh')) $('kpiTotalBinh').textContent = `${roundedTotal.toLocaleString('vi-VN')} nhà`;
   if ($('kpiTotalMembers')) $('kpiTotalMembers').textContent = activeMembersInPeriod > 0 ? `${activeMembersInPeriod} / ${totalMembersCount} anh em` : `${totalMembersCount} anh em`;
-  if ($('kpiAvgBinh')) $('kpiAvgBinh').textContent = `${avgBinh} bình/người`;
+  if ($('kpiAvgBinh')) $('kpiAvgBinh').textContent = `${avgBinh} nhà/người`;
 
   if (topMember) {
     if ($('kpiTopMember')) $('kpiTopMember').textContent = topMember.name;
-    if ($('kpiTopBinh')) $('kpiTopBinh').textContent = `${Math.round(topMember.binh * 100) / 100} bình (${roundedTotal > 0 ? Math.round((topMember.binh / roundedTotal) * 100) : 0}%)`;
+    if ($('kpiTopBinh')) $('kpiTopBinh').textContent = `${Math.round(topMember.binh * 100) / 100} nhà (${roundedTotal > 0 ? Math.round((topMember.binh / roundedTotal) * 100) : 0}%)`;
   } else {
     if ($('kpiTopMember')) $('kpiTopMember').textContent = '--';
-    if ($('kpiTopBinh')) $('kpiTopBinh').textContent = '0 bình';
+    if ($('kpiTopBinh')) $('kpiTopBinh').textContent = '0 nhà';
   }
 
   // Update Badge Counts
@@ -1748,7 +1749,7 @@ function renderLeaderboard(totalBinh) {
       <div class="empty-state-box" style="padding: 24px 12px;">
         <span class="empty-state-icon" style="font-size: 28px;">🏅</span>
         <div class="empty-state-title" style="font-size: 13.5px;">Chưa có dữ liệu xếp hạng</div>
-        <div class="empty-state-desc" style="font-size: 12px;">Ghi nhận bình sịt để mở khóa vinh danh</div>
+        <div class="empty-state-desc" style="font-size: 12px;">Ghi nhận số nhà để mở khóa vinh danh</div>
       </div>`;
     return;
   }
@@ -1841,7 +1842,7 @@ function renderStatsTable(totalBinh) {
         <b style="font-size:14.5px;color:var(--text-dark);letter-spacing:-0.2px;">${escHtml(row.name)}</b>
       </td>
       <td>
-        <span class="badge-binh">${Math.round(row.binh * 100) / 100} bình</span>
+        <span class="badge-binh">${Math.round(row.binh * 100) / 100} nhà</span>
       </td>
       <td>
         <div style="display:flex;align-items:center;gap:10px;">
@@ -1889,15 +1890,15 @@ function renderColumnChart() {
     container.innerHTML = `
       <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:340px;color:var(--text-muted);gap:12px;text-align:center;">
         <span style="font-size:42px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.15));">🏠</span>
-        <b style="font-size:15px;color:var(--terracotta);letter-spacing:0.3px;">Chưa có thành viên nào ghi nhận bình sịt</b>
-        <span style="font-size:12.5px;color:var(--text-sub);max-width:320px;line-height:1.5;">Thêm thành viên và nhập số bình sịt ở cột bên phải để biểu đồ xuất hiện!</span>
+        <b style="font-size:15px;color:var(--terracotta);letter-spacing:0.3px;">Chưa có thành viên nào ghi nhận nhà</b>
+        <span style="font-size:12.5px;color:var(--text-sub);max-width:320px;line-height:1.5;">Thêm thành viên và nhập số nhà ở cột bên phải để biểu đồ xuất hiện!</span>
       </div>`;
     return;
   }
 
-  const labelColor = '#1e1610';
-  const gridColor = 'rgba(241, 233, 223, 0.9)';
-  const axisColor = '#d97706';
+  const labelColor = '#0f172a';
+  const gridColor = 'rgba(226, 232, 240, 0.8)';
+  const axisColor = '#06b6d4';
 
   const categories = displayData.map(d => d.name);
   const values = displayData.map(d => Math.round(d.binh * 100) / 100);
@@ -1957,12 +1958,12 @@ function renderColumnChart() {
       }
     },
     tooltip: {
-      headerFormat: '<span style="font-size:12px;font-weight:bold;color:#d97706">{point.key}</span><br/>',
-      pointFormat: '<b style="font-size:14px;color:#1e1610;">{point.y} bình</b>',
+      headerFormat: '<span style="font-size:12px;font-weight:bold;color:#0891b2">{point.key}</span><br/>',
+      pointFormat: '<b style="font-size:14px;color:#1e1610;">{point.y} nhà</b>',
       backgroundColor: 'rgba(255, 255, 255, 0.97)',
       borderRadius: 14,
       borderWidth: 1.5,
-      borderColor: '#fde68a',
+      borderColor: '#a5f3fc',
       shadow: true,
       style: { color: '#1e1610', fontSize: '13px' }
     },
@@ -1971,8 +1972,8 @@ function renderColumnChart() {
         color: {
           linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
           stops: [
-            [0, '#fbbf24'],
-            [1, '#d97706']
+            [0, '#38bdf8'],
+            [1, '#06b6d4']
           ]
         },
         borderRadius: 20,
@@ -1996,7 +1997,7 @@ function renderColumnChart() {
       }
     },
     series: [{
-      name: 'Số bình sịt',
+      name: 'Số nhà',
       data: values
     }]
   });
@@ -2007,7 +2008,7 @@ window.renderColumnChart = renderColumnChart;
 /* Quick Input: Save Record */
 $('saveRecordBtn')?.addEventListener('click', async () => {
   if (!isAdmin()) {
-    setStatus($('inputStatus'), '⛔ Chỉ quản trị viên (admin.html) mới có quyền ghi nhận số bình sịt!', false);
+    setStatus($('inputStatus'), '⛔ Chỉ quản trị viên (admin.html) mới có quyền ghi nhận số nhà!', false);
     return;
   }
   const userId = $('inputMember').value;
@@ -2016,7 +2017,7 @@ $('saveRecordBtn')?.addEventListener('click', async () => {
 
   if (!userId) return setStatus($('inputStatus'), '⚠️ Vui lòng chọn thành viên', false);
   if (!date) return setStatus($('inputStatus'), '⚠️ Vui lòng chọn ngày ghi nhận', false);
-  if (binh <= 0) return setStatus($('inputStatus'), '⚠️ Số bình sịt phải lớn hơn 0', false);
+  if (binh <= 0) return setStatus($('inputStatus'), '⚠️ Số nhà phải lớn hơn 0', false);
 
   const member = allUsers[userId];
   if (!member) return setStatus($('inputStatus'), '⚠️ Không tìm thấy thông tin thành viên', false);
@@ -2044,7 +2045,7 @@ $('saveRecordBtn')?.addEventListener('click', async () => {
       timestamp: nowTs
     });
     optimisticRec.id = pushedRef.key;
-    logAudit('ADD_RECORD', 'Ghi Nhận Số Bình Sịt', `Ghi nhận +${binh} bình cho "${member.name || member.username}" (Ngày: ${fmtDate(date)})`);
+    logAudit('ADD_RECORD', 'Ghi Nhận Số Nhà', `Ghi nhận +${binh} nhà cho "${member.name || member.username}" (Ngày: ${fmtDate(date)})`);
     setStatus($('inputStatus'), '✅ Đã lưu bản ghi thành công!');
     $('inputBinh').value = '';
     if (window.SoundFX && typeof window.SoundFX.playSuccess === 'function') {
@@ -2061,7 +2062,7 @@ $('saveRecordBtn')?.addEventListener('click', async () => {
   }
 });
 
-// Phím tắt Enter cho ô nhập số bình sịt
+// Phím tắt Enter cho ô nhập số nhà
 $('inputBinh')?.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') $('saveRecordBtn')?.click();
 });
@@ -2079,7 +2080,7 @@ function renderRecentRecords() {
         <div class="empty-state-box" style="padding: 20px 12px;">
           <span class="empty-state-icon" style="font-size: 26px;">⏱️</span>
           <div class="empty-state-title" style="font-size: 13.5px;">Chưa có bản ghi nào gần đây</div>
-          <div class="empty-state-desc" style="font-size: 12px;">Nhập số lượng bình sịt ở biểu mẫu phía trên</div>
+          <div class="empty-state-desc" style="font-size: 12px;">Nhập số lượng nhà ở biểu mẫu phía trên</div>
         </div>
       </td></tr>`;
     return;
@@ -2118,7 +2119,7 @@ window.renderRecentRecords = renderRecentRecords;
 /* [MODULE: analytics.js] */
 /* ==========================================================================
    MODULE: BẢNG THỐNG KÊ DASHBOARD QUẢN TRỊ (EXECUTIVE ANALYTICS)
-   Thống kê chính xác số bình sịt, phi vụ, thành viên 100% THEO TUẦN (Thứ 2 -> CN)
+   Thống kê chính xác số nhà, phi vụ, thành viên 100% THEO TUẦN (Thứ 2 -> CN)
    Hiển thị rõ ràng tên Thứ và Ngày tháng, không bao giờ để lọt số index (6:)
    ========================================================================== */
 
@@ -2299,7 +2300,7 @@ function renderAnalyticsDashboard() {
 window.renderAnalyticsDashboard = renderAnalyticsDashboard;
 
 /* --------------------------------------------------------------------------
-   BIỂU ĐỒ 1: DOANH SỐ BÌNH SỊT THEO TUẦN (Areaspline Wave Chart 7 Ngày)
+   BIỂU ĐỒ 1: DOANH SỐ DỌN NHÀ THEO TUẦN (Areaspline Wave Chart 7 Ngày)
    -------------------------------------------------------------------------- */
 function renderChartRevenue(dayShortLabels, dayFullLabels, dayHomes, thisWeekHomes) {
   const container = document.getElementById('chartAnalyticsRevenue');
@@ -2354,7 +2355,7 @@ function renderChartRevenue(dayShortLabels, dayFullLabels, dayHomes, thisWeekHom
       style: { color: '#ffffff', fontSize: '13px', fontWeight: '700' },
       formatter: function() {
         const fullDay = this.point.fullName || dayFullLabels[this.point.x] || this.point.name || 'Hôm nay';
-        return `<b>${fullDay}</b><br/>Sản lượng: <b>${this.point.y.toLocaleString('vi-VN')} bình</b>`;
+        return `<b>${fullDay}</b><br/>Sản lượng: <b>${this.point.y.toLocaleString('vi-VN')} nhà</b>`;
       }
     },
     plotOptions: {
@@ -2387,14 +2388,14 @@ function renderChartRevenue(dayShortLabels, dayFullLabels, dayHomes, thisWeekHom
       }
     },
     series: [{
-      name: 'Số Bình Sịt',
+      name: 'Số Nhà Dọn',
       data: seriesData
     }]
   });
 }
 
 /* --------------------------------------------------------------------------
-   BIỂU ĐỒ 2: TỔNG QUAN PHI VỤ BÌNH SỊT THEO 7 NGÀY TRONG TUẦN (Spline Curve)
+   BIỂU ĐỒ 2: TỔNG QUAN PHI VỤ DỌN NHÀ THEO 7 NGÀY TRONG TUẦN (Spline Curve)
    -------------------------------------------------------------------------- */
 function renderChartOverview(dayShortLabels, dayFullLabels, dayTrips, thisWeekTrips) {
   const container = document.getElementById('chartAnalyticsOverview');
@@ -2441,7 +2442,7 @@ function renderChartOverview(dayShortLabels, dayFullLabels, dayTrips, thisWeekTr
       style: { color: '#ffffff', fontSize: '13px', fontWeight: '700' },
       formatter: function() {
         const fullDay = this.point.fullName || dayFullLabels[this.point.x] || this.point.name || 'Hôm nay';
-        return `<b>${fullDay}</b><br/>Thực hiện: <b>${this.point.y} lượt bình sịt</b>`;
+        return `<b>${fullDay}</b><br/>Thực hiện: <b>${this.point.y} lượt dọn</b>`;
       }
     },
     plotOptions: {
@@ -2467,7 +2468,7 @@ function renderChartOverview(dayShortLabels, dayFullLabels, dayTrips, thisWeekTr
       }
     },
     series: [{
-      name: 'Lượt Bình Sịt',
+      name: 'Lượt Dọn',
       data: seriesData
     }]
   });
@@ -2529,7 +2530,7 @@ function renderChartEarnings(dayShortLabels, dayFullLabels, dayHomes, thisWeekHo
       style: { color: '#ffffff', fontSize: '13px', fontWeight: '700' },
       formatter: function() {
         const fullDay = this.point.fullName || dayFullLabels[this.point.x] || this.point.name || 'Hôm nay';
-        return `<b>${fullDay}</b><br/>Sản lượng: <b>${this.point.y.toLocaleString('vi-VN')} bình</b>`;
+        return `<b>${fullDay}</b><br/>Sản lượng: <b>${this.point.y.toLocaleString('vi-VN')} nhà</b>`;
       }
     },
     plotOptions: {
@@ -2547,14 +2548,14 @@ function renderChartEarnings(dayShortLabels, dayFullLabels, dayHomes, thisWeekHo
       }
     },
     series: [{
-      name: 'Số Bình Sịt',
+      name: 'Số Nhà Dọn',
       data: seriesData
     }]
   });
 }
 
 /* --------------------------------------------------------------------------
-   BIỂU ĐỒ 4: TỶ LỆ BÌNH SỊT THEO THÀNH VIÊN TRONG TUẦN (Pie / Donut Chart)
+   BIỂU ĐỒ 4: TỶ LỆ DỌN NHÀ THEO THÀNH VIÊN TRONG TUẦN (Pie / Donut Chart)
    -------------------------------------------------------------------------- */
 function renderChartCustomers(userList, memberHomesMap, thisWeekHomes) {
   const container = document.getElementById('chartAnalyticsCustomers');
@@ -2592,7 +2593,7 @@ function renderChartCustomers(userList, memberHomesMap, thisWeekHomes) {
         legHtml += `
           <div class="analytics-legend-item">
             <span class="analytics-legend-dot" style="background:${p.color};"></span>
-            <span><b>${escHtml(p.name)}</b>: ${p.customHomes} bình (${p.y}%)</span>
+            <span><b>${escHtml(p.name)}</b>: ${p.customHomes} nhà (${p.y}%)</span>
           </div>
         `;
       });
@@ -2608,12 +2609,12 @@ function renderChartCustomers(userList, memberHomesMap, thisWeekHomes) {
       legendContainer.innerHTML = legHtml;
     }
   } else {
-    pieData = [{ name: 'Chưa có bình sịt', y: 100, color: '#94a3b8', customHomes: 0 }];
+    pieData = [{ name: 'Chưa có lượt dọn', y: 100, color: '#94a3b8', customHomes: 0 }];
     if (legendContainer) {
       legendContainer.innerHTML = `
         <div class="analytics-legend-item" style="color:#64748b;">
           <span class="analytics-legend-dot" style="background:#94a3b8;"></span>
-          <span>Chưa ghi nhận bình sịt nào trong tuần này</span>
+          <span>Chưa ghi nhận số nhà nào trong tuần này</span>
         </div>
       `;
     }
@@ -2640,7 +2641,7 @@ function renderChartCustomers(userList, memberHomesMap, thisWeekHomes) {
       shadow: true,
       style: { color: '#ffffff', fontSize: '13px', fontWeight: '700' },
       formatter: function() {
-        return `<b>${this.point.name}</b><br/>Sản lượng tuần: <b>${this.point.customHomes} bình</b> (<b>${this.point.y}%</b>)`;
+        return `<b>${this.point.name}</b><br/>Sản lượng tuần: <b>${this.point.customHomes} nhà</b> (<b>${this.point.y}%</b>)`;
       }
     },
     plotOptions: {
@@ -3236,7 +3237,7 @@ function renderMembersTable() {
   const search = ($('searchMemberInput')?.value || '').toLowerCase().trim();
   tb.innerHTML = '';
 
-  // 1. Tính toán tổng số bình sịt từng thành viên
+  // 1. Tính toán tổng số nhà từng thành viên
   const memberTotals = {};
   for (let i = 0; i < allRecords.length; i++) {
     const r = allRecords[i];
@@ -3260,7 +3261,7 @@ function renderMembersTable() {
 
   if ($('kpiMemberTotal')) $('kpiMemberTotal').textContent = `${totalAllMembers} anh em`;
   if ($('kpiMemberActive')) $('kpiMemberActive').textContent = `${activeMembersCount} / ${totalAllMembers} người`;
-  if ($('kpiMemberTop1')) $('kpiMemberTop1').textContent = top1MemberName && maxMemberHouses > 0 ? `${top1MemberName} (${maxMemberHouses} bình)` : 'Chưa có';
+  if ($('kpiMemberTop1')) $('kpiMemberTop1').textContent = top1MemberName && maxMemberHouses > 0 ? `${top1MemberName} (${maxMemberHouses} nhà)` : 'Chưa có';
   if ($('kpiMemberBailed')) {
     const totalBails = (window.fundLogs || []).filter(l => l.type === 'bail').length;
     $('kpiMemberBailed').textContent = `${totalBails} lượt`;
@@ -3378,7 +3379,7 @@ function renderMembersTable() {
       avatarBorder = '#ec4899';
       titleTag = '<span class="member-title-tag member-title-admin">🌸 Đại Tỷ Quản Trị</span>';
     } else if (totalBinh > 0 && globalIdx === 0 && currentMemberSort === 'houses-desc') {
-      titleTag = '<span class="member-title-tag member-title-top1">🏆 Vua Bình Sịt</span>';
+      titleTag = '<span class="member-title-tag member-title-top1">🏆 Vua Dọn Nhà</span>';
     } else if (totalBinh > 0 && globalIdx < 5 && currentMemberSort === 'houses-desc') {
       titleTag = '<span class="member-title-tag member-title-elite">🔥 Tinh Anh Crew</span>';
     } else if (totalBinh > 0) {
@@ -3393,7 +3394,7 @@ function renderMembersTable() {
 
     // 4. Trạng thái (Status Badge)
     const statusBadge = totalBinh > 0 
-      ? `<span style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:#ecfdf5;color:#047857;font-size:11.5px;font-weight:800;border:1px solid #a7f3d0;"><span style="width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;"></span>Đang Có Bình</span>`
+      ? `<span style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:#ecfdf5;color:#047857;font-size:11.5px;font-weight:800;border:1px solid #a7f3d0;"><span style="width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;"></span>Đang Nắm Nhà</span>`
       : `<span style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:#f1f5f9;color:#64748b;font-size:11.5px;font-weight:700;border:1px solid #e2e8f0;"><span style="width:7px;height:7px;border-radius:50%;background:#94a3b8;"></span>Sẵn Sàng</span>`;
 
     const tr = document.createElement('tr');
@@ -3421,7 +3422,7 @@ function renderMembersTable() {
           </div>
         </td>
         <td style="text-align:center;">
-          <span class="badge-house-pill ${totalBinh > 0 ? 'has-houses' : ''}" style="cursor:pointer;" title="Bấm để xem chi tiết">🏠 ${roundedHouses} bình</span>
+          <span class="badge-house-pill ${totalBinh > 0 ? 'has-houses' : ''}" style="cursor:pointer;" title="Bấm để xem chi tiết">🏠 ${roundedHouses} nhà</span>
         </td>
         <td style="text-align:center;">
           ${statusBadge}
@@ -3468,7 +3469,7 @@ function renderMembersTable() {
           </div>
         </td>
         <td style="text-align:center;">
-          <span class="badge-house-pill ${totalBinh > 0 ? 'has-houses' : ''}" style="cursor:pointer;" title="Bấm để xem chi tiết">🏠 ${roundedHouses} bình</span>
+          <span class="badge-house-pill ${totalBinh > 0 ? 'has-houses' : ''}" style="cursor:pointer;" title="Bấm để xem chi tiết">🏠 ${roundedHouses} nhà</span>
         </td>
         <td style="text-align:center;">
           ${statusBadge}
@@ -3532,7 +3533,7 @@ async function deleteMember(id) {
         type: 'danger',
         icon: '🗑️',
         message: countRecords > 0
-          ? `Đại ca có chắc chắn muốn xoá thành viên này?<br><span style="color:#dc2626;font-size:12.5px;font-weight:700;">⚠️ Thao tác này sẽ xoá luôn <b>${countRecords} bản ghi</b> (tổng ${Math.round(totalBinh * 100) / 100} bình). Không thể hoàn tác!</span>`
+          ? `Đại ca có chắc chắn muốn xoá thành viên này?<br><span style="color:#dc2626;font-size:12.5px;font-weight:700;">⚠️ Thao tác này sẽ xoá luôn <b>${countRecords} bản ghi</b> (tổng ${Math.round(totalBinh * 100) / 100} nhà). Không thể hoàn tác!</span>`
           : 'Đại ca có chắc chắn muốn xoá thành viên này khỏi hệ thống không? Dữ liệu sau khi xoá không thể khôi phục.',
         confirmText: '🗑️ Xoá Thành Viên',
         cancelText: '✕ Hủy Bỏ'
@@ -3548,16 +3549,16 @@ async function deleteMember(id) {
     });
     updates[`users/${id}`] = null;
     await db.ref().update(updates);
-    logAudit('DELETE_MEMBER', 'Xoá Thành Viên', `Xoá thành viên "${member.name}" cùng ${countRecords} bản ghi liên quan (tổng ${Math.round(totalBinh * 100) / 100} bình)`);
+    logAudit('DELETE_MEMBER', 'Xoá Thành Viên', `Xoá thành viên "${member.name}" cùng ${countRecords} bản ghi liên quan (tổng ${Math.round(totalBinh * 100) / 100} nhà)`);
     if (typeof showAlertModal === 'function') {
       showAlertModal({
         title: 'Thành Công',
-        message: `Đã xoá vĩnh viễn thành viên "${member.name}" và toàn bộ số bình sịt liên quan!`,
+        message: `Đã xoá vĩnh viễn thành viên "${member.name}" và toàn bộ số nhà liên quan!`,
         type: 'success',
         icon: '✅'
       });
     } else {
-      alert('✅ Đã xoá thành viên và toàn bộ bình sịt của người đó.');
+      alert('✅ Đã xoá thành viên và toàn bộ nhà của người đó.');
     }
   } catch (e) {
     if (typeof showAlertModal === 'function') {
@@ -3599,7 +3600,7 @@ function editMember(id) {
           <div class="modal-icon-badge">✏️</div>
           <div>
             <h3>Sửa Thông Tin Thành Viên</h3>
-            <span style="font-size:12px;color:var(--slate-500);font-weight:600;">Cập nhật tên &amp; tổng số bình sịt đang giữ</span>
+            <span style="font-size:12px;color:var(--slate-500);font-weight:600;">Cập nhật tên &amp; tổng số nhà đang giữ</span>
           </div>
         </div>
         <button class="modal-close-btn" id="closeEditM" title="Đóng">✕</button>
@@ -3612,13 +3613,13 @@ function editMember(id) {
       </div>
 
       <div class="form-group" style="margin-bottom:14px;">
-        <label for="editMBinh">Tổng số bình sịt hiện tại</label>
+        <label for="editMBinh">Tổng số nhà hiện tại</label>
         <input type="number" id="editMBinh" step="any" min="0" value="${roundedTotal}">
       </div>
 
       <p style="font-size:12px;color:var(--slate-500);margin:-4px 0 16px;line-height:1.5;">
-        ℹ️ Hiện có <b>${recCount}</b> bản ghi, tổng <b>${roundedTotal}</b> bình.<br>
-        Nếu bạn đổi tổng số bình sịt, các bản ghi cũ sẽ được <b>gộp lại thành 1 bản ghi mới</b> với ngày hôm nay.
+        ℹ️ Hiện có <b>${recCount}</b> bản ghi, tổng <b>${roundedTotal}</b> nhà.<br>
+        Nếu bạn đổi tổng nhà, các bản ghi cũ sẽ được <b>gộp lại thành 1 bản ghi mới</b> với ngày hôm nay.
       </p>
 
       <div class="modal-actions">
@@ -3672,16 +3673,16 @@ function editMember(id) {
     if (binhChanged) {
       const ok = (typeof showConfirmModal === 'function')
         ? await showConfirmModal({
-            title: 'Thay Đổi Số Bình Sịt',
+            title: 'Thay Đổi Số Nhà',
             targetName: m.name,
-            targetType: `${roundedTotal} bình → ${newBinh} bình`,
+            targetType: `${roundedTotal} nhà → ${newBinh} nhà`,
             type: 'warning',
             icon: '⚠️',
-            message: `Đại ca có chắc chắn muốn đổi tổng số bình sịt của thành viên này?<br><span style="color:#d97706;font-size:12.5px;font-weight:700;">⚠️ Toàn bộ ${recCount} bản ghi cũ sẽ được thay thế bằng 1 bản ghi mới. Không thể hoàn tác!</span>`,
+            message: `Đại ca có chắc chắn muốn đổi tổng số nhà của thành viên này?<br><span style="color:#d97706;font-size:12.5px;font-weight:700;">⚠️ Toàn bộ ${recCount} bản ghi cũ sẽ được thay thế bằng 1 bản ghi mới. Không thể hoàn tác!</span>`,
             confirmText: '⚡ Đồng Ý Đổi',
             cancelText: '✕ Hủy Bỏ'
           })
-        : confirm(`Đổi tổng số bình sịt của "${m.name}" từ ${roundedTotal} → ${newBinh}?`);
+        : confirm(`Đổi tổng số nhà của "${m.name}" từ ${roundedTotal} → ${newBinh}?`);
       if (!ok) return;
     }
 
@@ -3709,7 +3710,7 @@ function editMember(id) {
         await db.ref().update(updates);
         const changeDesc = [];
         if (nameChanged) changeDesc.push(`Đổi tên: "${m.name}" -> "${newName}"`);
-        if (binhChanged) changeDesc.push(`Đổi tổng số bình sịt: ${roundedTotal} -> ${newBinh} bình`);
+        if (binhChanged) changeDesc.push(`Đổi tổng số nhà: ${roundedTotal} -> ${newBinh} nhà`);
         logAudit('EDIT_MEMBER', 'Sửa Thành Viên', `Cập nhật thành viên "${m.name}": ${changeDesc.join(', ')}`);
       }
       overlay.remove();
@@ -3775,10 +3776,10 @@ function renderRecords() {
   const uniqueDays = new Set(filtered.map(r => r.date)).size;
   const avgPerDay = uniqueDays > 0 ? (roundedTotal / uniqueDays).toFixed(1) : 0;
 
-  if ($('recSumBinh')) $('recSumBinh').textContent = `${roundedTotal.toLocaleString('vi-VN')} bình`;
+  if ($('recSumBinh')) $('recSumBinh').textContent = `${roundedTotal.toLocaleString('vi-VN')} nhà`;
   if ($('recSumMembers')) $('recSumMembers').textContent = `${uniqueMembers} người`;
   if ($('recSumDays')) $('recSumDays').textContent = `${uniqueDays} ngày`;
-  if ($('recSumAvgDay')) $('recSumAvgDay').textContent = `${avgPerDay} bình/ngày`;
+  if ($('recSumAvgDay')) $('recSumAvgDay').textContent = `${avgPerDay} nhà/ngày`;
 
   if (!filtered.length) {
     if ($('recordsFilterCount')) {
@@ -3815,9 +3816,9 @@ function renderRecords() {
 
     if ($('recordsFilterCount')) {
       if (totalDays > RECORDS_PAGE_SIZE) {
-        $('recordsFilterCount').textContent = `Hiển thị ${startIndex + 1}-${Math.min(startIndex + pagedDays.length, totalDays)} / ${totalDays} ngày (${filtered.length} bản ghi • Tổng ${roundedTotal} bình) (Trang ${recordsCurrentPage}/${totalPages})`;
+        $('recordsFilterCount').textContent = `Hiển thị ${startIndex + 1}-${Math.min(startIndex + pagedDays.length, totalDays)} / ${totalDays} ngày (${filtered.length} bản ghi • Tổng ${roundedTotal} nhà) (Trang ${recordsCurrentPage}/${totalPages})`;
       } else {
-        $('recordsFilterCount').textContent = `Hiển thị ${filtered.length} / ${allRecords.length} bản ghi • Tổng ${roundedTotal} bình`;
+        $('recordsFilterCount').textContent = `Hiển thị ${filtered.length} / ${allRecords.length} bản ghi • Tổng ${roundedTotal} nhà`;
       }
     }
 
@@ -3853,9 +3854,9 @@ function renderRecords() {
             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
               <div class="day-group-total">
                 <span class="total-label">Tổng ngày:</span>
-                <span class="total-binh-badge">🏠 ${roundedDayTotal} bình</span>
+                <span class="total-binh-badge">🏠 ${roundedDayTotal} nhà</span>
               </div>
-              <button type="button" class="gold btn-sm" onclick="openDailyExportModal('${d}')" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;font-weight:700;font-size:12px;border-radius:8px;" title="Xuất báo cáo ảnh ngày ${fmtDate(d)}">
+              <button type="button" class="gold btn-sm" onclick="openDailyExportModal('${d}')" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;font-weight:700;font-size:12px;border-radius:8px;" title="Xuất báo cáo ảnh &amp; gửi Discord ngày ${fmtDate(d)}">
                 <span>📸 Báo Cáo Ngày</span>
               </button>
             </div>
@@ -3866,7 +3867,7 @@ function renderRecords() {
                 <tr>
                   <th style="width: 60px; text-align: center;">Hạng</th>
                   <th>Thành Viên</th>
-                  <th style="width: 150px; text-align: center;">Số Bình Sịt</th>
+                  <th style="width: 150px; text-align: center;">Số Nhà</th>
                   <th style="width: 220px;">Đóng Góp Ngày</th>
                   ${isAdmin() ? '<th style="width: 140px; text-align: right;">Thao Tác</th>' : ''}
                 </tr>
@@ -3893,7 +3894,7 @@ function renderRecords() {
               </span>
             </td>
             <td style="text-align: center;">
-              <span class="badge-house-pill">🏠 ${r.binh ?? 0} bình</span>
+              <span class="badge-house-pill">🏠 ${r.binh ?? 0} nhà</span>
             </td>
             <td>
               <div class="mini-progress-wrap">
@@ -3965,9 +3966,9 @@ function renderRecords() {
 
     if ($('recordsFilterCount')) {
       if (totalMembers > RECORDS_PAGE_SIZE) {
-        $('recordsFilterCount').textContent = `Hiển thị ${startIndex + 1}-${Math.min(startIndex + pagedMembers.length, totalMembers)} / ${totalMembers} thành viên (${filtered.length} bản ghi • Tổng ${roundedTotal} bình) (Trang ${recordsCurrentPage}/${totalPages})`;
+        $('recordsFilterCount').textContent = `Hiển thị ${startIndex + 1}-${Math.min(startIndex + pagedMembers.length, totalMembers)} / ${totalMembers} thành viên (${filtered.length} bản ghi • Tổng ${roundedTotal} nhà) (Trang ${recordsCurrentPage}/${totalPages})`;
       } else {
-        $('recordsFilterCount').textContent = `Hiển thị ${filtered.length} / ${allRecords.length} bản ghi • Tổng ${roundedTotal} bình`;
+        $('recordsFilterCount').textContent = `Hiển thị ${filtered.length} / ${allRecords.length} bản ghi • Tổng ${roundedTotal} nhà`;
       }
     }
 
@@ -3987,7 +3988,7 @@ function renderRecords() {
               <div class="member-card-name">${escHtml(m.name)}</div>
             </div>
             <div style="text-align: right;">
-              <div class="member-card-total">🏠 ${roundedMTotal} bình</div>
+              <div class="member-card-total">🏠 ${roundedMTotal} nhà</div>
               <span style="font-size: 12px; font-weight: 700; color: var(--text-muted);">${pct}% toàn đội</span>
             </div>
           </div>
@@ -4006,7 +4007,7 @@ function renderRecords() {
           html += `
             <div class="member-date-item">
               <span>📅 ${fmtDate(date)}</span>
-              <span class="date-val">+${Math.round(val * 100) / 100} bình</span>
+              <span class="date-val">+${Math.round(val * 100) / 100} nhà</span>
             </div>
           `;
         });
@@ -4050,9 +4051,9 @@ function renderRecords() {
 
   if ($('recordsFilterCount')) {
     if (totalRecs > RECORDS_PAGE_SIZE) {
-      $('recordsFilterCount').textContent = `Hiển thị ${startIndex + 1}-${Math.min(startIndex + pagedRecs.length, totalRecs)} / ${totalRecs} bản ghi • Tổng ${roundedTotal} bình (Trang ${recordsCurrentPage}/${totalPages})`;
+      $('recordsFilterCount').textContent = `Hiển thị ${startIndex + 1}-${Math.min(startIndex + pagedRecs.length, totalRecs)} / ${totalRecs} bản ghi • Tổng ${roundedTotal} nhà (Trang ${recordsCurrentPage}/${totalPages})`;
     } else {
-      $('recordsFilterCount').textContent = `Hiển thị ${filtered.length} / ${allRecords.length} bản ghi • Tổng ${roundedTotal} bình`;
+      $('recordsFilterCount').textContent = `Hiển thị ${filtered.length} / ${allRecords.length} bản ghi • Tổng ${roundedTotal} nhà`;
     }
   }
 
@@ -4066,7 +4067,7 @@ function renderRecords() {
           <tr>
             <th style="width: 140px;">Ngày</th>
             <th>Thành Viên</th>
-            <th style="width: 150px; text-align: center;">Số Bình Sịt</th>
+            <th style="width: 150px; text-align: center;">Số Nhà</th>
             ${flatActionTh}
           </tr>
         </thead>
@@ -4085,7 +4086,7 @@ function renderRecords() {
       <tr>
         <td><b>${fmtDate(r.date)}</b></td>
         <td><span style="font-weight: 800; color: var(--text-dark);">${escHtml(r.userName || '')}</span></td>
-        <td style="text-align: center;"><span class="badge-house-pill">🏠 ${r.binh ?? 0} bình</span></td>
+        <td style="text-align: center;"><span class="badge-house-pill">🏠 ${r.binh ?? 0} nhà</span></td>
         ${flatActionTd}
       </tr>
     `;
@@ -4096,7 +4097,7 @@ function renderRecords() {
         <tfoot class="table-footer-total">
           <tr>
             <td colspan="2">🌟 TỔNG CỘNG (${filtered.length} bản ghi)</td>
-            <td style="text-align: center;"><span class="badge-house-pill" style="font-size: 16px;">🔥 ${roundedTotal} bình</span></td>
+            <td style="text-align: center;"><span class="badge-house-pill" style="font-size: 16px;">🔥 ${roundedTotal} nhà</span></td>
             ${flatEmptyTd}
           </tr>
         </tfoot>
@@ -4160,7 +4161,7 @@ function editRecord(id) {
           <div class="modal-icon-badge">✏️</div>
           <div>
             <h3>Chỉnh Sửa Bản Ghi</h3>
-            <span style="font-size:12px;color:var(--slate-500);font-weight:600;">Cập nhật ngày và số lượng bình</span>
+            <span style="font-size:12px;color:var(--slate-500);font-weight:600;">Cập nhật ngày và số lượng nhà</span>
           </div>
         </div>
         <button class="modal-close-btn" id="closeEditR" title="Đóng">✕</button>
@@ -4177,7 +4178,7 @@ function editRecord(id) {
       </div>
 
       <div class="form-group" style="margin-bottom:18px;">
-        <label for="editRBinh">Số lượng bình sịt *</label>
+        <label for="editRBinh">Số lượng nhà *</label>
         <input type="number" id="editRBinh" min="0" step="any" value="${r.binh ?? 0}">
       </div>
 
@@ -4204,7 +4205,7 @@ function editRecord(id) {
     if (!date) return alert('Vui lòng chọn ngày');
     try {
       await recordsRef.child(id).update({ date, binh });
-      logAudit('EDIT_RECORD', 'Sửa Bản Ghi', `Sửa bản ghi của "${r.userName}": ngày ${fmtDate(r.date)} -> ${fmtDate(date)}, số bình sịt ${r.binh} -> ${binh} bình`);
+      logAudit('EDIT_RECORD', 'Sửa Bản Ghi', `Sửa bản ghi của "${r.userName}": ngày ${fmtDate(r.date)} -> ${fmtDate(date)}, số nhà ${r.binh} -> ${binh} nhà`);
       overlay.remove();
       alert('✅ Đã cập nhật bản ghi thành công!');
     } catch (e) {
@@ -4223,23 +4224,23 @@ async function deleteRecord(id) {
   const r = allRecords.find(x => x.id === id);
   const ok = (typeof showConfirmModal === 'function')
     ? await showConfirmModal({
-        title: 'Xoá Bản Ghi Bình Sịt',
-        targetName: r ? `${r.userName} (${r.binh} bình)` : 'Bản ghi bình sịt',
+        title: 'Xoá Bản Ghi Trộm Nhà',
+        targetName: r ? `${r.userName} (${r.binh} nhà)` : 'Bản ghi trộm nhà',
         targetType: r ? `Ngày: ${fmtDate(r.date)}` : '',
         type: 'danger',
         icon: '🗑️',
-        message: 'Đại ca có chắc chắn muốn xoá bản ghi này khỏi hệ thống không?<br><span style="color:#dc2626;font-size:12.5px;font-weight:700;">⚠️ Thao tác này sẽ làm giảm tổng số bình sịt của thành viên và không thể hoàn tác!</span>',
+        message: 'Đại ca có chắc chắn muốn xoá bản ghi này khỏi hệ thống không?<br><span style="color:#dc2626;font-size:12.5px;font-weight:700;">⚠️ Thao tác này sẽ làm giảm tổng số nhà đã trộm của thành viên và không thể hoàn tác!</span>',
         confirmText: '🗑️ Xoá Bản Ghi',
         cancelText: '✕ Hủy Bỏ'
       })
-    : confirm(`Bạn có chắc muốn xoá bản ghi ngày ${r ? fmtDate(r.date) : ''} (${r ? r.binh : 0} bình) của "${r ? r.userName : ''}" không?`);
+    : confirm(`Bạn có chắc muốn xoá bản ghi ngày ${r ? fmtDate(r.date) : ''} (${r ? r.binh : 0} nhà) của "${r ? r.userName : ''}" không?`);
 
   if (!ok) return;
 
   try {
     await recordsRef.child(id).remove();
     if (r) {
-      logAudit('DELETE_RECORD', 'Xoá Bản Ghi', `Xoá bản ghi ngày ${fmtDate(r.date)} (${r.binh} bình) của "${r.userName}"`);
+      logAudit('DELETE_RECORD', 'Xoá Bản Ghi', `Xoá bản ghi ngày ${fmtDate(r.date)} (${r.binh} nhà) của "${r.userName}"`);
     }
   } catch (e) {
     alert('❌ Lỗi: ' + e.message);
@@ -4248,22 +4249,75 @@ async function deleteRecord(id) {
 window.deleteRecord = deleteRecord;
 
 /* ==========================================================================
-   SECTION: XUẤT BẢN ẢNH BÁO CÁO NGÀY (TẢI TRỰC TIẾP VỀ MÁY TÍNH)
+   SECTION: XUẤT BẢN ẢNH BÁO CÁO NGÀY & GỬI DISCORD BOT THEO YÊU CẦU ĐẠI CA
    ========================================================================== */
 
-const DISCORD_BOT_INVITE_URL = '';
-function showDiscordBotHelpModal(msg, inviteUrl) {}
+const DISCORD_BOT_INVITE_URL = 'https://discord.com/api/oauth2/authorize?client_id=1561984275585302619&permissions=8&scope=bot';
+
+/**
+ * Hiển thị Modal hướng dẫn và cung cấp link 1-click mời Bot vào Server
+ */
+function showDiscordBotHelpModal(msg, inviteUrl) {
+  const url = inviteUrl || DISCORD_BOT_INVITE_URL;
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-box" style="max-width: 520px; text-align: left;">
+      <div class="modal-header-fancy">
+        <div class="modal-title-group">
+          <div class="modal-icon-badge" style="background:#fee2e2;color:#dc2626;">🤖</div>
+          <div>
+            <h3>Cần Mời Bot Vào Server Discord</h3>
+            <span style="font-size:12px;color:var(--slate-500);font-weight:600;">Bot THÔNG BÁO (ID: 1561984275585302619)</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeBotHelpModal" title="Đóng">✕</button>
+      </div>
+
+      <div style="background:#fef2f2;border:1.5px solid #fecaca;padding:14px;border-radius:12px;margin-bottom:16px;">
+        <div style="font-weight:800;color:#991b1b;margin-bottom:6px;">⚠️ Phản hồi từ Discord:</div>
+        <div style="font-size:13.5px;color:#7f1d1d;line-height:1.5;">${escHtml(msg || 'Bot chưa được thêm vào Server Discord hoặc chưa có quyền xem và gửi tin nhắn trong kênh!')}</div>
+      </div>
+
+      <div style="font-size:13.5px;color:var(--text-dark);line-height:1.6;margin-bottom:18px;">
+        👉 <b>Đại ca chỉ cần 1 cú click</b> vào nút bên dưới để Mời Bot "THÔNG BÁO" vào Server Discord của mình:
+      </div>
+
+      <div class="modal-actions" style="justify-content: space-between;">
+        <button type="button" class="secondary" id="cancelBotHelpBtn">Đóng</button>
+        <a href="${url}" target="_blank" rel="noopener noreferrer" class="gold btn-sm" style="background:#5865F2;color:#fff;border-color:#4752C4;padding:10px 18px;border-radius:10px;text-decoration:none;font-weight:800;display:inline-flex;align-items:center;gap:8px;">
+          <span>🔗 Mời Bot Vào Server Ngay</span>
+        </a>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  const closeModal = () => overlay.remove();
+  overlay.querySelector('#closeBotHelpModal').onclick = closeModal;
+  overlay.querySelector('#cancelBotHelpBtn').onclick = closeModal;
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+}
 window.showDiscordBotHelpModal = showDiscordBotHelpModal;
 
 /**
  * Gửi dữ liệu và ảnh báo cáo về máy chủ API Discord (Vercel Serverless API)
  */
-const DISCORD_WEBHOOK_MAP = {};
+const DISCORD_WEBHOOK_MAP = {
+  '1561985181802569761': 'https://discord.com/api/webhooks/1562002219937833011/Sn6wUZXwEzFNodeYO0N4Ft6iqN2OfEoq0MvRidSW52SYHR9XP1R9dBuC_qHCdU1Ta9jf',
+  '1561985096943276042': 'https://discord.com/api/webhooks/1562002222676705402/1CVBZjf-7XxbqbYLLUhWntTo5Uu3Bia8t_hR1a8NLjQbt4-kFBCgJdOb4kDlDLgDKHbn',
+  '1561985235422281760': 'https://discord.com/api/webhooks/1562002226149589082/LUgKLx5rGtFAJipWVOSG9Wbyyd9RsZl6BNhr-kU_zjl6dazMvqVkUPkpoTfV0MijyMJQ',
+  '1562063584496844841': 'https://discord.com/api/webhooks/1562064288380616795/Q7Z9DKmhxof_LremjlQ26NymeLZQWzZiJywzNEzjGXCeZuG6uWqMI33n9oEcKH2AfVkK',
+  'backup': 'https://discord.com/api/webhooks/1562064288380616795/Q7Z9DKmhxof_LremjlQ26NymeLZQWzZiJywzNEzjGXCeZuG6uWqMI33n9oEcKH2AfVkK',
+  'daily': 'https://discord.com/api/webhooks/1562002219937833011/Sn6wUZXwEzFNodeYO0N4Ft6iqN2OfEoq0MvRidSW52SYHR9XP1R9dBuC_qHCdU1Ta9jf',
+  'weekly': 'https://discord.com/api/webhooks/1562002222676705402/1CVBZjf-7XxbqbYLLUhWntTo5Uu3Bia8t_hR1a8NLjQbt4-kFBCgJdOb4kDlDLgDKHbn',
+  'fund': 'https://discord.com/api/webhooks/1562002226149589082/LUgKLx5rGtFAJipWVOSG9Wbyyd9RsZl6BNhr-kU_zjl6dazMvqVkUPkpoTfV0MijyMJQ'
+};
 
 function formatDiscordReportPayload({ type, title, date, stats, customContent, filename }) {
   let messageContent = [
     `🌐 **WEBSITE:** https://quan-ly-seven.vercel.app/`,
-    `👉 **AE TỰ VÀO CHECK BÌNH SỊT MÌNH LẤY ĐƯỢC MẤY BÌNH NHÉ .**`
+    `👉 **AE TỰ VÀO CHECK NHÀ MÌNH LẤY ĐƯỢC MẤY CĂN NHÉ .**`
   ].join('\n');
 
   const embeds = [];
@@ -4277,19 +4331,19 @@ function formatDiscordReportPayload({ type, title, date, stats, customContent, f
     const top1 = stats?.top1;
 
     const fields = [
-      { name: '🥫 Tổng số bình sịt hoàn thành', value: `>>> **${houses} bình**`, inline: true },
+      { name: '🏠 Tổng số nhà hoàn thành', value: `>>> **${houses} nhà**`, inline: true },
       { name: '👥 Số anh em tham gia', value: `>>> **${members} người**`, inline: true }
     ];
     if (top1) {
       fields.push({
         name: '🥇 Top 1 Ngày',
-        value: `>>> **${top1.name}** *(${top1.houses} bình)*`,
+        value: `>>> **${top1.name}** *(${top1.houses} nhà)*`,
         inline: false
       });
     }
 
     embeds.push({
-      title: `📢 BÁO CÁO THÀNH TÍCH BÌNH SỊT NGÀY ${dayDate}`,
+      title: `📢 BÁO CÁO THÀNH TÍCH TRỘM NHÀ NGÀY ${dayDate}`,
       color: 16107019, // Vàng hổ phách #f59e0b
       fields
     });
@@ -4298,11 +4352,11 @@ function formatDiscordReportPayload({ type, title, date, stats, customContent, f
     const members = stats?.memberCount ?? 0;
 
     embeds.push({
-      title: title || '🏆 BẢNG TỔNG KẾT SỐ BÌNH SỊT CHU KỲ / HÀNG TUẦN',
+      title: title || '🏆 BẢNG TỔNG KẾT SỐ NHÀ CHU KỲ / HÀNG TUẦN',
       color: 15105570, // Cam rực rỡ #e67e22
       fields: [
-        { name: '🥫 Tổng số bình sịt toàn đội', value: `>>> **${houses} bình**`, inline: true },
-        { name: '👥 Số thành viên có bình sịt', value: `>>> **${members} người**`, inline: true }
+        { name: '🏠 Tổng số nhà toàn đội', value: `>>> **${houses} nhà**`, inline: true },
+        { name: '👥 Số thành viên có nhà', value: `>>> **${members} người**`, inline: true }
       ]
     });
   } else if (type === 'fund' || type === 'fund_weekly') {
@@ -4334,15 +4388,15 @@ function formatDiscordReportPayload({ type, title, date, stats, customContent, f
     messageContent = [
       `💾 **HỆ THỐNG SAO LƯU DỮ LIỆU CHU KỲ CREW LƯỠI BÚA** 💾`,
       `🌐 **WEBSITE:** <https://quan-ly-seven.vercel.app/>`,
-      `👉 **AE TỰ VÀO CHECK BÌNH SỊT MÌNH LẤY ĐƯỢC MẤY BÌNH NHÉ .**`
+      `👉 **AE TỰ VÀO CHECK NHÀ MÌNH LẤY ĐƯỢC MẤY CĂN NHÉ .**`
     ].join('\n');
 
     embeds.push({
-      title: title || '📦 BẢN SAO LƯU TOÀN BỘ SỐ BÌNH SỊT & QUỸ CHUỘC TÙ (BẢO LƯU)',
+      title: title || '📦 BẢN SAO LƯU TOÀN BỘ SỐ NHÀ & QUỸ CHUỘC TÙ (BẢO LƯU)',
       color: 1752220, // Xanh dương #1ab7ea
       fields: [
-        { name: '🥫 Tổng số bình sịt chu kỳ', value: `>>> **${totalHouses} bình**`, inline: true },
-        { name: '👥 Thành viên có bình sịt', value: `>>> **${memberCount} người**`, inline: true },
+        { name: '🏠 Tổng số nhà chu kỳ', value: `>>> **${totalHouses} nhà**`, inline: true },
+        { name: '👥 Thành viên có nhà', value: `>>> **${memberCount} người**`, inline: true },
         { name: '💵 Số dư quỹ bảo lưu', value: `>>> **${Number(currentFund).toLocaleString('vi-VN')}đ**`, inline: true },
         { name: '🚨 Tổng tiền chuộc tù', value: `>>> **${Number(totalBail).toLocaleString('vi-VN')}đ** *(${bailCount} lượt)*`, inline: true }
       ],
@@ -4416,13 +4470,98 @@ async function sendViaDiscordWebhook({ webhookUrl, content, embeds, imageBase64,
   }
 }
 
-async function sendDiscordReport() {
-  return { success: false, message: 'Đã gỡ bỏ tính năng gửi Discord theo lệnh Đại ca.' };
+async function sendDiscordReport({ type, targetChannelId, title, date, stats, imageBase64, customContent, extraFile }) {
+  if (!isAdmin()) {
+    return {
+      success: false,
+      message: '⛔ Bạn đang ở trang xem thành viên (index.html). Chỉ Quản Trị Viên tại trang Quản Trị (admin.html) mới có quyền gửi báo cáo về Discord!'
+    };
+  }
+
+  const isLocal = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
+  const targetKey = targetChannelId || type;
+  const webhookUrl = DISCORD_WEBHOOK_MAP[targetKey] || DISCORD_WEBHOOK_MAP[type];
+
+  // Nếu đang chạy local (localhost:8080) không có Vercel serverless runtime, gửi thẳng qua Discord Webhook
+  if (isLocal && webhookUrl) {
+    const filename = `bao-cao-${type}-${Date.now()}.png`;
+    const { messageContent, embeds } = formatDiscordReportPayload({ type, title, date, stats, customContent, filename });
+    return await sendViaDiscordWebhook({
+      webhookUrl,
+      content: messageContent,
+      embeds,
+      imageBase64,
+      filename,
+      extraFile
+    });
+  }
+
+  // Trên môi trường deploy Vercel
+  const bodyData = JSON.stringify({
+    type,
+    customChannelId: targetChannelId,
+    title,
+    date,
+    stats,
+    imageBase64,
+    customContent,
+    extraFile
+  });
+
+  try {
+    const res = await fetch('/api/discord-notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: bodyData
+    });
+
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      const data = await res.json();
+      return data;
+    } else {
+      // Nếu API trả về HTML 404 (chưa deploy Vercel Function), tự động fallback sang Webhook
+      if (webhookUrl) {
+        const filename = `bao-cao-${type}-${Date.now()}.png`;
+        const { messageContent, embeds } = formatDiscordReportPayload({ type, title, date, stats, customContent, filename });
+        return await sendViaDiscordWebhook({
+          webhookUrl,
+          content: messageContent,
+          embeds,
+          imageBase64,
+          filename,
+          extraFile
+        });
+      }
+      return {
+        success: false,
+        message: `Máy chủ trả về dữ liệu không hợp lệ (${res.status}).`
+      };
+    }
+  } catch (err) {
+    // Nếu lỗi kết nối API, fallback sang Webhook
+    if (webhookUrl) {
+      const filename = `bao-cao-${type}-${Date.now()}.png`;
+      const { messageContent, embeds } = formatDiscordReportPayload({ type, title, date, stats, customContent, filename });
+      return await sendViaDiscordWebhook({
+        webhookUrl,
+        content: messageContent,
+        embeds,
+        imageBase64,
+        filename,
+        extraFile
+      });
+    }
+    return {
+      success: false,
+      message: 'Không thể kết nối đến máy chủ API: ' + err.message
+    };
+  }
 }
 window.sendDiscordReport = sendDiscordReport;
 
 /**
- * Mở modal chọn ngày để xuất báo cáo ảnh tải về máy tính
+ * Mở modal chọn ngày để xuất báo cáo ảnh & gửi Discord
  */
 function openDailyExportModal(defaultDate) {
   const chosenDate = defaultDate || $('filterRecordDate')?.value || todayStr();
@@ -4469,8 +4608,8 @@ function openDailyExportModal(defaultDate) {
         <div class="modal-title-group">
           <div class="modal-icon-badge" style="background:#fef3c7;color:#b45309;">📸</div>
           <div>
-            <h3>Xuất Báo Cáo Ảnh Ngày</h3>
-            <span style="font-size:12px;color:var(--slate-500);font-weight:600;">Tạo ảnh bảng thống kê sắc nét tải về máy tính</span>
+            <h3>Xuất Báo Cáo Ngày &amp; Gửi Discord</h3>
+            <span style="font-size:12px;color:var(--slate-500);font-weight:600;">Kèm văn bản check nhà trên Website &amp; Dấu đỏ</span>
           </div>
         </div>
         <button class="modal-close-btn" id="closeDailyExportModal" title="Đóng">✕</button>
@@ -4488,8 +4627,8 @@ function openDailyExportModal(defaultDate) {
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
           <div style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #fef3c7;">
-            <div style="font-size:11px;color:#78350f;font-weight:700;">🥫 Tổng số bình sịt:</div>
-            <div id="metricTotalHouses" style="font-size:18px;font-weight:900;color:#b45309;">${initialMetrics.totalHouses} bình</div>
+            <div style="font-size:11px;color:#78350f;font-weight:700;">🏠 Tổng số nhà:</div>
+            <div id="metricTotalHouses" style="font-size:18px;font-weight:900;color:#b45309;">${initialMetrics.totalHouses} nhà</div>
           </div>
           <div style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #fef3c7;">
             <div style="font-size:11px;color:#78350f;font-weight:700;">👥 Anh em tham gia:</div>
@@ -4497,16 +4636,32 @@ function openDailyExportModal(defaultDate) {
           </div>
         </div>
         <div style="font-size:12.5px;color:#475569;font-weight:700;">
-          🥇 Top 1 ngày: <span id="metricTop1" style="color:#b45309;font-weight:800;">${initialMetrics.top1 ? `${initialMetrics.top1.name} (${initialMetrics.top1.houses} bình)` : 'Chưa ghi nhận'}</span>
+          🥇 Top 1 ngày: <span id="metricTop1" style="color:#b45309;font-weight:800;">${initialMetrics.top1 ? `${initialMetrics.top1.name} (${initialMetrics.top1.houses} nhà)` : 'Chưa ghi nhận'}</span>
         </div>
       </div>
 
-      <div class="modal-actions" style="flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:16px;">
-        <button type="button" class="secondary" id="cancelDailyExportBtn">Đóng</button>
+      <!-- KHUNG VĂN BẢN ĐÍNH KÈM (THEO YÊU CẦU ĐẠI CA) -->
+      <div style="background:#fff8ee;border:2px dashed #b45309;padding:14px;border-radius:12px;margin-bottom:18px;">
+        <div style="font-size:11px;font-weight:900;color:#92400e;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">
+          ✦ VĂN BẢN ĐÍNH KÈM THÔNG BÁO WEBSITE ✦
+        </div>
+        <div style="font-size:13px;font-weight:800;color:#1e293b;line-height:1.5;">
+          WEBSITE <a href="https://quan-ly-seven.vercel.app/" target="_blank" style="color:#2563eb;text-decoration:underline;">https://quan-ly-seven.vercel.app/</a><br>
+          <span style="color:#b45309;font-size:13.5px;font-weight:900;">AE TỰ VÀO CHECK NHÀ MÌNH LẤY ĐƯỢC MẤY CĂN NHÉ .</span>
+        </div>
+      </div>
+
+      <div class="modal-actions" style="flex-wrap:wrap;gap:8px;justify-content:flex-end;">
+        <button type="button" class="secondary" id="cancelDailyExportBtn">Huỷ</button>
         <button type="button" class="gold" id="exportDailyCsvBtn" style="background:#059669;color:#fff;border-color:#047857;font-weight:800;display:inline-flex;align-items:center;gap:6px;">
           <span>📊 Xuất Excel / CSV</span>
         </button>
-        <button type="button" class="green" id="previewDailyExportBtn">📸 Tải Xuống Ảnh PNG</button>
+        <button type="button" class="green" id="previewDailyExportBtn">📸 Xem &amp; Tải Ảnh</button>
+        ${isAdmin() ? `
+        <button type="button" class="gold" id="sendDirectDiscordBtn" style="background:#5865F2;color:#fff;border-color:#4752C4;font-weight:800;display:inline-flex;align-items:center;gap:6px;">
+          <span>🚀 Gửi Discord</span>
+        </button>
+        ` : ''}
       </div>
     </div>
   `;
@@ -4523,9 +4678,9 @@ function openDailyExportModal(defaultDate) {
     if (!curVal) return;
     const m = getDayMetrics(curVal);
     metricDateStr.textContent = fmtDate(m.date);
-    metricTotalHouses.textContent = `${m.totalHouses} bình`;
+    metricTotalHouses.textContent = `${m.totalHouses} nhà`;
     metricMemberCount.textContent = `${m.memberCount} người`;
-    metricTop1.textContent = m.top1 ? `${m.top1.name} (${m.top1.houses} bình)` : 'Chưa ghi nhận';
+    metricTop1.textContent = m.top1 ? `${m.top1.name} (${m.top1.houses} nhà)` : 'Chưa ghi nhận';
   });
 
   const closeModal = () => overlay.remove();
@@ -4552,13 +4707,25 @@ function openDailyExportModal(defaultDate) {
     };
   }
 
+  if (overlay.querySelector('#sendDirectDiscordBtn')) {
+    overlay.querySelector('#sendDirectDiscordBtn').onclick = () => {
+      if (!isAdmin()) {
+        alert('⛔ Bạn đang ở trang xem (index.html). Chỉ Quản Trị Viên (admin.html) mới có quyền gửi báo cáo về Discord!');
+        return;
+      }
+      const targetDate = dateInp.value;
+      if (!targetDate) return alert('Vui lòng chọn ngày báo cáo!');
+      overlay.remove();
+      generateDailyRecordReport(targetDate, true);
+    };
+  }
 }
 window.openDailyExportModal = openDailyExportModal;
 
 /**
- * Tạo ảnh báo cáo thành tích ngày tải về máy tính
+ * Tạo ảnh báo cáo thành tích ngày và gửi Discord
  */
-async function generateDailyRecordReport(targetDate) {
+async function generateDailyRecordReport(targetDate, autoSendDiscord = false) {
   const dayRecs = allRecords.filter(r => r.date === targetDate);
   const totalHouses = Math.round(dayRecs.reduce((s, r) => s + (Number(r.binh) || 0), 0) * 100) / 100;
 
@@ -4613,7 +4780,7 @@ async function generateDailyRecordReport(targetDate) {
     rowsHtml = `
       <tr>
         <td colspan="4" style="padding:28px;text-align:center;font-weight:700;color:#64748b;font-style:italic;background:#fff;">
-          Ngày ${fmtDate(targetDate)} chưa có dữ liệu bản ghi số bình sịt nào.
+          Ngày ${fmtDate(targetDate)} chưa có dữ liệu bản ghi số nhà nào.
         </td>
       </tr>
     `;
@@ -4632,7 +4799,7 @@ async function generateDailyRecordReport(targetDate) {
           </td>
           <td style="padding:16px 20px;text-align:center;">
             <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:999px;border:1.5px solid #f59e0b;background:#fff8ee;color:#b45309;font-weight:900;font-size:14px;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
-              🥫 ${Math.round(m.binh * 100) / 100} bình
+              🏠 ${Math.round(m.binh * 100) / 100} nhà
             </span>
           </td>
           <td style="padding:16px 24px;">
@@ -4666,7 +4833,7 @@ async function generateDailyRecordReport(targetDate) {
           </div>
           <div style="display:flex;align-items:center;gap:10px;">
             <span style="font-size:14px;font-weight:700;color:#64748b;">Tổng ngày:</span>
-            <span style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#ffffff;font-size:16px;font-weight:900;padding:6px 18px;border-radius:999px;box-shadow:0 3px 10px rgba(245,158,11,0.35);">🏠 ${totalHouses} bình</span>
+            <span style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#ffffff;font-size:16px;font-weight:900;padding:6px 18px;border-radius:999px;box-shadow:0 3px 10px rgba(245,158,11,0.35);">🏠 ${totalHouses} nhà</span>
           </div>
         </div>
 
@@ -4676,7 +4843,7 @@ async function generateDailyRecordReport(targetDate) {
             <tr style="background:#f8fafc;border-bottom:1.5px solid #e2e8f0;">
               <th style="padding:14px 18px;width:90px;text-align:center;font-size:12px;font-weight:800;color:#64748b;letter-spacing:1px;text-transform:uppercase;">HẠNG</th>
               <th style="padding:14px 20px;text-align:left;font-size:12px;font-weight:800;color:#64748b;letter-spacing:1px;text-transform:uppercase;">THÀNH VIÊN</th>
-              <th style="padding:14px 20px;width:180px;text-align:center;font-size:12px;font-weight:800;color:#64748b;letter-spacing:1px;text-transform:uppercase;">SỐ BÌNH SỊT</th>
+              <th style="padding:14px 20px;width:180px;text-align:center;font-size:12px;font-weight:800;color:#64748b;letter-spacing:1px;text-transform:uppercase;">SỐ NHÀ</th>
               <th style="padding:14px 24px;width:240px;text-align:left;font-size:12px;font-weight:800;color:#64748b;letter-spacing:1px;text-transform:uppercase;">ĐÓNG GÓP NGÀY</th>
             </tr>
           </thead>
@@ -4689,7 +4856,7 @@ async function generateDailyRecordReport(targetDate) {
                 🌟 TỔNG CỘNG NGÀY ${fmtDate(targetDate)}: ${memberCount} ANH EM
               </td>
               <td style="padding:16px 20px;text-align:center;">
-                <span style="font-size:17px;color:#b45309;font-weight:900;">🔥 ${totalHouses} bình</span>
+                <span style="font-size:17px;color:#b45309;font-weight:900;">🔥 ${totalHouses} nhà</span>
               </td>
               <td style="padding:16px 24px;font-size:13.5px;color:#16a34a;font-weight:800;">
                 ✓ 100% hoàn thành
@@ -4698,7 +4865,21 @@ async function generateDailyRecordReport(targetDate) {
           </tfoot>
         </table>
 
-        
+        <!-- 3. KHUNG THÔNG BÁO WEBSITE CHÍNH THỨC CỦA ĐẠI CA -->
+        <div style="margin:26px 24px 22px 24px;background:#fff8ee;border:2.5px solid #d97706;border-radius:14px;padding:22px 26px;text-align:center;box-shadow:inset 0 0 10px rgba(217,119,6,0.08);">
+          <div style="display:inline-block;background:#b45309;color:#fff;padding:5px 18px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">
+            ✦ THÔNG BÁO TỪ BAN QUẢN LÝ CREW LƯỠI BÚA ✦
+          </div>
+          <div style="font-size:16.5px;font-weight:900;color:#0f172a;letter-spacing:0.5px;margin-bottom:6px;">
+            🌐 WEBSITE: <span style="color:#b45309;text-decoration:underline;">https://quan-ly-seven.vercel.app/</span>
+          </div>
+          <div style="font-size:18px;font-weight:900;color:#b45309;letter-spacing:0.5px;margin-bottom:6px;">
+            👉 AE TỰ VÀO CHECK NHÀ MÌNH LẤY ĐƯỢC MẤY CĂN NHÉ .
+          </div>
+          <div style="font-size:12px;font-weight:700;color:#78350f;letter-spacing:0.3px;">
+            ⚡ Hệ thống tự động đồng bộ thời gian thực 24/7 • Minh bạch &amp; Chính xác tuyệt đối
+          </div>
+        </div>
 
         <!-- 4. CHỮ KÝ VÀ DẤU ĐỎ CHÍNH THỨC CỦA ĐẠI CA -->
         <div style="display:flex;justify-content:flex-end;padding:0 30px 24px 0;">
@@ -4726,7 +4907,7 @@ async function generateDailyRecordReport(targetDate) {
               <circle cx="80" cy="80" r="66" fill="none" stroke="#c81e1e" stroke-width="1"/>
               <circle cx="80" cy="80" r="40" fill="none" stroke="#c81e1e" stroke-width="1"/>
               <text fill="#c81e1e" font-size="10.5" font-weight="bold" font-family="Times New Roman, serif" letter-spacing="1.4">
-                <textPath href="#stampTopArcDaily" startOffset="50%" text-anchor="middle">HỆ THỐNG QUẢN LÝ BÌNH SỊT</textPath>
+                <textPath href="#stampTopArcDaily" startOffset="50%" text-anchor="middle">HỆ THỐNG QUẢN LÝ NHÀ</textPath>
               </text>
               <text fill="#c81e1e" font-size="10" font-weight="bold" font-family="Times New Roman, serif" letter-spacing="1.4">
                 <textPath href="#stampBotArcDaily" startOffset="50%" text-anchor="middle">★ CHÍNH THỨC ★</textPath>
@@ -4748,7 +4929,7 @@ async function generateDailyRecordReport(targetDate) {
         <!-- 5. DÒNG BẢO MẬT & XÁC THỰC DƯỚI ĐÁY CARD -->
         <div style="text-align:center;padding:14px 20px;background:#fafaf9;border-top:1.5px solid #f1f5f9;
                     font-size:11px;font-weight:800;color:#64748b;letter-spacing:1px;text-transform:uppercase;">
-          ── CREW LƯỠI BÚA ★ HỆ THỐNG QUẢN LÝ BÌNH SỊT &amp; QUỸ CHUỘC TÙ 24/7 ──
+          ── CREW LƯỠI BÚA ★ HỆ THỐNG QUẢN LÝ TRỘM NHÀ &amp; QUỸ CHUỘC TÙ 24/7 ──
         </div>
 
       </div>
@@ -4772,22 +4953,52 @@ async function generateDailyRecordReport(targetDate) {
       top1: top1 ? { name: top1.name, houses: Math.round(top1.binh * 100) / 100 } : null
     };
 
-    // Tự động tải ảnh về máy tính
-    const aAuto = document.createElement('a');
-    aAuto.href = dataUrl;
-    aAuto.download = `bao-cao-ngay-${targetDate}.png`;
-    aAuto.click();
+    // Nếu chọn gửi thẳng Discord
+    if (autoSendDiscord) {
+      const waitNotice = document.createElement('div');
+      waitNotice.className = 'modal-overlay';
+      waitNotice.innerHTML = `
+        <div class="modal-box" style="max-width:380px;text-align:center;padding:30px;">
+          <div style="font-size:40px;margin-bottom:12px;">⏳</div>
+          <h3 style="margin-bottom:8px;">Đang Gửi Về Discord...</h3>
+          <div style="font-size:13px;color:var(--slate-500);">Kênh Báo Cáo Ngày</div>
+        </div>
+      `;
+      document.body.appendChild(waitNotice);
 
-    // Hiển thị hộp thoại xem trước và tải ảnh
+      const res = await sendDiscordReport({
+        type: 'daily',
+        targetChannelId: '1561985181802569761',
+        date: fmtDate(targetDate),
+        stats: statsPayload,
+        imageBase64: dataUrl
+      });
+
+      waitNotice.remove();
+
+      if (res.success) {
+        alert(`✅ ĐÃ GỬI BÁO CÁO NGÀY ${fmtDate(targetDate)} VỀ DISCORD THÀNH CÔNG!`);
+      } else {
+        showDiscordBotHelpModal(res.message, res.inviteUrl);
+      }
+      return;
+    }
+
+    // Nếu xem & tải ảnh trước
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
     overlay.innerHTML = `
       <div class="modal-box" style="max-width:${W + 40}px;">
-        <h3>📸 Báo Cáo Ngày ${fmtDate(targetDate)} (${totalHouses} bình — ${memberCount} người)</h3>
+        <h3>📸 Báo Cáo Ngày ${fmtDate(targetDate)} (${totalHouses} nhà — ${memberCount} người)</h3>
         <img src="${dataUrl}" alt="Báo cáo ngày" style="border-radius:12px;border:1px solid #e2e8f0;width:100%;">
         <div class="modal-actions" style="flex-wrap:wrap;gap:8px;justify-content:flex-end;">
           <button class="secondary" id="closeDailyImgModal">Đóng</button>
           <button class="green" id="downloadDailyImg">⬇️ Tải Xuống Ảnh PNG</button>
+          ${isAdmin() ? `
+          <button class="gold" id="sendDiscordDailyModalBtn" style="background:#5865F2;color:#fff;border-color:#4752C4;font-weight:800;display:inline-flex;align-items:center;gap:6px;">
+            <span>🚀 Gửi Discord</span>
+          </button>
+          ` : ''}
         </div>
       </div>`;
     document.body.appendChild(overlay);
@@ -4799,6 +5010,37 @@ async function generateDailyRecordReport(targetDate) {
       a.download = `bao-cao-ngay-${targetDate}.png`;
       a.click();
     };
+
+    if (overlay.querySelector('#sendDiscordDailyModalBtn')) {
+      overlay.querySelector('#sendDiscordDailyModalBtn').onclick = async () => {
+        if (!isAdmin()) {
+          alert('⛔ Bạn đang ở trang xem (index.html). Chỉ Quản Trị Viên (admin.html) mới có quyền gửi báo cáo về Discord!');
+          return;
+        }
+
+        const btn = overlay.querySelector('#sendDiscordDailyModalBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span>⏳ Đang gửi...</span>';
+        btn.disabled = true;
+
+        const res = await sendDiscordReport({
+          type: 'daily',
+          targetChannelId: '1561985181802569761',
+          date: fmtDate(targetDate),
+          stats: statsPayload,
+          imageBase64: dataUrl
+        });
+
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+
+        if (res.success) {
+          alert(`✅ ĐÃ GỬI BÁO CÁO NGÀY ${fmtDate(targetDate)} VỀ DISCORD THÀNH CÔNG!`);
+        } else {
+          showDiscordBotHelpModal(res.message, res.inviteUrl);
+        }
+      };
+    }
 
   } catch (err) {
     alert('❌ Lỗi tạo ảnh báo cáo ngày: ' + err.message);
@@ -6080,7 +6322,7 @@ async function generateFundExportImage(customTitle) {
                 box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;border:3px solid #000;position:relative;">
 
       <div style="text-align:center;border-bottom:2px solid #000;padding-bottom:14px;margin-bottom:20px;">
-        <div style="font-size:14px;font-weight:800;letter-spacing:3px;color:#000;">HỆ THỐNG QUẢN LÝ BĂNG ĐÃNG BÌNH SỊT</div>
+        <div style="font-size:14px;font-weight:800;letter-spacing:3px;color:#000;">HỆ THỐNG QUẢN LÝ BĂNG ĐÃNG TRỘM NHÀ</div>
         <div style="font-size:14px;font-weight:800;letter-spacing:2px;color:#000;margin-top:4px;">────────── ✦ ──────────</div>
       </div>
 
@@ -6129,7 +6371,21 @@ async function generateFundExportImage(customTitle) {
         </tbody>
       </table>
 
-      
+      <!-- KHUNG THÔNG BÁO WEBSITE THEO YÊU CẦU ĐẠI CA -->
+      <div style="margin-top:24px;background:#fff8ee;border:2.5px solid #d97706;border-radius:14px;padding:20px 24px;text-align:center;box-shadow:inset 0 0 10px rgba(217,119,6,0.1);">
+        <div style="display:inline-block;background:#b45309;color:#fff;padding:5px 18px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">
+          ✦ THÔNG BÁO TỪ BAN QUẢN LÝ CREW LƯỠI BÚA ✦
+        </div>
+        <div style="font-size:16.5px;font-weight:900;color:#1e293b;letter-spacing:0.5px;margin-bottom:6px;">
+          🌐 WEBSITE: <span style="color:#b45309;text-decoration:underline;">https://quan-ly-seven.vercel.app/</span>
+        </div>
+        <div style="font-size:18px;font-weight:900;color:#b45309;letter-spacing:0.5px;margin-bottom:6px;">
+          👉 AE TỰ VÀO CHECK QUỸ &amp; CHI PHÍ CHUỘC TÙ NHÉ .
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#78350f;letter-spacing:0.3px;">
+          ⚡ Hệ thống tự động đồng bộ thời gian thực 24/7 • Minh bạch &amp; Chính xác tuyệt đối
+        </div>
+      </div>
 
       <div style="display:flex;justify-content:flex-end;margin-top:40px;">
         <div style="position:relative;width:360px;height:230px;">
@@ -6205,20 +6461,72 @@ async function generateFundExportImage(customTitle) {
         <div class="modal-actions" style="flex-wrap:wrap;gap:8px;justify-content:flex-end;">
           <button class="secondary" id="closeFundImgModal">Đóng</button>
           <button class="green" id="downloadFundImg">⬇️ Tải Xuống Ảnh PNG</button>
+          ${isAdmin() ? `
+          <button type="button" class="gold" id="sendDiscordWeeklyFundBtn" style="background:#5865F2;color:#fff;border-color:#4752C4;font-weight:800;display:inline-flex;align-items:center;gap:6px;">
+            <span>🚀 Gửi Discord</span>
+          </button>
+          ` : ''}
         </div>
       </div>`;
     document.body.appendChild(overlay);
 
     overlay.querySelector('#closeFundImgModal').onclick = () => overlay.remove();
-    const triggerFundDownload = () => {
+    overlay.querySelector('#downloadFundImg').onclick = () => {
       const a = document.createElement('a');
       a.href = dataUrl;
       const safeTitle = (customTitle || 'bao-cao-quy').toLowerCase().replace(/[^a-z0-9]/g, '-');
       a.download = `bao-cao-quy-${safeTitle}-${Date.now()}.png`;
       a.click();
     };
-    overlay.querySelector('#downloadFundImg').onclick = triggerFundDownload;
-    triggerFundDownload();
+
+    if (overlay.querySelector('#sendDiscordWeeklyFundBtn')) {
+      overlay.querySelector('#sendDiscordWeeklyFundBtn').onclick = async () => {
+        if (!isAdmin()) {
+          alert('⛔ Bạn đang ở trang xem (index.html). Chỉ Quản Trị Viên (admin.html) mới có quyền gửi báo cáo về Discord!');
+          return;
+        }
+
+        const btn = overlay.querySelector('#sendDiscordWeeklyFundBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span>⏳ Đang gửi...</span>';
+        btn.disabled = true;
+
+        const fundBalance = (typeof cachedFundData !== 'undefined' && cachedFundData && cachedFundData.currentBalance !== undefined)
+          ? cachedFundData.currentBalance
+          : 0;
+        const bailSpent = (typeof cachedFundData !== 'undefined' && cachedFundData && cachedFundData.totalBailSpent !== undefined)
+          ? cachedFundData.totalBailSpent
+          : 0;
+        const txCount = (logsToPrint && logsToPrint.length)
+          ? logsToPrint.length
+          : (cachedFundData?.bailCount ?? 0);
+
+        const res = await (window.sendDiscordReport || sendDiscordReport)({
+          type: 'fund',
+          targetChannelId: '1561985235422281760',
+          title: customTitle || 'BÁO CÁO BIẾN ĐỘNG QUỸ & CHI PHÍ CHUỘC TÙ',
+          stats: {
+            currentFund: fundBalance,
+            totalBail: bailSpent,
+            txCount: txCount
+          },
+          imageBase64: dataUrl
+        });
+
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+
+        if (res.success) {
+          alert('✅ ĐÃ GỬI BÁO CÁO QUỸ HÀNG TUẦN VỀ DISCORD THÀNH CÔNG!');
+        } else {
+          if (typeof showDiscordBotHelpModal === 'function') {
+            showDiscordBotHelpModal(res.message, res.inviteUrl);
+          } else {
+            alert('❌ ' + res.message);
+          }
+        }
+      };
+    }
   } catch (err) {
     alert('❌ Lỗi tạo ảnh báo cáo quỹ: ' + err.message);
   }
@@ -6250,8 +6558,8 @@ $('resetAllBinhBtn')?.addEventListener('click', () => {
         <div class="modal-title-group">
           <div class="modal-icon-badge" style="background:#fef2f2;color:#b91c1c;border-color:#fecaca;">⚠️</div>
           <div>
-            <h3>Reset Chu Kỳ Mới (Số Bình Sịt &amp; Tiền Chuộc)</h3>
-            <span style="font-size:12px;color:var(--slate-400);font-weight:600;">Làm sạch số bình sịt &amp; hoàn trả quỹ chuộc tù về ban đầu</span>
+            <h3>Reset Chu Kỳ Mới (Số Nhà &amp; Tiền Chuộc)</h3>
+            <span style="font-size:12px;color:var(--slate-400);font-weight:600;">Dọn sạch số nhà &amp; hoàn trả quỹ chuộc tù về ban đầu</span>
           </div>
         </div>
         <button class="modal-close-btn" id="closeResetSec" title="Đóng">✕</button>
@@ -6260,7 +6568,7 @@ $('resetAllBinhBtn')?.addEventListener('click', () => {
       <div class="danger-zone-box" style="margin-top:0;margin-bottom:16px;">
         <div class="danger-zone-desc" style="margin-bottom:0;color:#991b1b;font-weight:600;line-height:1.6;">
           ⚠️ <b>Thao tác này sẽ đồng thời:</b><br>
-          1. Xoá sạch toàn bộ bản ghi số bình sịt của tất cả anh em về <b>0 bình</b>.<br>
+          1. Xoá sạch toàn bộ bản ghi số nhà của tất cả anh em về <b>0 nhà</b>.<br>
           2. Xoá sạch toàn bộ lịch sử chuộc tù, đưa <b>số dư quỹ về nguyên vẹn ban đầu</b>.<br>
           <span style="color:#059669;font-weight:700;">✅ Danh sách thành viên vẫn được giữ nguyên an toàn 100%.</span>
         </div>
@@ -6359,15 +6667,15 @@ $('resetAllBinhBtn')?.addEventListener('click', () => {
           <div style="font-size:44px;margin-bottom:12px;">⏳</div>
           <h3 style="margin-bottom:8px;font-size:18px;">Đang Tự Động Sao Lưu Dữ Liệu...</h3>
           <p style="font-size:13px;color:var(--slate-500);line-height:1.6;margin-bottom:0;">
-            Đang tạo ảnh tổng hợp và tải về máy tính trước khi reset...
+            Đang tạo ảnh tổng hợp và gửi trực tiếp về Discord (Kênh 1562063584496844841) trước khi reset...
           </p>
         </div>
       `;
       document.body.appendChild(backupNotice);
 
-      // TỰ ĐỘNG SAO LƯU ẢNH SỐ BÌNH SỊT VÀ TẢI VỀ MÁY TÍNH TRƯỚC KHI RESET
+      // TỰ ĐỘNG SAO LƯU ẢNH SỐ NHÀ & LỊCH SỬ QUỸ VỀ DISCORD TRƯỚC KHI RESET (KHÔNG TẢI VỀ MÁY THEO LỆNH ĐẠI CA)
       try {
-        await generateFullBackupSnapshot({ autoDownload: true, sendToDiscord: false, reason: 'RESET_CYCLE' });
+        await generateFullBackupSnapshot({ autoDownload: false, sendToDiscord: true, reason: 'RESET_CYCLE' });
       } catch (bErr) {
         console.error('Lỗi trong quá trình tự động sao lưu:', bErr);
       }
@@ -6384,10 +6692,10 @@ $('resetAllBinhBtn')?.addEventListener('click', () => {
       window.statsData = statsData;
       window.fundLogs = fundLogs;
 
-      logAudit('RESET_ALL', 'Reset Chu Kỳ Mới', '💣 Đã tự động sao lưu ảnh về máy tính và reset sạch số bình sịt!');
+      logAudit('RESET_ALL', 'Reset Chu Kỳ Mới', '💣 Đã tự động sao lưu ảnh về Discord (1562063584496844841) và reset sạch số nhà, lịch sử chuộc tù!');
 
       overlay.remove();
-      alert('✅ ĐÃ RESET TOÀN BỘ CHU KỲ MỚI THÀNH CÔNG!\n\n1. Bản ảnh dữ liệu đã được tự động sao lưu và tải về máy tính.\n2. Số bình sịt của tất cả anh em đã về 0 bình.\n\nHệ thống sẵn sàng cho chu kỳ mới an toàn 100%!');
+      alert('✅ ĐÃ RESET TOÀN BỘ CHU KỲ MỚI THÀNH CÔNG!\n\n1. Bản ảnh dữ liệu đã được tự động sao lưu và gửi về Discord (Kênh 1562063584496844841).\n2. Không tải file về máy tính tránh phiền toái theo lệnh Đại ca.\n3. Số nhà của tất cả anh em đã về 0 nhà.\n4. Tiền chuộc tù và lịch sử quỹ đã được khôi phục về ban đầu.\n\nHệ thống sẵn sàng cho chu kỳ mới an toàn 100%!');
 
       if (typeof renderStats === 'function') renderStats();
       if (typeof renderMembersTable === 'function') renderMembersTable();
@@ -6406,19 +6714,21 @@ $('resetAllBinhBtn')?.addEventListener('click', () => {
 
 /* ==========================================================================
    SECTION 1.5: HỆ THỐNG SAO LƯU DỮ LIỆU ĐỊNH KỲ & TRƯỚC KHI RESET
+   KÊNH DISCORD: 1562063584496844841
    ========================================================================== */
 
 /**
- * Xuất dữ liệu sao lưu chu kỳ: Tạo ảnh tổng hợp tải trực tiếp về máy tính
+ * Xuất dữ liệu sao lưu chu kỳ: Tạo ảnh tổng hợp 2 cột (Số nhà & Quỹ chuộc tù)
+ * Tự động gửi về Discord kênh 1562063584496844841 (KHÔNG tải file về máy tính theo lệnh Đại ca)
  */
-async function generateFullBackupSnapshot({ autoDownload = true, sendToDiscord = false, reason = 'RESET_CYCLE' } = {}) {
+async function generateFullBackupSnapshot({ autoDownload = false, sendToDiscord = true, reason = 'RESET_CYCLE' } = {}) {
   const now = new Date();
   const dateStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
   const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
   const adminName = sessionStorage.getItem('luoibua_admin_name') || 'Nguyễn Trí';
   const reasonText = reason === 'RESET_CYCLE' ? 'Trước Khi Reset Chu Kỳ Mới' : 'Sao Lưu Định Kỳ Chu Kỳ';
 
-  // 1. Tổng hợp dữ liệu số bình sịt
+  // 1. Tổng hợp dữ liệu số nhà
   const memberHouseTotals = {};
   let totalHouses = 0;
   (allRecords || []).forEach(r => {
@@ -6463,17 +6773,17 @@ async function generateFullBackupSnapshot({ autoDownload = true, sendToDiscord =
   csv += `Lý do sao lưu,${reasonText}\r\n`;
   csv += '========================================================================================\r\n\r\n';
 
-  csv += '--- PHẦN 1: TỔNG KẾT BÌNH SỊT ANH EM ---\r\n';
-  csv += 'STT,Tên Thành Viên,Số Bình Sịt Đạt Được,Tỷ Lệ Đóng Góp\r\n';
+  csv += '--- PHẦN 1: TỔNG KẾT SỐ NHÀ ANH EM ---\r\n';
+  csv += 'STT,Tên Thành Viên,Số Nhà Đạt Được,Tỷ Lệ Đóng Góp\r\n';
   if (sortedMembers.length > 0) {
     sortedMembers.forEach((m, idx) => {
       const pct = totalHouses > 0 ? ((m.binh / totalHouses) * 100).toFixed(1) : 0;
       csv += `${idx + 1},"${m.name.replace(/"/g, '""')}",${m.binh},${pct}%\r\n`;
     });
   } else {
-    csv += 'Chưa có bản ghi số bình sịt nào trong chu kỳ này\r\n';
+    csv += 'Chưa có bản ghi số nhà nào trong chu kỳ này\r\n';
   }
-  csv += `TỔNG CỘNG TOÀN ĐỘI,,${totalHouses} bình,100%\r\n\r\n`;
+  csv += `TỔNG CỘNG TOÀN ĐỘI,,${totalHouses} nhà,100%\r\n\r\n`;
 
   csv += '--- PHẦN 2: LỊCH SỬ CHUỘC TÙ & BIẾN ĐỘNG QUỸ BĂNG ĐÃNG ---\r\n';
   csv += 'STT,Thời Gian,Loại Giao Dịch,Thành Viên Được Chuộc / Giao Dịch,Biến Động (VND),Số Dư Sau Giao Dịch (VND),Ghi Chú\r\n';
@@ -6530,7 +6840,7 @@ async function generateFullBackupSnapshot({ autoDownload = true, sendToDiscord =
           <td style="padding:10px 14px;text-align:right;font-weight:800;font-size:14px;color:#64748b;">${pct}%</td>
         </tr>
       `;
-    }).join('') || `<tr><td colspan="4" style="padding:16px;text-align:center;color:#64748b;">Chưa có dữ liệu bình sịt</td></tr>`;
+    }).join('') || `<tr><td colspan="4" style="padding:16px;text-align:center;color:#64748b;">Chưa có dữ liệu nhà</td></tr>`;
 
     const fundRows = enrichedLogs.slice(0, 25).map((l, idx) => {
       const isBail = l.type === 'bail';
@@ -6570,9 +6880,9 @@ async function generateFullBackupSnapshot({ autoDownload = true, sendToDiscord =
         <!-- 4 CHỈ SỐ VÀNG -->
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;">
           <div style="border:2.5px solid #000;padding:14px;text-align:center;background:#fff;border-radius:8px;">
-            <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#555;">TỔNG SỐ BÌNH SỊT CHU KỲ</div>
-            <div style="font-size:24px;font-weight:900;margin-top:4px;color:#d97706;">🏠 ${totalHouses} bình</div>
-            <div style="font-size:11.5px;color:#78350f;font-weight:700;margin-top:2px;">${memberCount} anh em có bình sịt</div>
+            <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#555;">TỔNG SỐ NHÀ CHU KỲ</div>
+            <div style="font-size:24px;font-weight:900;margin-top:4px;color:#d97706;">🏠 ${totalHouses} nhà</div>
+            <div style="font-size:11.5px;color:#78350f;font-weight:700;margin-top:2px;">${memberCount} anh em có nhà</div>
           </div>
           <div style="border:2.5px solid #000;padding:14px;text-align:center;background:#fff;border-radius:8px;">
             <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#555;">SỐ DƯ QUỸ BẢO LƯU</div>
@@ -6587,23 +6897,23 @@ async function generateFullBackupSnapshot({ autoDownload = true, sendToDiscord =
           <div style="border:2.5px solid #000;padding:14px;text-align:center;background:#fff;border-radius:8px;">
             <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#555;">TOP 1 THÀNH TÍCH</div>
             <div style="font-size:16px;font-weight:900;margin-top:6px;color:#b45309;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🥇 ${escHtml(sortedMembers[0]?.name || '-')}</div>
-            <div style="font-size:12px;color:#78350f;font-weight:800;">${sortedMembers[0]?.binh || 0} bình</div>
+            <div style="font-size:12px;color:#78350f;font-weight:800;">${sortedMembers[0]?.binh || 0} nhà</div>
           </div>
         </div>
 
         <!-- 2 KHỐI BẢNG -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
-          <!-- CỘT 1: BÌNH SỊT -->
+          <!-- CỘT 1: NHÀ -->
           <div>
             <div style="font-size:15px;font-weight:900;color:#000;margin-bottom:8px;padding-left:4px;border-left:4px solid #d97706;">
-              🏆 TỔNG KẾT BÌNH SỊT ANH EM (${memberCount} người)
+              🏆 TỔNG KẾT SỐ NHÀ ANH EM (${memberCount} người)
             </div>
             <table style="width:100%;border-collapse:collapse;border:2px solid #000;background:#fff;">
               <thead>
                 <tr style="background:#000;color:#fff;">
                   <th style="padding:10px 8px;font-size:13px;width:50px;text-align:center;border-right:1px solid #fff;">Hạng</th>
                   <th style="padding:10px 10px;font-size:13px;text-align:left;border-right:1px solid #fff;">Thành Viên</th>
-                  <th style="padding:10px 10px;font-size:13px;width:95px;text-align:right;border-right:1px solid #fff;">Số Bình Sịt</th>
+                  <th style="padding:10px 10px;font-size:13px;width:95px;text-align:right;border-right:1px solid #fff;">Số Nhà</th>
                   <th style="padding:10px 10px;font-size:13px;width:65px;text-align:right;">Tỷ Lệ</th>
                 </tr>
               </thead>
@@ -6635,7 +6945,18 @@ async function generateFullBackupSnapshot({ autoDownload = true, sendToDiscord =
           </div>
         </div>
 
-        
+        <!-- KHUNG WEBSITE BẢO MẬT -->
+        <div style="margin-top:20px;background:#fff8ee;border:2.5px solid #d97706;border-radius:12px;padding:16px 20px;text-align:center;">
+          <div style="font-size:16px;font-weight:900;color:#1e293b;margin-bottom:4px;">
+            🌐 WEBSITE: <span style="color:#b45309;text-decoration:underline;">https://quan-ly-seven.vercel.app/</span>
+          </div>
+          <div style="font-size:17.5px;font-weight:900;color:#b45309;margin-bottom:4px;">
+            👉 AE TỰ VÀO CHECK NHÀ MÌNH LẤY ĐƯỢC MẤY CĂN NHÉ .
+          </div>
+          <div style="font-size:12px;font-weight:700;color:#78350f;">
+            ✦ CHỨNG TỪ SAO LƯU DỮ LIỆU ĐƯỢC LƯU TRỮ VĨNH VIỄN TRÊN SERVER DISCORD AN TOÀN 100% ✦
+          </div>
+        </div>
 
         <!-- FOOTER & CHỮ KÝ DẤU ĐỎ NGUYỄN TRÍ -->
         <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:24px;">
@@ -6689,20 +7010,43 @@ async function generateFullBackupSnapshot({ autoDownload = true, sendToDiscord =
     if (container) container.innerHTML = '';
   }
 
-  // Tự động tải file ảnh về máy tính
-  if (autoDownload && dataUrl) {
+  // Tự động tải file về máy tính: ĐÃ TẮT HOÀN TOÀN THEO LỆNH ĐẠI CA (Chỉ gửi ảnh về Discord, không tải gì về máy)
+  if (autoDownload) {
     const timestampStr = Date.now();
-    const aImg = document.createElement('a');
-    aImg.href = dataUrl;
-    aImg.download = `sao-luu-chu-ky-${timestampStr}.png`;
-    aImg.click();
+    if (dataUrl) {
+      const aImg = document.createElement('a');
+      aImg.href = dataUrl;
+      aImg.download = `sao-luu-chu-ky-${timestampStr}.png`;
+      aImg.click();
+    }
+  }
+
+  // Gửi về Discord kênh 1562063584496844841 (CHỈ GỬI ẢNH BẢN BÁO CÁO TOÀN DIỆN, TUYỆT ĐỐI KHÔNG GỬI CSV LÀM RÁC KÊNH)
+  if (sendToDiscord && dataUrl) {
+    try {
+      await (window.sendDiscordReport || sendDiscordReport)({
+        type: 'backup',
+        targetChannelId: '1562063584496844841',
+        title: '📦 BẢN SAO LƯU TOÀN BỘ SỐ NHÀ & QUỸ CHUỘC TÙ (BẢO LƯU)',
+        stats: {
+          totalHouses,
+          memberCount,
+          currentFund: currentBalance,
+          totalBail: totalBailSpent,
+          bailCount
+        },
+        imageBase64: dataUrl
+      });
+    } catch (discErr) {
+      console.error('Lỗi gửi Discord sao lưu:', discErr);
+    }
   }
 
   return { success: true, dataUrl, csv, rawBackupJson };
 }
 window.generateFullBackupSnapshot = generateFullBackupSnapshot;
 
-// Hàm sao lưu thủ công chụp ảnh tải về máy tính
+// Hàm sao lưu thủ công chụp ảnh gửi Discord dùng chung cho cả Sidebar và Phím tắt
 async function triggerManualBackup(triggerBtn) {
   if (!isAdmin()) {
     alert('⛔ Bạn đang ở chế độ xem thành viên. Vui lòng đăng nhập trang Quản Trị (admin.html) để sao lưu dữ liệu!');
@@ -6711,13 +7055,13 @@ async function triggerManualBackup(triggerBtn) {
   const btn = triggerBtn || $('sidebarBackupBtn') || $('manualBackupBtn');
   const oldText = btn ? btn.innerHTML : '';
   if (btn) {
-    btn.innerHTML = '<span>⏳ Đang tạo ảnh sao lưu...</span>';
+    btn.innerHTML = '<span>⏳ Đang gửi ảnh Discord...</span>';
     btn.disabled = true;
   }
 
   try {
-    await generateFullBackupSnapshot({ autoDownload: true, sendToDiscord: false, reason: 'MANUAL_BACKUP' });
-    alert('✅ ĐÃ TẠO VÀ TẢI ẢNH SAO LƯU THÀNH CÔNG!\n\nBản ảnh báo cáo chi tiết đã được chụp sắc nét và lưu về máy tính của bạn.');
+    await generateFullBackupSnapshot({ autoDownload: false, sendToDiscord: true, reason: 'MANUAL_BACKUP' });
+    alert('✅ ĐÃ SAO LƯU ẢNH VỀ DISCORD THÀNH CÔNG!\n\nBản ảnh báo cáo chi tiết 2 cột (Số nhà & Quỹ chuộc tù) đã được chụp sắc nét và đẩy thẳng về kênh Discord 1562063584496844841.');
   } catch (err) {
     console.error('Lỗi khi sao lưu thủ công:', err);
     alert('❌ Sao lưu thất bại hoặc lỗi mạng: ' + (err.message || err));
@@ -6758,7 +7102,7 @@ function openExportModal() {
         <div class="modal-title-group">
           <div class="modal-icon-badge">📸</div>
           <div>
-            <h3>Xuất Báo Cáo Số Bình Sịt</h3>
+            <h3>Xuất Báo Cáo Số Nhà</h3>
             <span style="font-size:12px;color:var(--slate-400);font-weight:600;">Mẫu giấy kẻ 4 ô li &amp; con dấu đỏ chính thức</span>
           </div>
         </div>
@@ -6767,13 +7111,13 @@ function openExportModal() {
 
       <div class="form-group" style="margin-bottom:14px;">
         <label>Tiêu Đề Báo Cáo In Trên Giấy</label>
-        <input id="exportModalTitle" value="BẢNG THỐNG KÊ SỐ BÌNH SỊT" style="font-weight:700;">
+        <input id="exportModalTitle" value="BẢNG THỐNG KÊ SỐ NHÀ" style="font-weight:700;">
       </div>
 
       <div id="exportSummaryBox" style="background:#fdf2eb;border:1px solid #ebd4c4;padding:12px 14px;border-radius:12px;font-size:13px;color:#5d3e31;margin-bottom:18px;">
         <div style="font-weight:800;color:var(--terracotta);margin-bottom:4px;">📊 Dữ liệu báo cáo hiện tại:</div>
-        <div>• Thành viên có bình sịt: <b>${memberCount} người</b></div>
-        <div>• Tổng số bình sịt: <b style="color:var(--terracotta);font-size:15px;">${Math.round(totalBinh * 100) / 100} bình</b></div>
+        <div>• Thành viên có nhà: <b>${memberCount} người</b></div>
+        <div>• Tổng số nhà: <b style="color:var(--terracotta);font-size:15px;">${Math.round(totalBinh * 100) / 100} nhà</b></div>
       </div>
 
       <div class="modal-actions">
@@ -6817,7 +7161,7 @@ async function generateExportImage(customTitle) {
   const periodStatsData = Object.values(totals).sort((a, b) => b.binh - a.binh);
 
   if (!periodStatsData.length) {
-    return alert('Hiện chưa có bản ghi số bình sịt nào để xuất báo cáo!');
+    return alert('Hiện chưa có bản ghi số nhà nào để xuất báo cáo!');
   }
 
   const total = periodStatsData.length;
@@ -6857,7 +7201,7 @@ async function generateExportImage(customTitle) {
                  border-right:1.5px solid #000;text-align:left;">TÊN THÀNH VIÊN</th>
       <th style="padding:${colCount === 1 ? '14px 20px' : '11px 10px'};font-weight:900;
                  font-size:${colCount === 1 ? '15px' : '13px'};letter-spacing:1px;
-                 ${br}text-align:right;width:${binhW[colCount]};">SỐ BÌNH SỊT</th>`;
+                 ${br}text-align:right;width:${binhW[colCount]};">SỐ NHÀ</th>`;
   }).join('');
 
   const bodyRows = Array.from({ length: rowsPerCol }).map((_, r) => {
@@ -6894,14 +7238,14 @@ async function generateExportImage(customTitle) {
                               letter-spacing:1px;color:#000;border-right:1.5px solid #000;
                               text-align:right;">TỔNG CỘNG TOÀN ĐỘI</td>
       <td style="padding:16px 24px;font-weight:900;font-size:20px;color:#c2410c;text-align:right;">
-        🥫 ${Math.round(totalBinh * 100) / 100} bình</td>
+        🏠 ${Math.round(totalBinh * 100) / 100} nhà</td>
     </tr>` : `
     <tr style="background:#fff7ed;border-top:2px solid #000;">
       <td colspan="${colCount * 3 - 1}" style="padding:14px 20px;font-weight:900;
               font-size:15px;letter-spacing:1px;color:#000;border-right:1.5px solid #000;
               text-align:right;">TỔNG CỘNG TOÀN ĐỘI</td>
       <td style="padding:14px 20px;font-weight:900;font-size:19px;color:#c2410c;text-align:right;">
-        🥫 ${Math.round(totalBinh * 100) / 100} bình</td>
+        🏠 ${Math.round(totalBinh * 100) / 100} nhà</td>
     </tr>`;
 
   const container = $('exportArea');
@@ -6911,13 +7255,13 @@ async function generateExportImage(customTitle) {
                 box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;border:3px solid #000;position:relative;">
 
       <div style="text-align:center;border-bottom:2px solid #000;padding-bottom:12px;margin-bottom:18px;">
-        <div style="font-size:13px;font-weight:800;letter-spacing:3px;color:#000;">HỆ THỐNG QUẢN LÝ BÌNH SỊT • CREW LƯỚI BÚA</div>
+        <div style="font-size:13px;font-weight:800;letter-spacing:3px;color:#000;">HỆ THỐNG QUẢN LÝ NHÀ • CREW LƯỚI BÚA</div>
         <div style="font-size:13px;font-weight:800;letter-spacing:2px;color:#000;margin-top:4px;">────────── ✦ ──────────</div>
       </div>
 
       <div style="text-align:center;margin-bottom:20px;">
         <div style="font-size:26px;font-weight:900;letter-spacing:1px;color:#000;text-transform:uppercase;">
-          ${escHtml(customTitle || 'BẢNG THỐNG KÊ SỐ BÌNH SỊT CHU KỲ / HÀNG TUẦN')}
+          ${escHtml(customTitle || 'BẢNG THỐNG KÊ SỐ NHÀ CHU KỲ / HÀNG TUẦN')}
         </div>
         <div style="font-size:14px;font-weight:700;color:#444;margin-top:6px;letter-spacing:.3px;">
           Ngày xuất báo cáo: ${dateStr} &nbsp;•&nbsp; ${timeStr}
@@ -6927,8 +7271,8 @@ async function generateExportImage(customTitle) {
       <!-- 4 THẺ CHỈ SỐ TỔNG QUAN RÕ RÀNG -->
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;">
         <div style="border:2px solid #000;padding:12px;text-align:center;background:rgba(255,255,255,.95);border-radius:6px;">
-          <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#555;">TỔNG SỐ BÌNH SỊT</div>
-          <div style="font-size:22px;font-weight:900;margin-top:4px;color:#d97706;">🏠 ${Math.round(totalBinh * 100) / 100} bình</div>
+          <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#555;">TỔNG SỐ NHÀ</div>
+          <div style="font-size:22px;font-weight:900;margin-top:4px;color:#d97706;">🏠 ${Math.round(totalBinh * 100) / 100} nhà</div>
         </div>
         <div style="border:2px solid #000;padding:12px;text-align:center;background:rgba(255,255,255,.95);border-radius:6px;">
           <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#555;">SỐ THÀNH VIÊN</div>
@@ -6940,7 +7284,7 @@ async function generateExportImage(customTitle) {
         </div>
         <div style="border:2px solid #000;padding:12px;text-align:center;background:rgba(255,255,255,.95);border-radius:6px;">
           <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#555;">TRUNG BÌNH</div>
-          <div style="font-size:20px;font-weight:900;margin-top:5px;color:#15803d;">${(totalBinh / (total || 1)).toFixed(1)} bình/người</div>
+          <div style="font-size:20px;font-weight:900;margin-top:5px;color:#15803d;">${(totalBinh / (total || 1)).toFixed(1)} nhà/người</div>
         </div>
       </div>
 
@@ -6955,11 +7299,25 @@ async function generateExportImage(customTitle) {
         </tbody>
       </table>
 
-      
+      <!-- KHUNG THÔNG BÁO WEBSITE THEO YÊU CẦU ĐẠI CA -->
+      <div style="margin-top:20px;background:#fff8ee;border:2.5px solid #d97706;border-radius:14px;padding:18px 24px;text-align:center;box-shadow:inset 0 0 10px rgba(217,119,6,0.1);">
+        <div style="display:inline-block;background:#b45309;color:#fff;padding:4px 16px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">
+          ✦ THÔNG BÁO TỪ BAN QUẢN LÝ CREW LƯỠI BÚA ✦
+        </div>
+        <div style="font-size:17px;font-weight:900;color:#1e293b;letter-spacing:0.5px;margin-bottom:5px;">
+          🌐 WEBSITE: <span style="color:#b45309;text-decoration:underline;">https://quan-ly-seven.vercel.app/</span>
+        </div>
+        <div style="font-size:19px;font-weight:900;color:#b45309;letter-spacing:0.5px;margin-bottom:5px;">
+          👉 AE TỰ VÀO CHECK NHÀ MÌNH LẤY ĐƯỢC MẤY CĂN NHÉ .
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#78350f;letter-spacing:0.3px;">
+          ⚡ Hệ thống tự động đồng bộ thời gian thực 24/7 • Minh bạch &amp; Chính xác tuyệt đối
+        </div>
+      </div>
 
       <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;">
         <div style="font-size:12px;font-weight:700;color:#555;font-style:italic;">
-          * Bản kê khai số bình sịt chính thức được trích xuất từ cơ sở dữ liệu hệ thống.
+          * Bản kê khai số nhà chính thức được trích xuất từ cơ sở dữ liệu hệ thống.
         </div>
         <div style="position:relative;width:340px;height:170px;">
 
@@ -6985,7 +7343,7 @@ async function generateExportImage(customTitle) {
             <circle cx="80" cy="80" r="66" fill="none" stroke="#c81e1e" stroke-width="1"/>
             <circle cx="80" cy="80" r="40" fill="none" stroke="#c81e1e" stroke-width="1"/>
             <text fill="#c81e1e" font-size="10.5" font-weight="bold" font-family="Times New Roman, serif" letter-spacing="1.4">
-              <textPath href="#stampTopArc" startOffset="50%" text-anchor="middle">HỆ THỐNG QUẢN LÝ BÌNH SỊT</textPath>
+              <textPath href="#stampTopArc" startOffset="50%" text-anchor="middle">HỆ THỐNG QUẢN LÝ NHÀ</textPath>
             </text>
             <text fill="#c81e1e" font-size="10" font-weight="bold" font-family="Times New Roman, serif" letter-spacing="1.4">
               <textPath href="#stampBotArc" startOffset="50%" text-anchor="middle">★ CHÍNH THỨC ★</textPath>
@@ -7032,20 +7390,58 @@ async function generateExportImage(customTitle) {
         <div class="modal-actions" style="flex-wrap:wrap;gap:8px;justify-content:flex-end;">
           <button class="secondary" id="closeModal">Đóng</button>
           <button class="green" id="downloadImg">⬇️ Tải Xuống Ảnh PNG</button>
+          ${isAdmin() ? `
+          <button type="button" class="gold" id="sendDiscordWeeklyHouseBtn" style="background:#5865F2;color:#fff;border-color:#4752C4;font-weight:800;display:inline-flex;align-items:center;gap:6px;">
+            <span>🚀 Gửi Discord</span>
+          </button>
+          ` : ''}
         </div>
       </div>`;
     document.body.appendChild(overlay);
 
     overlay.querySelector('#closeModal').onclick = () => overlay.remove();
-    const triggerDownload = () => {
+    overlay.querySelector('#downloadImg').onclick = () => {
       const a = document.createElement('a');
       a.href = dataUrl;
       const safeTitle = (customTitle || 'bao-cao').toLowerCase().replace(/[^a-z0-9]/g, '-');
       a.download = `thong-ke-${safeTitle}-${Date.now()}.png`;
       a.click();
     };
-    overlay.querySelector('#downloadImg').onclick = triggerDownload;
-    triggerDownload();
+
+    if (overlay.querySelector('#sendDiscordWeeklyHouseBtn')) {
+      overlay.querySelector('#sendDiscordWeeklyHouseBtn').onclick = async () => {
+        if (!isAdmin()) {
+          alert('⛔ Bạn đang ở trang xem (index.html). Chỉ Quản Trị Viên (admin.html) mới có quyền gửi báo cáo về Discord!');
+          return;
+        }
+
+        const btn = overlay.querySelector('#sendDiscordWeeklyHouseBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span>⏳ Đang gửi...</span>';
+        btn.disabled = true;
+
+        const res = await (window.sendDiscordReport || sendDiscordReport)({
+          type: 'weekly',
+          targetChannelId: '1561985096943276042',
+          title: customTitle || 'BẢNG THỐNG KÊ SỐ NHÀ CHU KỲ / HÀNG TUẦN',
+          stats: { totalHouses: Math.round(totalBinh * 100) / 100, memberCount: total },
+          imageBase64: dataUrl
+        });
+
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+
+        if (res.success) {
+          alert('✅ ĐÃ GỬI BÁO CÁO NHÀ HÀNG TUẦN VỀ DISCORD THÀNH CÔNG!');
+        } else {
+          if (typeof showDiscordBotHelpModal === 'function') {
+            showDiscordBotHelpModal(res.message, res.inviteUrl);
+          } else {
+            alert('❌ ' + res.message);
+          }
+        }
+      };
+    }
   } catch (err) {
     alert('❌ Lỗi tạo ảnh: ' + err.message);
   }
@@ -7143,7 +7539,7 @@ function renderAuditLogsTable() {
         <div class="empty-state-box" style="padding: 24px 16px;">
           <span class="empty-state-icon" style="font-size: 32px;">📜</span>
           <div class="empty-state-title">${search || filterAction !== 'all' || filterActor !== 'all' ? 'Không tìm thấy nhật ký phù hợp bộ lọc' : 'Chưa có nhật ký chỉnh sửa nào'}</div>
-          <div class="empty-state-desc">${search || filterAction !== 'all' || filterActor !== 'all' ? 'Thử tìm với từ khóa khác hoặc bấm Xoá lọc' : 'Mọi thao tác thêm, sửa, xoá số bình sịt hoặc thành viên sẽ tự động lưu lại ở đây'}</div>
+          <div class="empty-state-desc">${search || filterAction !== 'all' || filterActor !== 'all' ? 'Thử tìm với từ khóa khác hoặc bấm Xoá lọc' : 'Mọi thao tác thêm, sửa, xoá số nhà hoặc thành viên sẽ tự động lưu lại ở đây'}</div>
         </div>
       </td></tr>`;
     if (typeof renderPaginationControls === 'function') {
@@ -7424,7 +7820,7 @@ $('exportAuditLogsBtn')?.addEventListener('click', async () => {
 
 /* [MODULE: app.js] */
 /* ==========================================================================
-   QUẢN LÝ BÌNH SỊT - CORE APPLICATION ORCHESTRATOR
+   QUẢN LÝ TRỘM NHÀ - CORE APPLICATION ORCHESTRATOR
    Ultra-High Performance Distributed Script Entrypoint
    ========================================================================== */
 
@@ -7454,7 +7850,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 /* [MODULE: pwa-install.js] */
 /**
- * PWA & Desktop Installation Controller - "Thống Kê Bình Sịt" (Crew Lưới Búa)
+ * PWA & Desktop Installation Controller - "Thống Kê Nhập Nhà" (Crew Lưới Búa)
  * Version: 20261018_pwa1
  */
 
@@ -7462,7 +7858,7 @@ window.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
   let deferredPrompt = null;
-  const APP_NAME = 'Thống Kê Bình Sịt';
+  const APP_NAME = 'Thống Kê Nhập Nhà';
 
   // 1. Đăng ký Service Worker
   if ('serviceWorker' in navigator) {
@@ -7515,7 +7911,7 @@ window.addEventListener('DOMContentLoaded', () => {
         <img src="icons/icon-192.png" alt="Logo" class="btn-icon-app">
         <span>✅ Đã Cài App</span>
       `;
-      btn.title = 'Ứng dụng Thống Kê Bình Sịt đã được cài đặt trên PC của Đại ca';
+      btn.title = 'Ứng dụng Thống Kê Nhập Nhà đã được cài đặt trên PC của Đại ca';
     });
   }
 
@@ -7591,7 +7987,7 @@ window.addEventListener('DOMContentLoaded', () => {
             <div class="step-num">2</div>
             <div class="step-info">
               <h4>Hoặc cài từ Menu 3 Chấm (⋮)</h4>
-              <p>Nhấp vào menu <strong>⋮</strong> (Góc trên cùng bên phải trình duyệt) ➔ Chọn <strong>"Cài đặt Thống Kê Bình Sịt..."</strong> hoặc <strong>"Ứng dụng" (Apps) ➔ "Cài đặt ứng dụng này"</strong>.</p>
+              <p>Nhấp vào menu <strong>⋮</strong> (Góc trên cùng bên phải trình duyệt) ➔ Chọn <strong>"Cài đặt Thống Kê Nhập Nhà..."</strong> hoặc <strong>"Ứng dụng" (Apps) ➔ "Cài đặt ứng dụng này"</strong>.</p>
             </div>
           </div>
 

@@ -24,8 +24,8 @@
   <meta name="description" content="Cổng quản trị bảo mật cao cấp dành riêng cho Quản trị viên Nguyễn Trí &amp; Cửu Muội - Crew Lưới Búa.">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="author" content="Nguyễn Trí">
-  <meta name="theme-color" content="#f59e0b">
-  <meta name="msapplication-TileColor" content="#f59e0b">
+  <meta name="theme-color" content="#06b6d4">
+  <meta name="msapplication-TileColor" content="#06b6d4">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Lưới Búa Admin">
@@ -421,26 +421,28 @@
       width: 100%;
       height: 50px;
       margin-top: 4px;
-      border: 0;
+      border: 1px solid rgba(255, 255, 255, 0.65);
       border-radius: 15px;
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      background: linear-gradient(180deg, #22d3ee 0%, #06b6d4 50%, #0891b2 100%);
       color: #ffffff;
       font-size: 14.5px;
       font-weight: 850;
       letter-spacing: -0.01em;
       overflow: hidden;
       cursor: pointer;
-      transition: width .45s var(--ux-spring), border-radius .45s var(--ux-spring), background-color .4s, transform .3s var(--ux-spring), box-shadow .3s;
-      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.35);
+      transition: width .45s var(--ux-spring), border-radius .45s var(--ux-spring), background-color .4s, transform .2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow .2s;
+      box-shadow: 0 6px 18px rgba(6, 182, 212, 0.38), 0 2px 4px rgba(8, 145, 178, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.8), inset 0 -2px 4px rgba(0, 0, 0, 0.12);
+      text-shadow: 0 1px 2px rgba(8, 145, 178, 0.5);
     }
 
     .u062-go:hover {
-      transform: translateY(-1.5px);
-      box-shadow: 0 10px 28px rgba(2, 132, 199, 0.45);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px rgba(6, 182, 212, 0.48), 0 3px 8px rgba(8, 145, 178, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.95);
     }
 
     .u062-go:active {
-      transform: scale(.97);
+      transform: translateY(1.5px) scale(0.98);
+      box-shadow: 0 2px 6px rgba(6, 182, 212, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .u062-go span {
@@ -624,18 +626,19 @@
     .admin-badge {
       display: inline-flex;
       align-items: center;
-      background: #fef3c7;
-      color: #92400e;
+      background: linear-gradient(135deg, #ecfeff, #cffafe);
+      color: #0e7490;
       font-size: 10.5px;
       font-weight: 800;
       padding: 2px 7px;
       border-radius: 6px;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      border: 1px solid #fde68a;
+      border: 1px solid #06b6d4;
       white-space: nowrap;
       flex-shrink: 0;
       line-height: 1.4;
+      box-shadow: 0 1px 3px rgba(6, 182, 212, 0.2);
     }
   </style>
 
@@ -643,7 +646,7 @@
   <link rel="preconnect" href="https://code.highcharts.com">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="preconnect" href="https://www.gstatic.com">
-  <link rel="dns-prefetch" href="https://tiktok-46d94-default-rtdb.asia-southeast1.firebasedatabase.app">
+  <link rel="dns-prefetch" href="https://api1-9dc40-default-rtdb.asia-southeast1.firebasedatabase.app">
 
   <!-- Phân luồng tài nguyên: Preload Web Worker & Core Bundle đã đóng gói tối ưu 0ms -->
   <link rel="preload" href="js/worker-calc.js" as="worker">
@@ -660,7 +663,7 @@
     if (typeof firebase !== 'undefined' && (!firebase.apps || !firebase.apps.length)) {
       try {
         firebase.initializeApp({
-          databaseURL: "https://tiktok-46d94-default-rtdb.asia-southeast1.firebasedatabase.app"
+          databaseURL: "https://api1-9dc40-default-rtdb.asia-southeast1.firebasedatabase.app"
         });
         window.db = firebase.database();
       } catch (e) {}
@@ -1013,7 +1016,7 @@
             </h1>
             <span class="admin-badge">Quản Trị</span>
           </div>
-          <span class="brand-sub">Hệ thống quản trị bình sịt &amp; điều hành Crew Lưới Búa</span>
+          <span class="brand-sub">Hệ thống quản trị số nhà &amp; điều hành Crew Lưới Búa</span>
         </div>
       </div>
     </div>
@@ -1034,8 +1037,8 @@
           <span>🔊</span>
         </button>
         <a href="index.html" class="btn-nav-member" title="Xem giao diện thành viên">👁️ Thành Viên</a>
-        <button class="btn-nav-export" id="exportImgTopBtn" title="Xuất báo cáo bình sịt &amp; quỹ">📸 Xuất Báo Cáo</button>
-        <button class="btn-nav-reset" id="resetAllBinhBtn" title="Reset toàn bộ số bình sịt &amp; tiền chuộc tù về ban đầu">🔄 Reset Chu Kỳ</button>
+        <button class="btn-nav-export" id="exportImgTopBtn" title="Xuất báo cáo số nhà &amp; quỹ">📸 Xuất Báo Cáo</button>
+        <button class="btn-nav-reset" id="resetAllBinhBtn" title="Reset toàn bộ số nhà &amp; tiền chuộc tù về ban đầu">🔄 Reset Chu Kỳ</button>
         <div class="nav-divider"></div>
         <div class="nav-admin-profile" id="adminProfileBadge" title="Tài khoản Quản Trị Viên đang hoạt động">
           <span class="admin-profile-avatar" id="adminAvatarIcon">👑</span>
@@ -1078,6 +1081,11 @@
           <button type="button" class="sidebar-nav-item view-tab-btn" data-view="dashboard" role="tab" aria-selected="false">
             <span class="nav-item-icon">📊</span>
             <span class="nav-item-text">Bàn Làm Việc</span>
+            <span class="nav-item-arrow">›</span>
+          </button>
+          <button type="button" class="sidebar-nav-item view-tab-btn" data-view="fund" role="tab" aria-selected="false">
+            <span class="nav-item-icon">💰</span>
+            <span class="nav-item-text">Quỹ &amp; Chuộc Tù</span>
             <span class="nav-item-arrow">›</span>
           </button>
           <button type="button" class="sidebar-nav-item view-tab-btn" data-view="records" role="tab" aria-selected="false">
@@ -1123,7 +1131,7 @@
             <button type="button" class="sidebar-action-pill" id="sidebarExportBtn" title="Chụp ảnh xuất báo cáo">
               <span>📸 Xuất Báo Cáo</span>
             </button>
-            <button type="button" class="sidebar-action-pill btn-action-danger" id="sidebarResetBtn" title="Reset chu kỳ bình sịt">
+            <button type="button" class="sidebar-action-pill btn-action-danger" id="sidebarResetBtn" title="Reset chu kỳ số nhà">
               <span>🔄 Reset Kỳ</span>
             </button>
             <a href="index.html" class="sidebar-action-pill" title="Xem giao diện thành viên">
@@ -1148,7 +1156,7 @@
 
   <!-- ========================================================================
        PHÂN HỆ 1: BẢNG THỐNG KÊ DASHBOARD (EXECUTIVE ANALYTICS) - TAB ĐỨNG ĐẦU
-       Chuẩn SaaS hiện đại 100% Tiếng Việt & Thống kê chính xác số bình sịt
+       Chuẩn SaaS hiện đại 100% Tiếng Việt & Thống kê chính xác số nhà
        ======================================================================== -->
   <section id="view-analytics">
     <div class="analytics-wrapper">
@@ -1156,7 +1164,7 @@
       <!-- Top Title Bar -->
       <div class="analytics-header-bar">
         <div class="analytics-title-group">
-          <h2>📈 BẢNG THỐNG KÊ DOANH SỐ &amp; NĂNG SUẤT BÌNH SỊT</h2>
+          <h2>📈 BẢNG THỐNG KÊ DOANH SỐ &amp; NĂNG SUẤT DỌN NHÀ</h2>
           <span>Phân tích dữ liệu thời gian thực theo mô hình quản trị thông minh</span>
         </div>
       </div>
@@ -1167,10 +1175,10 @@
         <!-- CARD 1: DOANH SỐ DỌN NHÀ (TUẦN NÀY) -->
         <div class="analytics-card">
           <div class="analytics-card-header">
-            <span class="analytics-card-title">Doanh Số Bình Sịt (Tuần Này)</span>
+            <span class="analytics-card-title">Doanh Số Dọn Nhà (Chu Kỳ Này)</span>
           </div>
           <div class="analytics-value-row">
-            <div class="analytics-big-number" id="analyticsRevValue">0 Bình</div>
+            <div class="analytics-big-number" id="analyticsRevValue">0 Nhà</div>
             <div class="analytics-trend-badge" id="analyticsRevTrend">
               <span>↑ 14% Tuần này</span>
             </div>
@@ -1182,7 +1190,7 @@
         <!-- CARD 2: TỔNG QUAN HOẠT ĐỘNG (TUẦN NÀY) -->
         <div class="analytics-card">
           <div class="analytics-card-header">
-            <span class="analytics-card-title">Tổng Quan Hoạt Động Tuần</span>
+            <span class="analytics-card-title">Tổng Quan Hoạt Động Chu Kỳ</span>
           </div>
           <div class="analytics-mini-row">
             <div class="analytics-mini-item">
@@ -1195,7 +1203,7 @@
             </div>
             <div class="analytics-mini-item">
               <div class="analytics-mini-label">TB / Phi Vụ</div>
-              <div class="analytics-mini-value" id="analyticsAvgOrderValue">0 bình/lượt</div>
+              <div class="analytics-mini-value" id="analyticsAvgOrderValue">0 nhà/lượt</div>
             </div>
           </div>
           <div id="chartAnalyticsOverview" style="width:100%;height:155px;"></div>
@@ -1204,10 +1212,10 @@
         <!-- CARD 3: SẢN LƯỢNG TỪNG NGÀY (TUẦN NÀY) -->
         <div class="analytics-card">
           <div class="analytics-card-header">
-            <span class="analytics-card-title">Sản Lượng Từng Ngày (Tuần Này)</span>
+            <span class="analytics-card-title">Sản Lượng Từng Ngày (Chu Kỳ Này)</span>
           </div>
           <div class="analytics-value-row">
-            <div class="analytics-big-number" id="analyticsEarningsValue">0 Bình</div>
+            <div class="analytics-big-number" id="analyticsEarningsValue">0 Nhà</div>
             <div class="analytics-trend-badge" id="analyticsEarningsTrend">
               <span>↑ 14% So với tuần trước</span>
             </div>
@@ -1218,7 +1226,7 @@
         <!-- CARD 4: PHÂN BỔ THÀNH VIÊN THEO SẢN LƯỢNG TUẦN -->
         <div class="analytics-card">
           <div class="analytics-card-header">
-            <span class="analytics-card-title">Tỷ Lệ Bình Sịt Theo Thành Viên (Tuần Này)</span>
+            <span class="analytics-card-title">Tỷ Lệ Dọn Nhà Theo Thành Viên (Chu Kỳ Này)</span>
           </div>
           <div class="analytics-pie-layout">
             <div id="chartAnalyticsCustomers" style="width:100%;height:210px;"></div>
@@ -1237,12 +1245,12 @@
        ======================================================================== -->
   <section id="view-dashboard" class="hidden">
 
-    <!-- 4 SUMMARY KPI CARDS (HỆ THỐNG BÌNH SỊT) -->
+    <!-- 4 SUMMARY KPI CARDS (HỆ THỐNG NHÀ) -->
     <div class="kpi-row">
       <div class="kpi-card kpi-terracotta">
         <div class="kpi-icon">🏠</div>
         <div class="kpi-info">
-          <div class="kpi-label">Tổng bình sịt</div>
+          <div class="kpi-label">Tổng số nhà</div>
           <div class="kpi-value" id="kpiTotalBinh">0</div>
           <div class="kpi-sub">Toàn bộ hệ thống</div>
         </div>
@@ -1262,7 +1270,7 @@
         <div class="kpi-info">
           <div class="kpi-label">Trung bình / người</div>
           <div class="kpi-value" id="kpiAvgBinh">0</div>
-          <div class="kpi-sub">Bình trên mỗi thành viên</div>
+          <div class="kpi-sub">Nhà trên mỗi thành viên</div>
         </div>
       </div>
 
@@ -1271,7 +1279,7 @@
         <div class="kpi-info">
           <div class="kpi-label">Quán quân (Top 1)</div>
           <div class="kpi-value kpi-value-name" id="kpiTopMember">--</div>
-          <div class="kpi-sub" id="kpiTopBinh">0 bình</div>
+          <div class="kpi-sub" id="kpiTopBinh">0 nhà</div>
         </div>
       </div>
     </div>
@@ -1310,7 +1318,7 @@
                 <tr>
                   <th style="width:65px;text-align:center;">Hạng</th>
                   <th>Họ và Tên</th>
-                  <th>Tổng Số Bình Sịt</th>
+                  <th>Tổng Số Nhà</th>
                   <th>Tỉ Lệ Đóng Góp</th>
                   <th>Trạng Thái</th>
                 </tr>
@@ -1325,10 +1333,10 @@
       <!-- RIGHT COLUMN: NHẬP NHANH & DÒNG HOẠT ĐỘNG -->
       <div class="dashboard-right">
 
-        <!-- FORM GHI NHẬN SỐ BÌNH SỊT NHANH -->
+        <!-- FORM GHI NHẬN SỐ NHÀ NHANH -->
         <div class="card card-featured">
           <div class="card-header">
-            <h2>📝 Ghi Nhận Số Bình Sịt Mới</h2>
+            <h2>📝 Ghi Nhận Số Nhà Mới</h2>
             <span style="font-size:12px;color:var(--success);font-weight:700;">● Nhập Nhanh</span>
           </div>
 
@@ -1346,8 +1354,8 @@
           </div>
 
           <div class="form-group">
-            <label for="inputBinh">Số lượng bình sịt *</label>
-            <input type="number" id="inputBinh" min="0" step="any" placeholder="Nhập số lượng bình sịt...">
+            <label for="inputBinh">Số lượng nhà *</label>
+            <input type="number" id="inputBinh" min="0" step="any" placeholder="Nhập số lượng nhà...">
           </div>
 
           <button id="saveRecordBtn" style="width:100%;padding:13px;font-size:15px;">💾 Xác Nhận Lưu Bản Ghi</button>
@@ -1358,7 +1366,7 @@
         <div class="card">
           <div class="card-header">
             <h2>🏅 Vinh Danh Dẫn Đầu</h2>
-            <span class="header-hint">TOP BÌNH SỊT</span>
+            <span class="header-hint">TOP NHÀ</span>
           </div>
           <div class="leaderboard-list" id="leaderboardList"></div>
         </div>
@@ -1654,8 +1662,8 @@
         <div class="summary-mini-card">
           <span class="mini-icon">🏠</span>
           <div>
-            <div class="mini-label">Tổng số bình sịt</div>
-            <div class="mini-val" id="recSumBinh">0 bình</div>
+            <div class="mini-label">Tổng số nhà</div>
+            <div class="mini-val" id="recSumBinh">0 nhà</div>
           </div>
         </div>
         <div class="summary-mini-card">
@@ -1676,7 +1684,7 @@
           <span class="mini-icon">⚡</span>
           <div>
             <div class="mini-label">Trung bình mỗi ngày</div>
-            <div class="mini-val" id="recSumAvgDay">0 bình/ngày</div>
+            <div class="mini-val" id="recSumAvgDay">0 nhà/ngày</div>
           </div>
         </div>
       </div>
@@ -1695,7 +1703,7 @@
               <tr>
                 <th style="width:140px;">Ngày</th>
                 <th>Thành Viên</th>
-                <th style="width:150px;text-align:center;">Số Bình Sịt</th>
+                <th style="width:150px;text-align:center;">Số Nhà</th>
                 <th style="width:160px;text-align:right;">Thao Tác</th>
               </tr>
             </thead>
@@ -1705,7 +1713,7 @@
         </div>
       </div>
 
-      <!-- Phân trang Nhật Ký Bình Sịt -->
+      <!-- Phân trang Nhật Ký Dọn Nhà -->
       <div id="recordsPagination" class="pagination-bar"></div>
     </div>
   </section>
@@ -1729,7 +1737,7 @@
       <div class="kpi-card kpi-emerald">
         <div class="kpi-icon">🏠</div>
         <div class="kpi-info">
-          <div class="kpi-label">Bình Sịt Chu Kỳ Này</div>
+          <div class="kpi-label">Đã Dọn Nhà Chu Kỳ Này</div>
           <div class="kpi-value" id="kpiMemberActive">0 người</div>
           <div class="kpi-sub">Đang tích cực làm nhiệm vụ</div>
         </div>
@@ -1805,8 +1813,8 @@
         <!-- BỘ LỌC TABS -->
         <div class="member-filter-group" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
           <button type="button" class="filter-pill active" data-filter="all">Tất Cả</button>
-          <button type="button" class="filter-pill" data-filter="active">🔥 Có Bình</button>
-          <button type="button" class="filter-pill" data-filter="idle">⏳ Chưa Có Bình</button>
+          <button type="button" class="filter-pill" data-filter="active">🔥 Có Nhà</button>
+          <button type="button" class="filter-pill" data-filter="idle">⏳ Chưa Có Nhà</button>
           <button type="button" class="filter-pill" data-filter="top10">🏆 Top 10</button>
         </div>
 
@@ -1814,8 +1822,8 @@
         <div style="display:flex;align-items:center;gap:8px;">
           <span style="font-size:12px;font-weight:700;color:var(--text-muted);white-space:nowrap;">Sắp xếp:</span>
           <select id="memberSortSelect" style="height:38px;padding:0 12px;border-radius:10px;border:1.5px solid var(--border-soft);background:var(--bg-input,#fff);font-size:12.5px;font-weight:750;color:var(--text-dark);cursor:pointer;outline:none;">
-            <option value="houses-desc">⬇️ Số bình sịt cao nhất</option>
-            <option value="houses-asc">⬆️ Số bình sịt thấp nhất</option>
+            <option value="houses-desc">⬇️ Số nhà cao nhất</option>
+            <option value="houses-asc">⬆️ Số nhà thấp nhất</option>
             <option value="name-asc">🔤 Tên (A → Z)</option>
             <option value="name-desc">🔤 Tên (Z → A)</option>
           </select>
@@ -1830,7 +1838,7 @@
               <th style="width:65px;text-align:center;">Hạng</th>
               <th style="min-width:210px;">Chiến Binh &amp; Danh Hiệu</th>
               <th style="min-width:150px;">Tiến Độ / Tỷ Lệ</th>
-              <th style="min-width:120px;text-align:center;">Tổng Số Bình Sịt</th>
+              <th style="min-width:120px;text-align:center;">Tổng Số Nhà</th>
               <th style="min-width:130px;text-align:center;">Trạng Thái</th>
               <th style="min-width:180px;text-align:right;">Hồ Sơ &amp; Quản Trị</th>
             </tr>
@@ -1841,6 +1849,221 @@
 
       <!-- Phân trang Thành Viên -->
       <div id="membersPagination" class="pagination-bar"></div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       VIEW 4: THỐNG KÊ SỐ DƯ & CHUỘC TÙ
+       ======================================================================== -->
+  <section id="view-fund" class="hidden">
+    
+    <!-- TOP TOOLBAR -->
+    <div class="fund-toolbar">
+      <div>
+        <h2 style="font-size:19px;font-weight:900;color:var(--text-dark);display:flex;align-items:center;gap:8px;">
+          💰 Quản Lý Quỹ Băng Đãng &amp; Chi Phí Chuộc Tù
+        </h2>
+        <span style="font-size:12.5px;color:var(--text-muted);font-weight:600;">
+          Theo dõi số dư quỹ, tự động trừ 60k khi chuộc tù &amp; xuất báo cáo tài chính
+        </span>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <button class="secondary btn-sm" id="fundSettingsBtn" title="Chỉnh số dư ban đầu và giá chuộc tù" style="display:inline-flex;align-items:center;gap:6px;">
+          <span>⚙️ Cài Đặt Quỹ</span>
+        </button>
+        <button class="btn-deposit btn-sm" id="fundDepositBtn" style="display:inline-flex;align-items:center;gap:6px;">
+          <span>➕ Nạp Quỹ</span>
+        </button>
+        <button class="btn-sm" id="exportFundCsvBtn" style="background:#059669;color:#fff;border-color:#047857;display:inline-flex;align-items:center;gap:6px;font-weight:800;" title="Tải toàn bộ lịch sử biến động quỹ ra Excel/CSV">
+          <span>📥 Xuất Excel/CSV</span>
+        </button>
+        <button class="green btn-sm" id="exportFundBtn" style="display:inline-flex;align-items:center;gap:6px;">
+          <span>📸 Xuất Báo Cáo Quỹ</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4 KPI CARDS SỐ DƯ -->
+    <div class="kpi-row">
+      <div class="kpi-card kpi-emerald">
+        <div class="kpi-icon">💰</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Số Dư Quỹ Hiện Tại</div>
+          <div class="kpi-value" id="kpiFundCurrent">5.000.000đ</div>
+          <div class="kpi-sub" id="kpiFundStatus">Quỹ sẵn sàng</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-amber">
+        <div class="kpi-icon">🏦</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Hạn Mức Quỹ Ban Đầu</div>
+          <div class="kpi-value" id="kpiFundInitial">5.000.000đ</div>
+          <div class="kpi-sub">Mặc định (5M) - Chỉnh tại ⚙️</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-danger">
+        <div class="kpi-icon">🚨</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Tổng Chi Chuộc Tù</div>
+          <div class="kpi-value" id="kpiFundTotalSpent">0đ</div>
+          <div class="kpi-sub" id="kpiFundBailFeeInfo">Mức chuộc: 60.000đ / lần</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-icon">⛓️</div>
+        <div class="kpi-info">
+          <div class="kpi-label">Tổng Lượt Chuộc Tù</div>
+          <div class="kpi-value" id="kpiFundBailCount">0 lượt</div>
+          <div class="kpi-sub">Số lần anh em bị bắt</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BỐ CỤC 2 CỘT QUỸ -->
+    <div class="fund-grid">
+      
+      <!-- CỘT TRÁI: FORM CHUỘC TÙ & BXH ĐI TÙ -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="card card-hazard">
+          <div class="card-header">
+            <h2 id="expenseCardTitle">🚨 Chuộc Tù Nhanh</h2>
+            <span class="badge badge-hazard" id="bailFeeBadge">-60.000đ</span>
+          </div>
+
+          <!-- LOẠI CHI TIÊU & CHỈNH SỬA / ĐỔI QUA CÁI KHÁC -->
+          <div class="form-group" style="margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label style="margin:0; font-weight:700; font-size:13px;">Loại Chi Quỹ:</label>
+              <button type="button" id="btnToggleBailType" class="secondary btn-sm" style="font-size:11.5px; padding:3px 9px; font-weight:700; cursor:pointer;" title="Chuyển sang loại chi khác hoặc tùy chỉnh">
+                ✏️ Đổi sang loại khác
+              </button>
+            </div>
+
+            <!-- Khối hiển thị loại hiện tại (Mặc định: Chuộc tù) -->
+            <div id="expenseTypeDisplayBox" style="display:flex; align-items:center; justify-content:space-between; padding:9px 12px; background:rgba(239, 68, 68, 0.08); border:1.5px solid #fca5a5; border-radius:8px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span id="expenseTypeBadgeIcon" style="font-size:16px;">🚨</span>
+                <span id="expenseTypeNameDisplay" style="font-weight:800; color:#b91c1c; font-size:13.5px;">Chuộc tù (Mặc định)</span>
+              </div>
+              <span id="expenseTypeTag" style="font-size:11px; background:#fee2e2; color:#991b1b; padding:2px 7px; border-radius:12px; font-weight:800;">Tự động -60k</span>
+            </div>
+
+            <!-- Khối chỉnh sửa / chọn loại khác (Mở ra khi bấm Chỉnh Sửa) -->
+            <div id="customTypeSelectorPanel" style="display:none; margin-top:10px; padding:12px; background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px;">
+              <div style="font-size:12px; font-weight:700; color:#475569; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                <span>Chọn nhanh hoặc tùy chỉnh:</span>
+                <button type="button" id="btnResetToBail" style="background:transparent; border:none; color:#dc2626; font-size:11px; font-weight:700; cursor:pointer; text-decoration:underline;">
+                  ↩️ Về Chuộc Tù mặc định
+                </button>
+              </div>
+
+              <!-- Danh sách nút chọn nhanh -->
+              <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;" id="typePresetContainer">
+                <button type="button" class="type-chip active" data-type="bail" data-name="Chuộc tù" data-fee="60000" data-icon="🚨">🚨 Chuộc tù (60k)</button>
+                <button type="button" class="type-chip" data-type="fine" data-name="Đóng phạt công an" data-fee="50000" data-icon="⚖️">⚖️ Đóng phạt</button>
+                <button type="button" class="type-chip" data-type="supply" data-name="Mua đồ nghề / Vũ khí" data-fee="100000" data-icon="🛒">🛒 Mua đồ</button>
+                <button type="button" class="type-chip" data-type="food" data-name="Tiếp tế / Ăn uống" data-fee="30000" data-icon="🍖">🍖 Tiếp tế</button>
+                <button type="button" class="type-chip" data-type="custom" data-name="" data-fee="" data-icon="📝">📝 Tự gõ loại khác</button>
+              </div>
+
+              <!-- Ô tự nhập loại chi tùy ý -->
+              <div id="customNameRow" style="display:none; margin-top:8px;">
+                <label for="customExpenseTypeName" style="font-size:11.5px; font-weight:700; color:#64748b; margin-bottom:4px; display:block;">Tên Loại Chi Tùy Chỉnh:</label>
+                <input type="text" id="customExpenseTypeName" placeholder="Ví dụ: Sửa xe, Mua súng, Nộp phạt, Tiếp tế..." style="font-size:13px; padding:8px 10px;">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="bailMemberSelect">Chọn Thành Viên Chi Quỹ *</label>
+            <select id="bailMemberSelect">
+              <option value="">-- Chọn thành viên từ danh sách --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label id="expenseAmountLabel">Tiền Trừ Khỏi Quỹ (VNĐ)</label>
+            <input type="text" id="bailFeeDisplay" value="-60.000 VNĐ" readonly class="input-hazard">
+            <input type="number" id="customExpenseAmount" placeholder="Nhập số tiền chi (VNĐ)..." style="display:none; margin-top:6px; font-weight:700; color:#dc2626;" min="1000" step="1000">
+          </div>
+
+          <div class="form-group">
+            <label for="bailNote">Lý Do / Ghi Chú (Tùy chọn)</label>
+            <input type="text" id="bailNote" placeholder="Ví dụ: Bị bắt ở tiệm vàng, trốn viện...">
+          </div>
+
+          <button class="danger" id="submitBailBtn" style="width:100%;font-size:15px;padding:12px;font-weight:900;">
+            🚨 Xác Nhận Chuộc Tù (-60.000đ)
+          </button>
+          <div id="bailStatusMsg" class="status"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>🏆 BXH Đi Tù Nhiều Nhất</h2>
+            <span class="header-hint">Thống kê anh em bị bắt</span>
+          </div>
+          <div class="table-responsive">
+            <table style="font-size:13px;">
+              <thead>
+                <tr>
+                  <th style="width:50px;text-align:center;">Hạng</th>
+                  <th>Thành Viên</th>
+                  <th style="text-align:center;width:75px;">Lượt</th>
+                  <th style="text-align:right;width:115px;">Tổng Tiền</th>
+                </tr>
+              </thead>
+              <tbody id="topBailTable">
+                <tr><td colspan="4" style="text-align:center;color:#475569;font-weight:700;padding:16px;">Chưa có anh em nào đi tù</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- CỘT PHẢI: LỊCH SỬ BIẾN ĐỘNG QUỸ -->
+      <div class="card">
+        <div class="card-header">
+          <h2>📜 Lịch Sử Biến Động Quỹ &amp; Chi Phí Chuộc Tù</h2>
+          <span class="header-hint" id="fundLogsCount">Tổng 0 giao dịch</span>
+        </div>
+
+        <div class="search-bar" style="margin-bottom:14px;">
+          <input type="text" id="searchFundInput" placeholder="🔍 Tìm theo tên anh em..." aria-label="Tìm kiếm giao dịch theo tên anh em hoặc ghi chú" style="max-width:280px;">
+          <select id="filterFundType" aria-label="Lọc theo loại giao dịch" style="max-width:170px;">
+            <option value="all">Tất cả giao dịch</option>
+            <option value="bail">Chỉ Chuộc tù (-60k)</option>
+            <option value="expense">Chi tiêu khác (-)</option>
+            <option value="deposit">Chỉ Nạp quỹ (+)</option>
+          </select>
+          <button class="secondary btn-sm" id="resetFundFilter">Xoá lọc</button>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:48px;text-align:center;">STT</th>
+                <th style="width:130px;">Thời Gian</th>
+                <th style="width:120px;text-align:center;">Loại</th>
+                <th>Thành Viên</th>
+                <th style="width:125px;text-align:right;">Biến Động</th>
+                <th style="width:135px;text-align:right;">Số Dư Còn</th>
+                <th>Ghi Chú</th>
+                <th style="width:95px;text-align:center;">Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="fundLogsTable"></tbody>
+          </table>
+        </div>
+
+        <!-- Phân trang Lịch Sử Quỹ & Chuộc Tù -->
+        <div id="fundPagination" class="pagination-bar"></div>
+      </div>
+
     </div>
   </section>
 
@@ -1897,7 +2120,7 @@
         <input type="text" id="searchAuditLogInput" placeholder="🔍 Tìm theo nội dung, tên thành viên..." style="max-width:320px;">
         <select id="filterAuditLogAction" style="max-width:200px;">
           <option value="all">Tất cả hành động</option>
-          <option value="RECORD">Ghi nhận / Sửa / Xoá Số Bình Sịt</option>
+          <option value="RECORD">Ghi nhận / Sửa / Xoá Số Nhà</option>
           <option value="MEMBER">Thành Viên (Thêm/Sửa/Xoá)</option>
           <option value="FUND">Quỹ &amp; Chuộc Tù</option>
           <option value="RESET">Reset Chu Kỳ</option>
@@ -1929,7 +2152,7 @@
                 <div class="empty-state-box">
                   <span class="empty-state-icon">📜</span>
                   <div class="empty-state-title">Chưa có nhật ký chỉnh sửa nào</div>
-                  <div class="empty-state-desc">Mọi thao tác thêm, sửa, xoá số bình sịt hoặc thành viên sẽ tự động lưu lại ở đây</div>
+                  <div class="empty-state-desc">Mọi thao tác thêm, sửa, xoá số nhà hoặc thành viên sẽ tự động lưu lại ở đây</div>
                 </div>
               </td>
             </tr>
@@ -2352,7 +2575,7 @@
 
     if (badge) {
       if (isTri) {
-        badge.style.borderColor = '#f59e0b';
+        badge.style.borderColor = '#06b6d4';
         badge.style.background = '#fffdf7';
       } else if (isCuumuoi) {
         badge.style.borderColor = '#ec4899';
@@ -2559,22 +2782,21 @@
       }
 
       // 5. NẾU ĐANG CHẠY TRÊN LOCALHOST: Xác thực tức thì
-      const isLocal = true; // Kiem tra mat khau truc tiep SHA-256 an toan 0ms cho moi domain
+      const isLocal = ['localhost', '127.0.0.1', '0.0.0.0', ''].includes(location.hostname) || location.protocol === 'file:';
       if (isLocal) {
         try {
           const pHash = await sha256Hex(p);
           const uLow = u.toLowerCase();
           let matchedAdmin = null;
 
-          // 1. Mật khẩu Admin mới (vit123456@)
-          if (uLow === 'admin' && (pHash === 'de7e385f47e963d724758f6168d432baf82884ee225c8527bdba96c272bed89d' || p === 'vit123456@')) {
-            matchedAdmin = { name: 'Admin', role: 'owner' };
-          }
-          // 2. Mật khẩu Nguyễn Trí cũ (tri123456@)
-          else if ((uLow === 'admin' || uLow === 'nguyentri') && (pHash === '0009af23da4322e5106f7d9f8778c451fede93ff145171cd18c8859cf6cbfa79' || p === 'tri123456@')) {
+          // Hash SHA-256 của mật khẩu Nguyễn Trí (tri123456@)
+          if ((uLow === 'admin' || uLow === 'nguyentri') && (pHash === '0009af23da4322e5106f7d9f8778c451fede93ff145171cd18c8859cf6cbfa79' || p === 'tri123456@')) {
             matchedAdmin = { name: 'Nguyễn Trí', role: 'owner' };
           } 
-
+          // Hash SHA-256 của mật khẩu Cửu Muội (cuumuoi123@)
+          else if ((uLow === 'admin' || uLow === 'cuumuoi') && (pHash === 'e44ffa31aa676c7818cd0bb63f8a28808df62a7ba6a4e760622f764bbe34ecd6' || p === 'cuumuoi123@')) {
+            matchedAdmin = { name: 'Cửu Muội', role: 'admin' };
+          }
 
           if (matchedAdmin) {
             handleSaveCredentials(u, p);
@@ -2709,11 +2931,10 @@
           const pHash = await sha256Hex(p);
           const uLow = u.toLowerCase();
           let fallbackAdmin = null;
-          if (uLow === 'admin' && (pHash === 'de7e385f47e963d724758f6168d432baf82884ee225c8527bdba96c272bed89d' || p === 'vit123456@')) {
-            fallbackAdmin = { name: 'Admin', role: 'owner' };
-          } else if ((uLow === 'admin' || uLow === 'nguyentri') && (pHash === '0009af23da4322e5106f7d9f8778c451fede93ff145171cd18c8859cf6cbfa79' || p === 'tri123456@')) {
+          if ((uLow === 'admin' || uLow === 'nguyentri') && (pHash === '0009af23da4322e5106f7d9f8778c451fede93ff145171cd18c8859cf6cbfa79' || p === 'tri123456@')) {
             fallbackAdmin = { name: 'Nguyễn Trí', role: 'owner' };
-          
+          } else if ((uLow === 'admin' || uLow === 'cuumuoi') && (pHash === 'e44ffa31aa676c7818cd0bb63f8a28808df62a7ba6a4e760622f764bbe34ecd6' || p === 'cuumuoi123@')) {
+            fallbackAdmin = { name: 'Cửu Muội', role: 'admin' };
           }
 
           if (fallbackAdmin) {
