@@ -2128,42 +2128,68 @@ var analyticsEarningsChart = null;
 var analyticsCustomersChart = null;
 
 // Hàm tiện ích: Lấy danh sách 7 ngày trong tuần hiện tại (Thứ 2 -> Chủ Nhật) kèm nhãn ngày tháng cụ thể
-function getWeekDateRange(refDate = new Date()) {
-  const d = new Date(refDate);
-  const day = d.getDay(); // 0 is Sunday, 1 is Monday ... 6 is Saturday
-  const diffToMon = (day === 0 ? -6 : 1 - day);
+function getWeekDateRange(refDate = new Date(), records = window.allRecords || []) {
+  const validDates = (records || []).map(r => r.date).filter(Boolean).sort();
+  const today = new Date(refDate);
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
-  const mon = new Date(d);
-  mon.setDate(d.getDate() + diffToMon);
-  mon.setHours(0, 0, 0, 0);
+  let startDate, endDate;
+  if (validDates.length > 0) {
+    const minRecDate = new Date(validDates[0] + 'T00:00:00');
+    const maxRecDate = new Date(validDates[validDates.length - 1] + 'T00:00:00');
+    const todayDate = new Date(todayStr + 'T00:00:00');
 
-  const weekDates = []; // YYYY-MM-DD
-  const dayShortLabels = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ Nhật'];
-  const dayFullLabels = []; // "Thứ 2 (12/10)", "Chủ Nhật (18/10)"
+    // Bao quát từ ngày sớm nhất có bản ghi đến ngày hôm nay (hoặc ngày bản ghi mới nhất)
+    const endRef = maxRecDate > todayDate ? maxRecDate : todayDate;
+    const spanDays = Math.round((endRef - minRecDate) / (24 * 3600 * 1000)) + 1;
 
-  for (let i = 0; i < 7; i++) {
-    const cur = new Date(mon);
-    cur.setDate(mon.getDate() + i);
-    const dateStr = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, '0')}-${String(cur.getDate()).padStart(2, '0')}`;
-    weekDates.push(dateStr);
-    
-    const dayNum = String(cur.getDate()).padStart(2, '0');
-    const monthNum = String(cur.getMonth() + 1).padStart(2, '0');
-    dayFullLabels.push(`${dayShortLabels[i]} (${dayNum}/${monthNum})`);
+    if (spanDays <= 7) {
+      startDate = minRecDate;
+      endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 6);
+    } else {
+      // Nếu số ngày nhiều hơn 7 (ví dụ chu kỳ 8-10 ngày), hiển thị đầy đủ toàn bộ chu kỳ
+      startDate = minRecDate;
+      endDate = endRef;
+    }
+  } else {
+    endDate = new Date(todayStr + 'T00:00:00');
+    startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - 6);
   }
 
-  // 7 ngày của tuần trước (để so sánh tăng trưởng doanh số tuần)
-  const lastMon = new Date(mon);
-  lastMon.setDate(mon.getDate() - 7);
+  const weekDates = [];
+  const dayShortLabels = [];
+  const dayFullLabels = [];
+  const dayNames = ['CN', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+
+  const cur = new Date(startDate);
+  while (cur <= endDate) {
+    const yyyy = cur.getFullYear();
+    const mm = String(cur.getMonth() + 1).padStart(2, '0');
+    const dd = String(cur.getDate()).padStart(2, '0');
+    const dStr = `${yyyy}-${mm}-${dd}`;
+    weekDates.push(dStr);
+
+    const dName = dayNames[cur.getDay()];
+    dayShortLabels.push(dName);
+    dayFullLabels.push(`${dName} (${dd}/${mm})`);
+    cur.setDate(cur.getDate() + 1);
+  }
+
+  // Kỳ trước để so sánh tăng trưởng
+  const totalDays = weekDates.length;
+  const lastStartDate = new Date(startDate);
+  lastStartDate.setDate(startDate.getDate() - totalDays);
   const lastWeekDates = [];
-  for (let i = 0; i < 7; i++) {
-    const cur = new Date(lastMon);
-    cur.setDate(lastMon.getDate() + i);
-    const dateStr = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, '0')}-${String(cur.getDate()).padStart(2, '0')}`;
-    lastWeekDates.push(dateStr);
+  for (let i = 0; i < totalDays; i++) {
+    const curLast = new Date(lastStartDate);
+    curLast.setDate(lastStartDate.getDate() + i);
+    const dStr = `${curLast.getFullYear()}-${String(curLast.getMonth() + 1).padStart(2, '0')}-${String(curLast.getDate()).padStart(2, '0')}`;
+    lastWeekDates.push(dStr);
   }
 
-  return { weekDates, lastWeekDates, dayShortLabels, dayFullLabels, mon };
+  return { weekDates, lastWeekDates, dayShortLabels, dayFullLabels, mon: startDate };
 }
 
 function renderAnalyticsDashboard() {
@@ -2179,14 +2205,12 @@ function renderAnalyticsDashboard() {
   const userList = Object.values(users);
   const totalUsers = userList.length || 0;
 
-  const { weekDates, lastWeekDates, dayShortLabels, dayFullLabels } = getWeekDateRange();
+  const { weekDates, lastWeekDates, dayShortLabels, dayFullLabels } = getWeekDateRange(new Date(), records);
 
-  // 1. TỔNG HỢP SỐ LIỆU DOANH SỐ TRONG TUẦN
-  const dayHomes = [0, 0, 0, 0, 0, 0, 0];
-  const dayTrips = [0, 0, 0, 0, 0, 0, 0];
+  // 1. TỔNG HỢP SỐ LIỆU DOANH SỐ THEO NGÀY VÀ TOÀN BỘ CHU KỲ
+  const dayHomes = new Array(weekDates.length).fill(0);
+  const dayTrips = new Array(weekDates.length).fill(0);
   const memberHomesMap = {};
-  let thisWeekHomes = 0;
-  let thisWeekTrips = 0;
 
   records.forEach(r => {
     const binh = Number(r.binh) || 0;
@@ -2194,32 +2218,20 @@ function renderAnalyticsDashboard() {
     if (idx !== -1) {
       dayHomes[idx] += binh;
       dayTrips[idx] += 1;
-      thisWeekHomes += binh;
-      thisWeekTrips += 1;
-
-      const uid = r.userId || r.userName || 'unknown';
-      memberHomesMap[uid] = (memberHomesMap[uid] || 0) + binh;
     }
+    // LUÔN TỔNG HỢP 100% BẢN GHI CỦA TẤT CẢ ANH EM VÀO BẢN ĐỒ THÀNH VIÊN
+    const uid = r.userId || r.userName || 'unknown';
+    memberHomesMap[uid] = (memberHomesMap[uid] || 0) + binh;
   });
 
-  // Nếu trong tuần này chưa có ca nào phát sinh nhưng hệ thống có records thực tế,
-  // phân bổ dữ liệu records để dashboard hiển thị đầy đủ, không bị rỗng
-  const totalAllHomes = records.reduce((sum, r) => sum + (Number(r.binh) || 0), 0);
-  if (thisWeekHomes === 0 && totalAllHomes > 0) {
-    thisWeekHomes = totalAllHomes;
-    thisWeekTrips = records.length;
-    records.forEach(r => {
-      const binh = Number(r.binh) || 0;
-      const uid = r.userId || r.userName || 'unknown';
-      memberHomesMap[uid] = (memberHomesMap[uid] || 0) + binh;
-      dayHomes[6] += binh;
-      dayTrips[6] += 1;
-    });
-  }
+  // Tổng số nhà và số phi vụ thực tế 100% của toàn bộ chu kỳ
+  const totalAllHomes = Math.round(records.reduce((sum, r) => sum + (Number(r.binh) || 0), 0) * 10) / 10;
+  const totalAllTrips = records.length;
 
-  thisWeekHomes = Math.round(thisWeekHomes * 10) / 10;
+  const thisWeekHomes = totalAllHomes;
+  const thisWeekTrips = totalAllTrips;
 
-  // 2. TÍNH DOANH SỐ TUẦN TRƯỚC ĐỂ SO SÁNH TĂNG TRƯỞNG
+  // 2. TÍNH DOANH SỐ KỲ TRƯỚC ĐỂ SO SÁNH TĂNG TRƯỞNG
   let lastWeekHomes = 0;
   records.forEach(r => {
     if (lastWeekDates.includes(r.date)) {
@@ -2232,28 +2244,28 @@ function renderAnalyticsDashboard() {
     weekGrowthPct = Math.round(((thisWeekHomes - lastWeekHomes) / lastWeekHomes) * 1000) / 10;
   }
 
-  // 3. TÍNH HIỆU SUẤT TRUNG BÌNH & SỐ ANH EM THAM GIA TRONG TUẦN
+  // 3. TÍNH HIỆU SUẤT TRUNG BÌNH & SỐ ANH EM THAM GIA TRONG CHU KỲ
   const activeMembersCount = Object.keys(memberHomesMap).filter(id => (memberHomesMap[id] || 0) > 0).length || totalUsers;
   const avgHomesPerTrip = thisWeekTrips > 0 ? (thisWeekHomes / thisWeekTrips).toFixed(1) : '0';
 
-  // 4. HIỂN THỊ DỮ LIỆU LÊN 4 CARD THEO TUẦN
-  // Card 1: Doanh Số Bình Sịt (Tuần Này)
+  // 4. HIỂN THỊ DỮ LIỆU LÊN 4 CARD
+  // Card 1: Doanh Số Ghi Nhận
   const revEl = document.getElementById('analyticsRevValue');
   if (revEl) {
-    revEl.textContent = `${thisWeekHomes.toLocaleString('vi-VN')} Bình`;
+    revEl.textContent = `${thisWeekHomes.toLocaleString('vi-VN')} Nhà`;
   }
   const revTrendEl = document.getElementById('analyticsRevTrend');
   if (revTrendEl) {
     const sign = weekGrowthPct >= 0 ? '↑' : '↓';
-    revTrendEl.innerHTML = `<span>${sign} ${Math.abs(weekGrowthPct)}% Tuần này</span>`;
+    revTrendEl.innerHTML = `<span>${sign} ${Math.abs(weekGrowthPct)}% Chu kỳ này</span>`;
   }
   const revSubEl = document.getElementById('analyticsRevSub');
   if (revSubEl) {
     const totalVnd = thisWeekHomes * 50000;
-    revSubEl.textContent = `Quy đổi quỹ tuần: ${totalVnd.toLocaleString('vi-VN')}đ`;
+    revSubEl.textContent = `Quy đổi quỹ: ${totalVnd.toLocaleString('vi-VN')}đ`;
   }
 
-  // Card 2: Tổng Quan Hoạt Động Tuần
+  // Card 2: Tổng Quan Hoạt Động Chu Kỳ
   const salesEl = document.getElementById('analyticsSalesCount');
   if (salesEl) {
     salesEl.textContent = `${thisWeekTrips.toLocaleString('vi-VN')} lượt`;
@@ -2264,21 +2276,21 @@ function renderAnalyticsDashboard() {
   }
   const avgValEl = document.getElementById('analyticsAvgOrderValue');
   if (avgValEl) {
-    avgValEl.textContent = `${avgHomesPerTrip} bình/lượt`;
+    avgValEl.textContent = `${avgHomesPerTrip} nhà/lượt`;
   }
 
-  // Card 3: Sản Lượng Từng Ngày (Tuần Này)
+  // Card 3: Sản Lượng Ghi Nhận
   const earnEl = document.getElementById('analyticsEarningsValue');
   if (earnEl) {
-    earnEl.textContent = `${thisWeekHomes.toLocaleString('vi-VN')} Bình`;
+    earnEl.textContent = `${thisWeekHomes.toLocaleString('vi-VN')} Nhà`;
   }
   const earnTrendEl = document.getElementById('analyticsEarningsTrend');
   if (earnTrendEl) {
     const sign = weekGrowthPct >= 0 ? '↑' : '↓';
-    earnTrendEl.innerHTML = `<span>${sign} ${Math.abs(weekGrowthPct)}% So với tuần trước</span>`;
+    earnTrendEl.innerHTML = `<span>${sign} ${Math.abs(weekGrowthPct)}% So với kỳ trước</span>`;
   }
 
-  // 5. KHỞI TẠO 4 BIỂU ĐỒ HOÀN TOÀN THEO 7 NGÀY TRONG TUẦN
+  // 5. KHỞI TẠO 4 BIỂU ĐỒ
   renderChartRevenue(dayShortLabels, dayFullLabels, dayHomes, thisWeekHomes);
   renderChartOverview(dayShortLabels, dayFullLabels, dayTrips, thisWeekTrips);
   renderChartEarnings(dayShortLabels, dayFullLabels, dayHomes, thisWeekHomes);
