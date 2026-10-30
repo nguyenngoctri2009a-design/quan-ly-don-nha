@@ -1896,9 +1896,9 @@ function renderColumnChart() {
     return;
   }
 
-  const labelColor = '#0f172a';
-  const gridColor = 'rgba(226, 232, 240, 0.8)';
-  const axisColor = '#06b6d4';
+  const labelColor = '#1e1610';
+  const gridColor = 'rgba(241, 233, 223, 0.9)';
+  const axisColor = '#d97706';
 
   const categories = displayData.map(d => d.name);
   const values = displayData.map(d => Math.round(d.binh * 100) / 100);
@@ -1958,12 +1958,12 @@ function renderColumnChart() {
       }
     },
     tooltip: {
-      headerFormat: '<span style="font-size:12px;font-weight:bold;color:#0891b2">{point.key}</span><br/>',
+      headerFormat: '<span style="font-size:12px;font-weight:bold;color:#d97706">{point.key}</span><br/>',
       pointFormat: '<b style="font-size:14px;color:#1e1610;">{point.y} nhà</b>',
       backgroundColor: 'rgba(255, 255, 255, 0.97)',
       borderRadius: 14,
       borderWidth: 1.5,
-      borderColor: '#a5f3fc',
+      borderColor: '#fde68a',
       shadow: true,
       style: { color: '#1e1610', fontSize: '13px' }
     },
@@ -1972,8 +1972,8 @@ function renderColumnChart() {
         color: {
           linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
           stops: [
-            [0, '#38bdf8'],
-            [1, '#06b6d4']
+            [0, '#fbbf24'],
+            [1, '#d97706']
           ]
         },
         borderRadius: 20,
