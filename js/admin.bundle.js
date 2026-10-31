@@ -7767,6 +7767,11 @@ $('manualBackupBtn')?.addEventListener('click', (e) => triggerManualBackup(e.cur
    Thiết kế chuẩn T1 Pro / Modern Elite 3D: Nền trắng sáng, góc viền thanh mảnh,
    Huy chương 3D cực đại (+20%) Vàng/Bạc/Đồng, Thẻ 3D Gaming Trophy, Chữ ký to sắc nét.
    ========================================================================== */
+/* ==========================================================================
+   SECTION 2: BẰNG VINH DANH THÀNH TÍCH & BÁO CÁO DOANH SỐ (MODERN ELITE 3D - 10/10 EDITION)
+   Thiết kế chuẩn T1 Pro / Modern Elite 3D: Nền trắng sáng, góc viền thanh mảnh,
+   Huy chương 3D cực đại (+20%) Vàng/Bạc/Đồng, Dải Thống Kê Tri-Metric Ribbon Siêu Sang.
+   ========================================================================== */
 $('exportImgTopBtn')?.addEventListener('click', openExportModal);
 
 function openExportModal() {
@@ -7976,10 +7981,9 @@ window.openExportModal = openExportModal;
 /* ==========================================================================
    HÀM XUẤT BẰNG VINH DANH THÀNH TÍCH (MODERN ELITE 3D - ĐẲNG CẤP 10/10)
    1. Góc tam giác tinh giản gọn gàng, thanh lịch không chiếm tầm nhìn
-   2. Huy chương 3D cực đại (+20%), nổi khối rực rỡ
-   3. Phân biệt rõ rệt: Top 1 VÀNG, Top 2 BẠC, Top 3 ĐỒNG, Top > 3 SAPPHIRE
-   4. Thẻ Kỷ lục dọn nhà nổi khối 3D Gaming Trophy Plaque
-   5. Chữ ký & Xác thực to rõ nét khi xuất PNG
+   2. Huy chương 3D cực đại (+20%), nổi khối rực rỡ Vàng/Bạc/Đồng
+   3. Dải Thống Kê Tri-Metric Ribbon Siêu Sang, thống nhất 100%, không chắp vá
+   4. Chữ ký & Xác thực to rõ nét khi xuất PNG
    ========================================================================== */
 async function generateCertificateImage(targetUserId) {
   const container = $('exportArea');
@@ -8213,7 +8217,7 @@ async function generateCertificateImage(targetUserId) {
 
         </div>
 
-        <!-- 2. PHẦN GIỮA: TÊN THÀNH VIÊN TÂM ĐIỂM & THẺ THỐNG KÊ 3D CỰC NỔI (GAMING TROPHY PLAQUE) -->
+        <!-- 2. PHẦN GIỮA: TÊN THÀNH VIÊN TÂM ĐIỂM & DẢI THỐNG KÊ TRI-METRIC RIBBON SIÊU SANG -->
         <div style="width:100%;display:flex;flex-direction:column;align-items:center;margin:2px 0;">
           
           <div style="font-size:14.5px;font-weight:850;letter-spacing:3px;color:#0284c7;text-transform:uppercase;margin-bottom:4px;">
@@ -8221,43 +8225,60 @@ async function generateCertificateImage(targetUserId) {
           </div>
 
           <!-- TÊN THÀNH VIÊN LÀ TÂM ĐIỂM, KÍCH THƯỚC LỚN (66px), NÉT ĐẬM HOÀNG GIA -->
-          <div style="font-size:66px;font-weight:900;letter-spacing:-0.5px;color:#0f172a;line-height:1.15;margin-bottom:14px;max-width:1200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+          <div style="font-size:66px;font-weight:900;letter-spacing:-0.5px;color:#0f172a;line-height:1.15;margin-bottom:16px;max-width:1200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
             ${escHtml(memberName)}
           </div>
 
-          <!-- THẺ THỐNG KÊ 3D CÓ CHIỀU SÂU VƯỢT TRỘI (3D GAMING TROPHY PLAQUE) -->
-          <div style="background:linear-gradient(145deg, #ffffff 0%, #f8fafc 55%, #eef2ff 100%);
-                      border:2.5px solid #0284c7;border-radius:26px;padding:16px 40px;
-                      display:inline-flex;align-items:center;gap:36px;
-                      box-shadow:0 20px 45px rgba(2,132,199,0.2), inset 0 2px 4px #ffffff, inset 0 -3px 6px rgba(2,132,199,0.08);">
+          <!-- DẢI THỐNG KÊ TRI-METRIC RIBBON SIÊU SANG (MODERN EXECUTIVE TRI-METRIC PODIUM) -->
+          <div style="width:1060px;background:#ffffff;border:1.5px solid #cbd5e1;border-top:3.5px solid #0284c7;border-radius:22px;
+                      padding:18px 40px;display:flex;align-items:center;justify-content:space-between;
+                      box-shadow:0 14px 36px rgba(2,132,199,0.09), 0 2px 6px rgba(0,0,0,0.02);box-sizing:border-box;">
             
-            <!-- KHỐI 3D SỐ NHÀ NỔI BẬT NGUYÊN BẢN (3D HERO HOUSE METRIC) -->
-            <div style="background:linear-gradient(135deg,#0284c7 0%,#0369a1 40%,#075985 100%);
-                        border:2.5px solid #38bdf8;border-radius:20px;padding:12px 28px;
-                        display:flex;align-items:center;gap:16px;
-                        box-shadow:0 12px 28px rgba(2,132,199,0.42), inset 0 3px 5px rgba(255,255,255,0.5), inset 0 -4px 8px rgba(0,0,0,0.3);">
-              <div style="font-size:36px;filter:drop-shadow(0 3px 8px rgba(0,0,0,0.3));">🏠</div>
-              <div style="text-align:left;">
-                <div style="font-size:11.5px;font-weight:900;color:#e0f2fe;letter-spacing:2px;text-transform:uppercase;">KỶ LỤC DỌN NHÀ</div>
-                <div style="font-size:46px;font-weight:900;color:#ffffff;line-height:1;margin-top:2px;text-shadow:0 3px 10px rgba(0,0,0,0.3);">
-                  ${roundedHouses} <span style="font-size:18px;color:#bae6fd;font-weight:800;">CĂN</span>
-                </div>
+            <!-- CỘT 1: THÀNH TÍCH DỌN NHÀ (HERO HOUSE METRIC) -->
+            <div style="flex:1;text-align:center;">
+              <div style="font-size:11.5px;font-weight:900;color:#0284c7;letter-spacing:2px;text-transform:uppercase;">
+                THÀNH TÍCH DỌN NHÀ
+              </div>
+              <div style="margin-top:4px;display:flex;align-items:baseline;justify-content:center;gap:8px;">
+                <span style="font-size:46px;font-weight:900;color:#0f172a;line-height:1;letter-spacing:-1px;">${roundedHouses}</span>
+                <span style="font-size:14.5px;font-weight:900;color:#0284c7;background:#e0f2fe;padding:4px 12px;border-radius:8px;letter-spacing:1px;vertical-align:middle;">CĂN NHÀ</span>
+              </div>
+              <div style="font-size:11.5px;font-weight:750;color:#64748b;margin-top:4px;">
+                Kỷ lục dẫn đầu toàn hệ thống
               </div>
             </div>
 
-            <!-- TỶ TRỌNG ĐÓNG GÓP (3D GLASS PILL) -->
-            <div style="text-align:left;background:#ffffff;padding:12px 24px;border-radius:18px;border:1.5px solid #bae6fd;box-shadow:0 6px 18px rgba(2,132,199,0.08), inset 0 1px 2px #fff;">
-              <div style="font-size:11.5px;font-weight:850;color:#0369a1;letter-spacing:1px;text-transform:uppercase;">TỶ TRỌNG CỐNG HIẾN</div>
-              <div style="font-size:32px;font-weight:900;color:#0284c7;line-height:1.1;margin-top:2px;">
-                ${sharePercent}% <span style="font-size:13.5px;color:#64748b;font-weight:700;">toàn đội</span>
+            <!-- VẠCH PHÂN CÁCH TINH TẾ -->
+            <div style="width:1.5px;height:55px;background:linear-gradient(180deg,transparent,#cbd5e1 50%,transparent);"></div>
+
+            <!-- CỘT 2: TỶ TRỌNG CỐNG HIẾN -->
+            <div style="flex:1;text-align:center;">
+              <div style="font-size:11.5px;font-weight:900;color:#64748b;letter-spacing:2px;text-transform:uppercase;">
+                TỶ TRỌNG CỐNG HIẾN
+              </div>
+              <div style="margin-top:4px;">
+                <span style="font-size:42px;font-weight:900;color:#0284c7;line-height:1;letter-spacing:-0.5px;">${sharePercent}%</span>
+              </div>
+              <div style="font-size:11.5px;font-weight:750;color:#64748b;margin-top:4px;">
+                Chiếm thị phần toàn Crew
               </div>
             </div>
 
-            <!-- DANH HIỆU CREW THEO THỨ HẠNG THỰC TẾ (3D STATUS BADGE) -->
-            <div style="text-align:left;background:${rankBadgeBg};padding:12px 24px;border-radius:18px;border:1.5px solid ${rankBadgeBorder};box-shadow:0 6px 18px rgba(0,0,0,0.06), inset 0 1px 2px #fff;">
-              <div style="font-size:11.5px;font-weight:850;color:${rankBadgeColor};letter-spacing:1px;text-transform:uppercase;">DANH HIỆU CREW</div>
-              <div style="font-size:22px;font-weight:900;color:${rankBadgeColor};line-height:1.1;margin-top:4px;display:flex;align-items:center;gap:6px;">
-                <span>${rankIcon}</span> ${rankBadgeText}
+            <!-- VẠCH PHÂN CÁCH TINH TẾ -->
+            <div style="width:1.5px;height:55px;background:linear-gradient(180deg,transparent,#cbd5e1 50%,transparent);"></div>
+
+            <!-- CỘT 3: CẤP BẬC DANH DỰ (METALLIC STATUS BADGE) -->
+            <div style="flex:1;text-align:center;">
+              <div style="font-size:11.5px;font-weight:900;color:${rankBadgeColor};letter-spacing:2px;text-transform:uppercase;">
+                CẤP BẬC DANH DỰ
+              </div>
+              <div style="margin-top:6px;">
+                <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 24px;border-radius:999px;background:${rankBadgeBg};border:1.5px solid ${rankBadgeBorder};box-shadow:0 4px 14px rgba(0,0,0,0.06);font-size:16px;font-weight:900;color:${rankBadgeColor};letter-spacing:0.5px;">
+                  <span>${rankIcon}</span> ${rankBadgeText}
+                </span>
+              </div>
+              <div style="font-size:11.5px;font-weight:750;color:#64748b;margin-top:4px;">
+                Vinh danh bảng vàng chu kỳ
               </div>
             </div>
 
@@ -8776,6 +8797,7 @@ async function generateExportImage(customTitle) {
   }
 }
 window.generateExportImage = generateExportImage;
+
 
 
 /* ==========================================================================
