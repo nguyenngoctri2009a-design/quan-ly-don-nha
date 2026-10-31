@@ -6594,3 +6594,106 @@ html, body {
     inset 0 1.5px 2px #ffffff !important;
   transform: scale(1.04) !important;
 }
+
+
+
+/* ==========================================================================
+   SCORE 10/10 PERFECTION UPGRADE (3D TACTILE BUTTONS, MULTI-LAYER CARDS, CHARTS)
+   ========================================================================== */
+
+/* 1. Nút bấm 3D Xúc giác: Rê chuột nổi lên 4px, Nhấn xuống có độ lún sâu cơ học */
+button,
+a.btn-admin-login,
+a.btn-nav-member,
+.btn-nav-export,
+.btn-export-report,
+.btn-export-csv,
+.btn-clear-filter,
+.btn-spotlight-nav,
+.btn-sound-toggle,
+.shield-badge,
+.btn-install-pc,
+.btn-sidebar-toggle,
+.sidebar-action-pill,
+.view-mode-btn,
+.pg-btn,
+.custom-modal-actions button,
+.quick-tag-btn {
+  box-shadow: 
+    0 10px 24px -4px rgba(148, 163, 184, 0.45),
+    0 3px 8px -1px rgba(15, 23, 42, 0.06),
+    inset 0 2.5px 3px #ffffff,
+    inset 0 -3px 4px rgba(165, 180, 252, 0.22) !important;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  transform: translateY(0) scale(1);
+}
+
+button:hover,
+a.btn-admin-login:hover,
+a.btn-nav-member:hover,
+.btn-nav-export:hover,
+.btn-export-report:hover,
+.btn-export-csv:hover,
+.btn-clear-filter:hover,
+.btn-spotlight-nav:hover,
+.btn-sound-toggle:hover,
+.shield-badge:hover,
+.btn-install-pc:hover,
+.btn-sidebar-toggle:hover,
+.sidebar-action-pill:hover,
+.view-mode-btn:hover,
+.pg-btn:hover,
+.quick-tag-btn:hover {
+  transform: translateY(-4px) scale(1.025) !important;
+  box-shadow: 
+    0 20px 42px -6px rgba(148, 163, 184, 0.58),
+    0 8px 18px -2px rgba(15, 23, 42, 0.08),
+    inset 0 3px 3px #ffffff !important;
+}
+
+button:active,
+a.btn-admin-login:active,
+a.btn-nav-member:active,
+.btn-nav-export:active,
+.btn-export-report:active,
+.btn-export-csv:active,
+.btn-clear-filter:active,
+.btn-spotlight-nav:active,
+.btn-sound-toggle:active,
+.shield-badge:active,
+.btn-install-pc:active,
+.btn-sidebar-toggle:active,
+.sidebar-action-pill:active,
+.view-mode-btn:active,
+.pg-btn:active,
+.quick-tag-btn:active {
+  transform: translateY(3px) scale(0.965) !important;
+  box-shadow: 
+    0 2px 4px -1px rgba(148, 163, 184, 0.25),
+    inset 0 4px 8px rgba(100, 116, 139, 0.28),
+    inset 0 -1px 2px #ffffff !important;
+}
+
+/* 2. Card Thống Kê: Bóng đổ nhiều lớp nhẹ tạo chiều sâu 3D thực sự */
+.card,
+.analytics-card,
+.kpi-card,
+.quick-add-card,
+.records-summary-card,
+.sidebar-inner,
+.navbar {
+  box-shadow: 
+    0 24px 50px -12px rgba(148, 163, 184, 0.4),
+    0 10px 22px -4px rgba(15, 23, 42, 0.05),
+    0 2px 6px rgba(15, 23, 42, 0.03),
+    inset 0 2.5px 3px #ffffff,
+    inset 0 -2.5px 4px rgba(165, 180, 252, 0.18) !important;
+}
+
+.kpi-card:hover,
+.card:hover {
+  box-shadow: 
+    0 30px 60px -10px rgba(148, 163, 184, 0.52),
+    0 12px 26px -4px rgba(15, 23, 42, 0.07),
+    inset 0 2.5px 3px #ffffff !important;
+}

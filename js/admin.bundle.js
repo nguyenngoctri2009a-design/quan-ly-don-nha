@@ -1959,7 +1959,7 @@ function renderColumnChart() {
   if (chartInstance && chartInstance.series && chartInstance.series[0]) {
     try {
       chartInstance.xAxis[0].setCategories(categories, false);
-      chartInstance.series[0].setData(values, true);
+      chartInstance.series[0].setData(values, true, { duration: 900, easing: 'easeOutQuart' });
       return;
     } catch (e) { }
   }
@@ -1968,6 +1968,10 @@ function renderColumnChart() {
     chart: {
       type: 'column',
       backgroundColor: 'transparent',
+      animation: {
+        duration: 1000,
+        easing: 'easeOutQuart'
+      },
       spacingTop: 28,
       spacingRight: 20,
       spacingBottom: 18,
@@ -2021,6 +2025,10 @@ function renderColumnChart() {
     },
     plotOptions: {
       column: {
+        animation: {
+          duration: 1000,
+          easing: 'easeOutQuart'
+        },
         color: {
           linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
           stops: [
