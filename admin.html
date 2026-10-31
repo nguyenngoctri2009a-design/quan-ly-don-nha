@@ -24,8 +24,8 @@
   <meta name="description" content="Cổng quản trị bảo mật cao cấp dành riêng cho Quản trị viên Nguyễn Trí &amp; Cửu Muội - Crew Lưới Búa.">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="author" content="Nguyễn Trí">
-  <meta name="theme-color" content="#f59e0b">
-  <meta name="msapplication-TileColor" content="#f59e0b">
+  <meta name="theme-color" content="#06b6d4">
+  <meta name="msapplication-TileColor" content="#06b6d4">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Lưới Búa Admin">
@@ -72,7 +72,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&family=Great+Vibes&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   
   <!-- Core Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=20261031_07_restored">
+  <link rel="stylesheet" href="css/style.css?v=20261031_08_fixed">
 
   <style>
     /* Styling cho Login Gate trên nền tảng Static/Vercel */
@@ -419,28 +419,34 @@
       position: relative;
       align-self: center;
       width: 100%;
-      height: 50px;
-      margin-top: 4px;
-      border: 0;
-      border-radius: 15px;
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: #ffffff;
+      height: 52px;
+      margin-top: 6px;
+      border: 2px solid transparent !important;
+      border-radius: 999px !important;
+      background: var(--bg-btn-3d) padding-box, var(--border-rainbow-hover) border-box !important;
+      color: #0f172a !important;
       font-size: 14.5px;
-      font-weight: 850;
+      font-weight: 900;
       letter-spacing: -0.01em;
       overflow: hidden;
       cursor: pointer;
-      transition: width .45s var(--ux-spring), border-radius .45s var(--ux-spring), background-color .4s, transform .3s var(--ux-spring), box-shadow .3s;
-      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.35);
+      transition: width .45s var(--ux-spring), border-radius .45s var(--ux-spring), background-color .4s, transform .25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow .25s;
+      box-shadow: var(--shadow-neumorph-hover) !important;
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
     }
 
     .u062-go:hover {
-      transform: translateY(-1.5px);
-      box-shadow: 0 10px 28px rgba(2, 132, 199, 0.45);
+      transform: translateY(-2.5px);
+      background: var(--bg-btn-3d-hover) padding-box, var(--border-rainbow-active) border-box !important;
+      box-shadow: 
+        0 16px 36px -5px rgba(165, 180, 252, 0.55),
+        inset 0 2.5px 3px #ffffff !important;
+      color: #0284c7 !important;
     }
 
     .u062-go:active {
-      transform: scale(.97);
+      transform: translateY(1.5px) scale(0.985);
+      box-shadow: var(--shadow-neumorph-active) !important;
     }
 
     .u062-go span {
@@ -624,18 +630,19 @@
     .admin-badge {
       display: inline-flex;
       align-items: center;
-      background: #fef3c7;
-      color: #92400e;
+      background: linear-gradient(135deg, #ecfeff, #cffafe);
+      color: #0e7490;
       font-size: 10.5px;
       font-weight: 800;
       padding: 2px 7px;
       border-radius: 6px;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      border: 1px solid #fde68a;
+      border: 1px solid #06b6d4;
       white-space: nowrap;
       flex-shrink: 0;
       line-height: 1.4;
+      box-shadow: 0 1px 3px rgba(6, 182, 212, 0.2);
     }
   </style>
 
@@ -1632,7 +1639,7 @@
 
         <!-- NÚT XUẤT BÁO CÁO NGÀY HÔM NAY & GỬI DISCORD -->
         <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-          <button type="button" class="btn-sm" id="btnExportRecordsCsv" style="background:#059669;color:#fff;border-color:#047857;display:inline-flex;align-items:center;gap:6px;font-weight:800;padding:8px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(5,150,105,0.25);" title="Xuất toàn bộ bản ghi ra file Excel/CSV">
+          <button type="button" class="btn-export-csv" id="btnExportRecordsCsv" title="Xuất toàn bộ bản ghi ra file Excel/CSV">
             <span>📥 Tải Excel / CSV</span>
           </button>
           <button type="button" class="gold btn-sm" id="btnExportDailyRecord" style="display:inline-flex;align-items:center;gap:6px;font-weight:800;padding:8px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(245,158,11,0.25);" title="Xuất ảnh báo cáo thành tích ngày hôm nay & gửi Discord">
@@ -1773,7 +1780,7 @@
         </div>
 
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-          <button type="button" class="btn-sm" id="btnExportMembersCsv" style="background:#059669;color:#fff;border-color:#047857;display:inline-flex;align-items:center;gap:6px;font-weight:800;padding:8px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(5,150,105,0.25);" title="Xuất danh sách thành viên ra Excel/CSV">
+          <button type="button" class="btn-sm btn-export-csv" id="btnExportMembersCsv" title="Xuất danh sách thành viên ra Excel/CSV">
             <span>📥 Tải Excel DS</span>
           </button>
         </div>
@@ -1871,10 +1878,10 @@
         <button class="btn-deposit btn-sm" id="fundDepositBtn" style="display:inline-flex;align-items:center;gap:6px;">
           <span>➕ Nạp Quỹ</span>
         </button>
-        <button class="btn-sm" id="exportFundCsvBtn" style="background:#059669;color:#fff;border-color:#047857;display:inline-flex;align-items:center;gap:6px;font-weight:800;" title="Tải toàn bộ lịch sử biến động quỹ ra Excel/CSV">
+        <button type="button" class="btn-export-csv" id="exportFundCsvBtn" title="Tải toàn bộ lịch sử biến động quỹ ra Excel/CSV">
           <span>📥 Xuất Excel/CSV</span>
         </button>
-        <button class="green btn-sm" id="exportFundBtn" style="display:inline-flex;align-items:center;gap:6px;">
+        <button type="button" class="btn-export-report" id="exportFundBtn">
           <span>📸 Xuất Báo Cáo Quỹ</span>
         </button>
       </div>
@@ -2572,7 +2579,7 @@
 
     if (badge) {
       if (isTri) {
-        badge.style.borderColor = '#f59e0b';
+        badge.style.borderColor = '#06b6d4';
         badge.style.background = '#fffdf7';
       } else if (isCuumuoi) {
         badge.style.borderColor = '#ec4899';
