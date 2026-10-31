@@ -5623,6 +5623,7 @@ $('submitBailBtn')?.addEventListener('click', async () => {
 
     if ($('bailMemberSelect')) $('bailMemberSelect').value = '';
     if ($('bailNote')) $('bailNote').value = '';
+    document.querySelectorAll('.quick-tag-btn').forEach(b => b.classList.remove('active'));
 
     // Tự động khôi phục về trạng thái Chuộc Tù mặc định
     if ($('btnResetToBail')) $('btnResetToBail').click();
@@ -8150,3 +8151,56 @@ window.addEventListener('DOMContentLoaded', () => {
 })();
 
 ;
+
+/* ==========================================================================
+   QUICK TAGS SUGGESTIONS CONTROLLER (CHUỘC TÙ & GHI CHÚ)
+   ========================================================================== */
+(function() {
+  function initQuickTagsController() {
+    document.addEventListener('click', (e) => {
+      const tagBtn = e.target.closest('.quick-tag-btn');
+      if (!tagBtn) return;
+      e.preventDefault();
+
+      const noteInput = document.getElementById('bailNote');
+      if (!noteInput) return;
+
+      const tagVal = tagBtn.getAttribute('data-tag') || tagBtn.textContent.trim();
+
+      if (noteInput.value.trim() === tagVal) {
+        // Toggle off if already selected
+        noteInput.value = '';
+        tagBtn.classList.remove('active');
+      } else {
+        // Fill tag and set active state
+        noteInput.value = tagVal;
+        document.querySelectorAll('.quick-tag-btn').forEach(b => b.classList.remove('active'));
+        tagBtn.classList.add('active');
+      }
+
+      if (window.SoundFX && typeof window.SoundFX.playClick === 'function') {
+        window.SoundFX.playClick();
+      }
+      noteInput.focus();
+    });
+
+    // Update active highlight when user types manually
+    document.getElementById('bailNote')?.addEventListener('input', (e) => {
+      const currentVal = e.target.value.trim();
+      document.querySelectorAll('.quick-tag-btn').forEach(b => {
+        const tagVal = b.getAttribute('data-tag') || b.textContent.trim();
+        if (tagVal === currentVal) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initQuickTagsController);
+  } else {
+    initQuickTagsController();
+  }
+})();
