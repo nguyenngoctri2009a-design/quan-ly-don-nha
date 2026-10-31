@@ -1,5 +1,5 @@
 // Service Worker cho PWA "Thống Kê Nhập Nhà" - Crew Lưới Búa
-const CACHE_NAME = 'v20261031_27_clean_export_modal';
+const CACHE_NAME = 'v20261031_28_modern_royal_premium';
 const STATIC_ASSETS = [
   './',
   './index.html',

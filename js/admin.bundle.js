@@ -7758,7 +7758,7 @@ $('sidebarBackupBtn')?.addEventListener('click', (e) => triggerManualBackup(e.cu
 $('manualBackupBtn')?.addEventListener('click', (e) => triggerManualBackup(e.currentTarget));
 
 /* ==========================================================================
-   SECTION 2: BẢNG VINH DANH HOÀNG GIA (WHITE & GOLD LUXURY CERTIFICATE)
+   SECTION 2: BẢNG VINH DANH THÀNH TÍCH (MODERN ROYAL PREMIUM - NAVY & GOLD)
    & BÁO CÁO THỐNG KÊ DOANH SỐ TRẮNG SÁNG TINH TẾ (T1 PRO BRIGHT INFOGRAPHIC)
    ========================================================================== */
 $('exportImgTopBtn')?.addEventListener('click', openExportModal);
@@ -7788,10 +7788,10 @@ function openExportModal() {
       <!-- FANCY HEADER TRẮNG SÁNG -->
       <div class="modal-header-fancy" style="margin-bottom:18px;">
         <div class="modal-title-group">
-          <div class="modal-icon-badge" style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#fff;box-shadow:0 4px 12px rgba(245,158,11,0.3);">👑</div>
+          <div class="modal-icon-badge" style="background:linear-gradient(135deg,#0f172a,#1e293b);color:#fbbf24;box-shadow:0 4px 12px rgba(15,23,42,0.25);">👑</div>
           <div>
             <h3 style="font-size:18px;font-weight:900;color:#0f172a;">Xuất Ảnh Báo Cáo &amp; Bằng Khen</h3>
-            <span style="font-size:12px;color:#64748b;font-weight:600;">Mẫu Trắng Sáng Hoàng Gia &amp; Infographic T1 Tinh Tế</span>
+            <span style="font-size:12px;color:#64748b;font-weight:600;">Mẫu Modern Royal Premium (Navy &amp; Gold) &amp; T1 Pro</span>
           </div>
         </div>
         <button class="modal-close-btn" id="closeExportModal" title="Đóng">✕</button>
@@ -7799,11 +7799,11 @@ function openExportModal() {
 
       <!-- TABS CHỌN MẪU TRẮNG SÁNG -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
-        <button type="button" id="tabExportCert" class="btn-3d-tab" style="padding:14px;border-radius:16px;border:2px solid #f59e0b;background:linear-gradient(180deg,#fffbeb 0%,#fef3c7 100%);cursor:pointer;text-align:left;transition:all 0.2s;box-shadow:0 4px 12px rgba(245,158,11,0.15);">
-          <div style="font-size:13.5px;font-weight:900;color:#b45309;display:flex;align-items:center;gap:6px;">
+        <button type="button" id="tabExportCert" class="btn-3d-tab" style="padding:14px;border-radius:16px;border:2px solid #0f172a;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;text-align:left;transition:all 0.2s;box-shadow:0 4px 12px rgba(15,23,42,0.12);">
+          <div style="font-size:13.5px;font-weight:900;color:#0f172a;display:flex;align-items:center;gap:6px;">
             <span>🏆</span> Bằng Vinh Danh
           </div>
-          <div style="font-size:11px;color:#92400e;margin-top:4px;font-weight:700;">Hoàng Gia Trắng &amp; Vàng Kim</div>
+          <div style="font-size:11px;color:#d97706;margin-top:4px;font-weight:750;">Modern Royal (Navy &amp; Gold)</div>
         </button>
 
         <button type="button" id="tabExportStats" class="btn-3d-tab" style="padding:14px;border-radius:16px;border:1.5px solid #cbd5e1;background:#ffffff;cursor:pointer;text-align:left;transition:all 0.2s;">
@@ -7814,7 +7814,7 @@ function openExportModal() {
         </button>
       </div>
 
-      <!-- PANEL 1: BẰNG VINH DANH HOÀNG GIA TRẮNG SÁNG (WHITE & GOLD CERTIFICATE) -->
+      <!-- PANEL 1: BẰNG VINH DANH MODERN ROYAL PREMIUM -->
       <div id="panelExportCert">
         <div style="background:#ffffff;border:1.5px solid #e2e8f0;border-radius:18px;padding:18px;margin-bottom:20px;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
           
@@ -7825,19 +7825,19 @@ function openExportModal() {
             <select id="certRecipientSelect" style="width:100%;padding:12px 14px;border-radius:14px;border:1.5px solid #cbd5e1;background:#ffffff;color:#0f172a;font-size:13.5px;font-weight:800;outline:none;box-shadow:0 2px 6px rgba(0,0,0,0.04);cursor:pointer;transition:all 0.2s;">
               ${sortedList.map((u, i) => `
                 <option value="${u.id}" ${i === 0 ? 'selected' : ''}>
-                  ${i === 0 ? '🥇 [TOP 1 QUÁN QUÂN] ' : (i === 1 ? '🥈 [TOP 2] ' : (i === 2 ? '🥉 [TOP 3] ' : `#${i+1} `))} ${escHtml(u.name)} (${u.binh} nhà)
+                  ${i === 0 ? '🥇 [TOP 1 QUÁN QUÂN] ' : (i === 1 ? '🥈 [TOP 2 Á QUÂN] ' : (i === 2 ? '🥉 [TOP 3] ' : `#${i+1} `))} ${escHtml(u.name)} (${u.binh} nhà)
                 </option>
               `).join('')}
             </select>
           </div>
 
-          <!-- THẺ PREVIEW CHIẾN BINH VINH DANH VIP (T1 NEUMORPHIC-GLASS) -->
-          <div id="certVipBadgePreview" style="background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border:1.5px solid #fde68a;border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 14px rgba(245,158,11,0.12);">
-            <div id="certVipRankIcon" style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#d97706);display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid #ffffff;box-shadow:0 4px 10px rgba(245,158,11,0.3);flex-shrink:0;">🥇</div>
+          <!-- THẺ PREVIEW CHIẾN BINH VINH DANH VIP (MODERN ROYAL STYLE) -->
+          <div id="certVipBadgePreview" style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border:1.5px solid #d97706;border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 24px rgba(15,23,42,0.2);">
+            <div id="certVipRankIcon" style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#fbbf24,#d97706);display:flex;align-items:center;justify-content:center;font-size:24px;border:1.5px solid rgba(255,255,255,0.2);box-shadow:0 4px 12px rgba(217,119,6,0.4);flex-shrink:0;">🥇</div>
             <div style="flex:1;min-width:0;">
-              <div id="certVipTitleTag" style="font-size:11px;font-weight:900;color:#d97706;letter-spacing:1px;text-transform:uppercase;">QUÁN QUÂN XUẤT SẮC NHẤT CREW</div>
-              <div id="certVipName" style="font-size:17px;font-weight:900;color:#0f172a;margin:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(top1User.name)}</div>
-              <div id="certVipHouses" style="font-size:12.5px;font-weight:750;color:#92400e;">Thành tích: <b style="color:#b45309;font-size:14px;">${top1User.binh} nhà</b> • Được trao tặng Bằng Khen Hoàng Gia Dát Vàng</div>
+              <div id="certVipTitleTag" style="font-size:11px;font-weight:900;color:#fbbf24;letter-spacing:1.5px;text-transform:uppercase;">QUÁN QUÂN XUẤT SẮC TOÀN HỆ THỐNG</div>
+              <div id="certVipName" style="font-size:17px;font-weight:900;color:#ffffff;margin:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(top1User.name)}</div>
+              <div id="certVipHouses" style="font-size:12.5px;font-weight:750;color:#94a3b8;">Thành tích: <b style="color:#38bdf8;font-size:14px;">${top1User.binh} nhà</b> • Trao tặng Bằng Vinh Danh Modern Royal</div>
             </div>
           </div>
 
@@ -7845,8 +7845,8 @@ function openExportModal() {
 
         <div class="modal-actions" style="margin-top:0;">
           <button type="button" class="secondary" id="cancelExportCert">Huỷ bỏ</button>
-          <button type="button" class="gold" id="btnRunExportCert" style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#1a1202;font-weight:900;border:none;box-shadow:0 4px 14px rgba(245,158,11,0.35);">
-            🏆 Xuất Bằng Vinh Danh Hoàng Gia
+          <button type="button" class="gold" id="btnRunExportCert" style="background:linear-gradient(135deg,#0f172a,#1e293b);color:#fbbf24;font-weight:900;border:1.5px solid #d97706;box-shadow:0 4px 14px rgba(15,23,42,0.25);">
+            🏆 Xuất Bằng Vinh Danh (Modern Royal)
           </button>
         </div>
       </div>
@@ -7897,10 +7897,10 @@ function openExportModal() {
   const panelStats = overlay.querySelector('#panelExportStats');
 
   tabCert.onclick = () => {
-    tabCert.style.border = '2px solid #f59e0b';
-    tabCert.style.background = 'linear-gradient(180deg,#fffbeb 0%,#fef3c7 100%)';
-    tabCert.style.boxShadow = '0 4px 12px rgba(245,158,11,0.15)';
-    tabCert.querySelector('div').style.color = '#b45309';
+    tabCert.style.border = '2px solid #0f172a';
+    tabCert.style.background = 'linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%)';
+    tabCert.style.boxShadow = '0 4px 12px rgba(15,23,42,0.12)';
+    tabCert.querySelector('div').style.color = '#0f172a';
 
     tabStats.style.border = '1.5px solid #cbd5e1';
     tabStats.style.background = '#ffffff';
@@ -7932,13 +7932,13 @@ function openExportModal() {
     const idx = sortedList.findIndex(u => u.id === selectedId);
     const u = sortedList[idx] || top1User;
     const rankIcon = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : '🎖️'));
-    const rankTitle = idx === 0 ? 'QUÁN QUÂN XUẤT SẮC NHẤT CREW' : (idx === 1 ? 'Á QUÂN DẪN ĐẦU HỆ THỐNG' : (idx === 2 ? 'TOP 3 CHIẾN BINH ƯU TÚ' : `CHIẾN BINH VINH DANH HẠNG #${idx+1}`));
+    const rankTitle = idx === 0 ? 'QUÁN QUÂN XUẤT SẮC TOÀN HỆ THỐNG' : (idx === 1 ? 'Á QUÂN DẪN ĐẦU HỆ THỐNG' : (idx === 2 ? 'TOP 3 CHIẾN BINH ƯU TÚ' : `CHIẾN BINH VINH DANH HẠNG #${idx+1}`));
     const vipPreview = overlay.querySelector('#certVipBadgePreview');
     if (vipPreview) {
       overlay.querySelector('#certVipRankIcon').textContent = rankIcon;
       overlay.querySelector('#certVipTitleTag').textContent = rankTitle;
       overlay.querySelector('#certVipName').textContent = u.name;
-      overlay.querySelector('#certVipHouses').innerHTML = `Thành tích: <b style="color:#b45309;font-size:14px;">${u.binh} nhà</b> • Được trao tặng Bằng Khen Hoàng Gia Dát Vàng`;
+      overlay.querySelector('#certVipHouses').innerHTML = `Thành tích: <b style="color:#38bdf8;font-size:14px;">${u.binh} nhà</b> • Trao tặng Bằng Vinh Danh Modern Royal`;
     }
   };
   recipientSelect.onchange = (e) => updateVipPreview(e.target.value);
@@ -7966,188 +7966,251 @@ function openExportModal() {
 window.openExportModal = openExportModal;
 
 /* ==========================================================================
-   HÀM XUẤT BẰNG VINH DANH HOÀNG GIA TRẮNG SÁNG & VÀNG KIM (WHITE & GOLD)
+   HÀM XUẤT BẰNG VINH DANH THÀNH TÍCH (MODERN ROYAL PREMIUM - NAVY & GOLD)
+   Phong cách hiện đại, góc vuông dứt khoát, 100% tiếng Việt, số nhà nổi bật
    ========================================================================== */
-async function generateCertificateImage(targetUserId, customTitle, customCitation) {
+async function generateCertificateImage(targetUserId) {
   const container = $('exportArea');
   if (!container) return;
 
-  const user = allUsers[targetUserId] || Object.values(allUsers)[0] || { name: 'Chiến Binh Xuất Sắc' };
+  const memberTotals = {};
+  let systemTotalHouses = 0;
+  allRecords.forEach(r => {
+    const val = Number(r.binh) || 0;
+    memberTotals[r.userId] = (memberTotals[r.userId] || 0) + val;
+    systemTotalHouses += val;
+  });
+
+  const sortedList = Object.values(allUsers)
+    .map(u => ({
+      id: u.id,
+      name: u.name || 'Chiến Binh',
+      binh: Math.round((memberTotals[u.id] || 0) * 100) / 100
+    }))
+    .sort((a, b) => b.binh - a.binh);
+
+  const rankIndex = sortedList.findIndex(u => u.id === targetUserId);
+  const rank = rankIndex !== -1 ? rankIndex + 1 : 1;
+  const user = sortedList[rankIndex !== -1 ? rankIndex : 0] || { name: 'Chiến Binh Xuất Sắc', binh: 0 };
   const memberName = user.name || 'Chiến Binh Xuất Sắc';
-  
-  const userHouses = allRecords
-    .filter(r => r.userId === targetUserId || r.userName === memberName)
-    .reduce((s, r) => s + (Number(r.binh) || 0), 0);
-  const roundedHouses = Math.round(userHouses * 100) / 100;
+  const roundedHouses = user.binh;
+
+  const sharePercent = systemTotalHouses > 0 ? ((roundedHouses / systemTotalHouses) * 100).toFixed(1) : '0.0';
 
   const now = new Date();
   const dateStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
 
-  // SVG Hoa văn 4 góc Hoàng Gia Dát Vàng Tinh Tế (Gold Filigree for White Theme)
-  const cornerSvg = `
-    <svg viewBox="0 0 140 140" style="position:absolute;width:130px;height:130px;pointer-events:none;">
+  // Thiết lập huy chương 3D hiện đại
+  let rankIcon = '🥇';
+  let rankLabel = 'QUÁN QUÂN TOÀN HỆ THỐNG';
+  let badgeGradient = 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)';
+  let badgeBorder = '#f59e0b';
+  let badgeTextColor = '#78350f';
+  let medalSvg = `
+    <svg viewBox="0 0 100 100" style="width:72px;height:72px;filter:drop-shadow(0 6px 14px rgba(245,158,11,0.35));">
       <defs>
-        <linearGradient id="goldFiligreeBright" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#fbbf24"/>
-          <stop offset="50%" stop-color="#d97706"/>
-          <stop offset="100%" stop-color="#92400e"/>
+        <linearGradient id="gold3D" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#fef08a"/>
+          <stop offset="50%" stop-color="#f59e0b"/>
+          <stop offset="100%" stop-color="#b45309"/>
         </linearGradient>
       </defs>
-      <path d="M 12,12 L 132,12 M 12,12 L 12,132" stroke="url(#goldFiligreeBright)" stroke-width="3" fill="none"/>
-      <path d="M 20,20 L 110,20 M 20,20 L 20,110" stroke="url(#goldFiligreeBright)" stroke-width="1.5" fill="none"/>
-      <path d="M 28,28 Q 50,26 65,40 Q 80,26 102,28 Q 68,68 28,102 Q 26,80 40,65 Q 26,50 28,28 Z" fill="url(#goldFiligreeBright)" opacity="0.95"/>
-      <path d="M 24,60 Q 45,45 60,24" stroke="url(#goldFiligreeBright)" stroke-width="2" fill="none"/>
-      <path d="M 24,80 Q 60,60 80,24" stroke="url(#goldFiligreeBright)" stroke-width="1.5" fill="none"/>
-      <circle cx="36" cy="36" r="6" fill="url(#goldFiligreeBright)"/>
-      <circle cx="16" cy="16" r="4" fill="#fbbf24"/>
-      <circle cx="56" cy="56" r="4" fill="url(#goldFiligreeBright)"/>
+      <circle cx="50" cy="50" r="44" fill="url(#gold3D)" stroke="#ffffff" stroke-width="3"/>
+      <circle cx="50" cy="50" r="36" fill="none" stroke="#78350f" stroke-width="1.5" stroke-dasharray="3 2"/>
+      <text x="50" y="44" fill="#78350f" font-size="11" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif">HẠNG</text>
+      <text x="50" y="66" fill="#78350f" font-size="24" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif">1</text>
     </svg>
   `;
 
-  const finalTitle = customTitle || 'CERTIFICATE OF HONOR';
-  const finalCitation = customCitation || 'Đã xuất sắc lập kỷ lục dẫn đầu toàn bộ hệ thống Crew Lưới Búa. Tôn vinh bản lĩnh kiên cường, sự cống hiến vượt bậc và tinh thần chiến binh quả cảm đưa toàn đội lên đỉnh vinh quang!';
+  if (rank === 2) {
+    rankIcon = '🥈';
+    rankLabel = 'Á QUÂN DẪN ĐẦU CREW';
+    badgeGradient = 'linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%)';
+    badgeBorder = '#94a3b8';
+    badgeTextColor = '#1e293b';
+    medalSvg = `
+      <svg viewBox="0 0 100 100" style="width:72px;height:72px;filter:drop-shadow(0 6px 14px rgba(148,163,184,0.35));">
+        <defs>
+          <linearGradient id="silver3D" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f8fafc"/>
+            <stop offset="50%" stop-color="#cbd5e1"/>
+            <stop offset="100%" stop-color="#64748b"/>
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="50" r="44" fill="url(#silver3D)" stroke="#ffffff" stroke-width="3"/>
+        <circle cx="50" cy="50" r="36" fill="none" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="3 2"/>
+        <text x="50" y="44" fill="#1e293b" font-size="11" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif">HẠNG</text>
+        <text x="50" y="66" fill="#1e293b" font-size="24" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif">2</text>
+      </svg>
+    `;
+  } else if (rank === 3) {
+    rankIcon = '🥉';
+    rankLabel = 'TOP 3 CHIẾN BINH ƯU TÚ';
+    badgeGradient = 'linear-gradient(135deg, #fed7aa 0%, #ea580c 100%)';
+    badgeBorder = '#ea580c';
+    badgeTextColor = '#7c2d12';
+    medalSvg = `
+      <svg viewBox="0 0 100 100" style="width:72px;height:72px;filter:drop-shadow(0 6px 14px rgba(234,88,12,0.35));">
+        <defs>
+          <linearGradient id="bronze3D" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffedd5"/>
+            <stop offset="50%" stop-color="#fb923c"/>
+            <stop offset="100%" stop-color="#c2410c"/>
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="50" r="44" fill="url(#bronze3D)" stroke="#ffffff" stroke-width="3"/>
+        <circle cx="50" cy="50" r="36" fill="none" stroke="#7c2d12" stroke-width="1.5" stroke-dasharray="3 2"/>
+        <text x="50" y="44" fill="#7c2d12" font-size="11" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif">HẠNG</text>
+        <text x="50" y="66" fill="#7c2d12" font-size="24" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif">3</text>
+      </svg>
+    `;
+  } else if (rank > 3) {
+    rankIcon = '🎖️';
+    rankLabel = `CHIẾN BINH TIÊU BIỂU • HẠNG #${rank}`;
+    medalSvg = `
+      <svg viewBox="0 0 100 100" style="width:72px;height:72px;filter:drop-shadow(0 6px 14px rgba(15,23,42,0.2));">
+        <circle cx="50" cy="50" r="44" fill="#0f172a" stroke="#d97706" stroke-width="3"/>
+        <circle cx="50" cy="50" r="36" fill="none" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="50" y="44" fill="#94a3b8" font-size="11" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif">HẠNG</text>
+        <text x="50" y="66" fill="#fbbf24" font-size="22" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif">#${rank}</text>
+      </svg>
+    `;
+  }
 
-  // HTML Khung Bằng Khen Hoàng Gia TRẮNG SÁNG & VÀNG KIM
+  // Khung Bằng Khen MODERN ROYAL PREMIUM (1400 x 950 px)
   container.innerHTML = `
-    <div id="goldCertNode" style="width:1360px;height:920px;box-sizing:border-box;position:relative;background:#ffffff;
-                background-image: radial-gradient(circle at 50% 50%, #ffffff 0%, #fffdf5 70%, #fef9e7 100%);
-                padding:40px;display:flex;align-items:center;justify-content:center;font-family:'Times New Roman',serif;overflow:hidden;">
+    <div id="modernRoyalCertNode" style="width:1400px;height:950px;box-sizing:border-box;position:relative;background:#ffffff;
+                background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+                background-size: 28px 28px;
+                padding:36px;display:flex;align-items:center;justify-content:center;
+                font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;overflow:hidden;">
       
-      <!-- KHUNG VIỀN VÀNG RÒNG ĐA TẦNG NỔI BẬT TRÊN NỀN TRẮNG -->
-      <div style="width:100%;height:100%;border:3.5px solid #d97706;outline:2.5px solid #f59e0b;outline-offset:-8px;
-                  position:relative;box-sizing:border-box;padding:28px;display:flex;flex-direction:column;
-                  justify-content:space-between;align-items:center;text-align:center;background:#ffffff;
-                  box-shadow:inset 0 0 40px rgba(245,158,11,0.06);">
+      <!-- KHUNG VIỀN ĐÔI MẢNH GÓC VUÔNG HIỆN ĐẠI (KHÔNG DÙNG HOA VĂN CỔ ĐIỂN) -->
+      <div style="width:100%;height:100%;box-sizing:border-box;background:#ffffff;
+                  border:3px solid #0f172a;position:relative;padding:32px 48px;
+                  display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;
+                  box-shadow:inset 0 0 0 8px #ffffff, inset 0 0 0 10px #d97706, 0 20px 50px rgba(15,23,42,0.08);">
 
-        <!-- VIỀN LƯỚI KIM CƯƠNG VÀNG QUANH MÉP -->
-        <div style="position:absolute;inset:14px;border:4px double #d97706;pointer-events:none;"></div>
-        <div style="position:absolute;inset:20px;border:1px dashed rgba(217,119,6,0.35);pointer-events:none;"></div>
+        <!-- 4 GÓC VUÔNG HIỆN ĐẠI DỨT KHOÁT (MODERN ACCENT BRACKETS) -->
+        <div style="position:absolute;top:16px;left:16px;width:32px;height:32px;border-top:3px solid #d97706;border-left:3px solid #d97706;"></div>
+        <div style="position:absolute;top:16px;right:16px;width:32px;height:32px;border-top:3px solid #d97706;border-right:3px solid #d97706;"></div>
+        <div style="position:absolute;bottom:16px;left:16px;width:32px;height:32px;border-bottom:3px solid #d97706;border-left:3px solid #d97706;"></div>
+        <div style="position:absolute;bottom:16px;right:16px;width:32px;height:32px;border-bottom:3px solid #d97706;border-right:3px solid #d97706;"></div>
 
-        <!-- 4 GÓC HOA VĂN HOÀNG GIA DÁT VÀNG -->
-        <div style="position:absolute;top:16px;left:16px;">${cornerSvg}</div>
-        <div style="position:absolute;top:16px;right:16px;transform:scaleX(-1);">${cornerSvg}</div>
-        <div style="position:absolute;bottom:16px;left:16px;transform:scaleY(-1);">${cornerSvg}</div>
-        <div style="position:absolute;bottom:16px;right:16px;transform:scale(-1,-1);">${cornerSvg}</div>
-
-        <!-- 1. TIÊU ĐỀ: CERTIFICATE OF APPRECIATION & HONOR -->
-        <div style="margin-top:14px;position:relative;z-index:2;">
-          <div style="font-family:'Impact', 'Cinzel', 'Times New Roman', serif;font-size:68px;font-weight:900;
-                      letter-spacing:10px;text-transform:uppercase;line-height:1;margin-bottom:6px;
-                      background:linear-gradient(180deg, #d97706 0%, #b45309 60%, #78350f 100%);
-                      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-                      filter:drop-shadow(0 2px 4px rgba(217,119,6,0.25));">
-            ${escHtml(finalTitle)}
-          </div>
-          <div style="font-family:'Great Vibes', 'Playfair Display', cursive, serif;font-size:38px;color:#b45309;
-                      letter-spacing:3px;font-weight:400;margin-top:2px;">
-            Of Appreciation &amp; Honorable Merit
+        <!-- 1. PHẦN ĐỈNH: LOGO CREW LƯỚI BÚA & PHÙ HIỆU HOÀNG GIA -->
+        <div style="width:100%;display:flex;flex-direction:column;align-items:center;margin-top:6px;">
+          
+          <div style="display:inline-flex;align-items:center;gap:12px;padding:8px 24px;border-radius:999px;background:#0f172a;border:1.5px solid #d97706;box-shadow:0 4px 16px rgba(15,23,42,0.15);">
+            <span style="font-size:20px;">⚒️</span>
+            <span style="font-size:14px;font-weight:900;letter-spacing:3px;color:#fbbf24;text-transform:uppercase;">CREW LƯỚI BÚA</span>
+            <span style="width:4px;height:4px;border-radius:50%;background:#d97706;"></span>
+            <span style="font-size:12px;font-weight:800;letter-spacing:1.5px;color:#cbd5e1;text-transform:uppercase;">HỆ THỐNG QUẢN LÝ DỌN NHÀ</span>
           </div>
 
-          <!-- DẢI PHÂN CÁCH VÀNG VINTAGE -->
-          <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-top:8px;">
-            <div style="width:140px;height:2px;background:linear-gradient(90deg,transparent,#d97706);"></div>
-            <span style="color:#b45309;font-size:16px;">✦ ❖ ✦</span>
-            <div style="width:140px;height:2px;background:linear-gradient(90deg,#d97706,transparent);"></div>
+          <!-- TIÊU ĐỀ TIẾNG VIỆT CHUẨN: VINH DANH THÀNH TÍCH -->
+          <div style="margin-top:16px;">
+            <div style="font-size:52px;font-weight:900;letter-spacing:6px;color:#0f172a;text-transform:uppercase;line-height:1.1;">
+              VINH DANH THÀNH TÍCH
+            </div>
+            
+            <!-- ĐƯỜNG PHÂN CÁCH VÀNG KIM HIỆN ĐẠI -->
+            <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:10px;">
+              <div style="width:120px;height:2px;background:linear-gradient(90deg,transparent,#d97706);"></div>
+              <span style="color:#d97706;font-size:16px;">◆</span>
+              <div style="width:120px;height:2px;background:linear-gradient(90deg,#d97706,transparent);"></div>
+            </div>
           </div>
+
         </div>
 
-        <!-- 2. PHẦN THÂN: LỜI TRAO TẶNG & TÊN CHIẾN BINH THANH THOÁT -->
-        <div style="position:relative;z-index:2;margin:8px 0;">
-          <div style="font-size:17px;font-style:italic;color:#475569;letter-spacing:1px;margin-bottom:10px;font-weight:600;">
-            This Certificate Is Proudly Presented For Honorable Achievement To
-          </div>
-          <div style="font-size:13.5px;color:#b45309;letter-spacing:3px;text-transform:uppercase;font-weight:900;margin-bottom:12px;">
-            ── BẢNG VINH DANH CHIẾN BINH XUẤT SẮC DẪN ĐẦU HỆ THỐNG CREW LƯỚI BÚA ──
+        <!-- 2. PHẦN GIỮA: THÔNG TIN CHIẾN BINH & HUY CHƯƠNG & THẺ THỐNG KÊ CAO CẤP -->
+        <div style="width:100%;display:flex;flex-direction:column;align-items:center;margin:12px 0;">
+          
+          <div style="font-size:14.5px;font-weight:850;letter-spacing:3px;color:#64748b;text-transform:uppercase;margin-bottom:8px;">
+            TRÂN TRỌNG TRAO TẶNG CHIẾN BINH XUẤT SẮC
           </div>
 
-          <!-- TÊN CHIẾN BINH MÀU VÀNG KIM ĐẲNG CẤP (KHÔNG BỊ BỆT ĐEN HAY KHỐI ĐỤC) -->
-          <div style="font-family:'Great Vibes', 'Playfair Display', cursive, serif;font-size:58px;font-weight:900;
-                      letter-spacing:2px;line-height:1.1;margin-bottom:12px;padding:0 30px;
-                      background:linear-gradient(180deg, #b45309 0%, #92400e 50%, #78350f 100%);
-                      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-                      filter:drop-shadow(0 2px 6px rgba(180,83,9,0.25));">
+          <!-- TÊN THÀNH VIÊN NỔI BẬT, FONT CHỮ HIỆN ĐẠI, DỄ ĐỌC (KHÔNG BỊ BỆT MÀU) -->
+          <div style="font-size:56px;font-weight:900;letter-spacing:-0.5px;color:#0f172a;line-height:1.15;margin-bottom:12px;max-width:1100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
             ${escHtml(memberName)}
           </div>
 
-          <!-- THÀNH TÍCH ĐẠT ĐƯỢC NỀN SÁNG -->
-          <div style="display:inline-flex;align-items:center;gap:12px;background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);
-                      border:2px solid #f59e0b;border-radius:999px;padding:8px 32px;margin-bottom:16px;box-shadow:0 4px 12px rgba(245,158,11,0.15);">
-            <span style="font-size:20px;">🏠</span>
-            <span style="font-size:17px;font-weight:900;color:#92400e;letter-spacing:1px;">
-              KỶ LỤC DOANH SỐ: <span style="font-size:24px;color:#b45309;">${roundedHouses}</span> CĂN NHÀ
+          <!-- HUY HIỆU DANH HIỆU 3D HIỆN ĐẠI -->
+          <div style="display:inline-flex;align-items:center;gap:10px;padding:6px 22px;border-radius:999px;background:#f8fafc;border:1.5px solid #cbd5e1;box-shadow:0 2px 10px rgba(0,0,0,0.04);margin-bottom:20px;">
+            <span style="font-size:18px;">${rankIcon}</span>
+            <span style="font-size:14px;font-weight:900;letter-spacing:1.5px;color:#0f172a;text-transform:uppercase;">
+              ${rankLabel}
             </span>
-            <span style="font-size:20px;">⭐</span>
           </div>
 
-          <!-- LỜI TUYÊN DƯƠNG TRANG TRỌNG -->
-          <div style="max-width:880px;margin:0 auto;font-size:15.5px;color:#334155;line-height:1.6;font-style:italic;">
-            "${escHtml(finalCitation)}"
+          <!-- THẺ THỐNG KÊ SỐ NHÀ CAO CẤP (NAVY & GOLD STAT CARD) -->
+          <div style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border:2px solid #d97706;border-radius:20px;padding:18px 48px;display:inline-flex;align-items:center;gap:36px;box-shadow:0 12px 36px rgba(15,23,42,0.18);">
+            
+            <div style="display:flex;align-items:center;gap:16px;">
+              <div style="width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,#fbbf24,#d97706);display:flex;align-items:center;justify-content:center;font-size:30px;box-shadow:0 6px 18px rgba(217,119,6,0.4);">🏠</div>
+              <div style="text-align:left;">
+                <div style="font-size:11.5px;font-weight:850;color:#fbbf24;letter-spacing:2px;text-transform:uppercase;">KỶ LỤC DỌN NHÀ</div>
+                <div style="font-size:42px;font-weight:900;color:#ffffff;line-height:1;margin-top:2px;">
+                  ${roundedHouses} <span style="font-size:16px;color:#cbd5e1;font-weight:750;">CĂN</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="width:1.5px;height:50px;background:rgba(217,119,6,0.35);"></div>
+
+            <div style="text-align:left;">
+              <div style="font-size:11.5px;font-weight:850;color:#fbbf24;letter-spacing:2px;text-transform:uppercase;">TỶ TRỌNG CỐNG HIẾN</div>
+              <div style="font-size:26px;font-weight:900;color:#38bdf8;line-height:1;margin-top:4px;">
+                ${sharePercent}% <span style="font-size:13.5px;color:#94a3b8;font-weight:700;">toàn hệ thống</span>
+              </div>
+            </div>
+
+            <div style="width:1.5px;height:50px;background:rgba(217,119,6,0.35);"></div>
+
+            <div style="text-align:left;">
+              <div style="font-size:11.5px;font-weight:850;color:#fbbf24;letter-spacing:2px;text-transform:uppercase;">XẾP HẠNG CREW</div>
+              <div style="font-size:26px;font-weight:900;color:#34d399;line-height:1;margin-top:4px;">
+                #${rank} <span style="font-size:13.5px;color:#94a3b8;font-weight:700;">trên ${sortedList.length} người</span>
+              </div>
+            </div>
+
           </div>
+
+          <!-- LỜI GHI NHẬN THÀNH TÍCH TRANG TRỌNG -->
+          <div style="max-width:980px;font-size:15.5px;font-weight:600;color:#334155;line-height:1.6;margin-top:18px;">
+            "Đã phát huy tinh thần quả cảm, kiên trì và kỷ luật thép, xuất sắc hoàn thành xuất chúng chỉ tiêu dọn nhà và cống hiến vượt bậc cho Crew Lưới Búa. Thành tích xứng đáng được toàn thể anh em tôn vinh!"
+          </div>
+
         </div>
 
-        <!-- 3. PHẦN ĐÁY: 2 CON DẤU VÀNG & CHỮ KÝ THỦ LĨNH NGUYỄN NGỌC TRÍ -->
-        <div style="width:100%;display:flex;justify-content:space-between;align-items:flex-end;padding:0 36px 10px;position:relative;z-index:2;">
+        <!-- 3. PHẦN ĐÁY: CON DẤU XÁC THỰC, MÃ ĐIỆN TỬ & CHỮ KÝ QUẢN LÝ CÂN ĐỐI -->
+        <div style="width:100%;display:flex;justify-content:space-between;align-items:flex-end;padding:0 12px 6px;">
           
-          <!-- CON DẤU 1: HUY CHƯƠNG LÁ NGUYỆT QUẾ VÀNG (LAUREL WREATH MEDAL BRIGHT) -->
-          <div style="width:220px;display:flex;flex-direction:column;align-items:center;">
-            <svg viewBox="0 0 180 180" style="width:160px;height:160px;filter:drop-shadow(0 4px 12px rgba(217,119,6,0.25));">
-              <defs>
-                <linearGradient id="laurelBrightGold" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#fbbf24"/>
-                  <stop offset="50%" stop-color="#d97706"/>
-                  <stop offset="100%" stop-color="#92400e"/>
-                </linearGradient>
-              </defs>
-              <g fill="url(#laurelBrightGold)">
-                <path d="M 40,90 C 35,70 45,50 65,35 C 60,45 62,60 52,70 Z"/>
-                <path d="M 32,105 C 25,85 32,65 48,50 C 45,60 50,75 42,85 Z"/>
-                <path d="M 36,125 C 28,110 32,90 45,78 C 44,90 52,102 46,112 Z"/>
-                <path d="M 50,145 C 40,135 40,115 50,105 C 52,118 62,126 58,136 Z"/>
-                <path d="M 140,90 C 145,70 135,50 115,35 C 120,45 118,60 128,70 Z"/>
-                <path d="M 148,105 C 155,85 148,65 132,50 C 135,60 130,75 138,85 Z"/>
-                <path d="M 144,125 C 152,110 148,90 135,78 C 136,90 128,102 134,112 Z"/>
-                <path d="M 130,145 C 140,135 140,115 130,105 C 128,118 118,126 122,136 Z"/>
-                <path d="M 90,155 C 80,165 65,160 60,170 C 75,168 85,160 90,155 Z"/>
-                <path d="M 90,155 C 100,165 115,160 120,170 C 105,168 95,160 90,155 Z"/>
-              </g>
-              <circle cx="90" cy="90" r="54" fill="#fffbeb" stroke="url(#laurelBrightGold)" stroke-width="4"/>
-              <circle cx="90" cy="90" r="46" fill="#fef3c7" stroke="url(#laurelBrightGold)" stroke-width="1.5" stroke-dasharray="3 2"/>
-              <text x="90" y="66" fill="#92400e" font-size="10.5" font-weight="900" text-anchor="middle" letter-spacing="1">CREW LƯỚI BÚA</text>
-              <text x="90" y="86" fill="#b45309" font-size="17" font-weight="900" text-anchor="middle">★ TOP 1 ★</text>
-              <text x="90" y="104" fill="#78350f" font-size="11" font-weight="900" text-anchor="middle" letter-spacing="1.5">QUÁN QUÂN</text>
-              <text x="90" y="120" fill="#92400e" font-size="9" font-weight="800" text-anchor="middle">DANH DỰ CAO NHẤT</text>
-            </svg>
+          <!-- BÊN TRÁI: HUY CHƯƠNG 3D & CON DẤU ĐIỆN TỬ -->
+          <div style="display:flex;align-items:center;gap:16px;">
+            ${medalSvg}
+            <div style="text-align:left;">
+              <div style="font-size:13px;font-weight:900;color:#0f172a;letter-spacing:1px;text-transform:uppercase;">CHỨNG NHẬN ĐIỆN TỬ</div>
+              <div style="font-size:11.5px;color:#64748b;font-weight:700;margin-top:2px;">Mã số: CLB-${targetUserId ? targetUserId.substring(0,8).toUpperCase() : 'VIP2026'}</div>
+              <div style="font-size:11.5px;color:#0284c7;font-weight:800;margin-top:2px;">🌐 quan-ly-seven.vercel.app</div>
+            </div>
           </div>
 
-          <!-- CHỮ KÝ VÀ TÊN THỦ LĨNH NGUYỄN NGỌC TRÍ SẮC NÉT TRÊN NỀN SÁNG -->
-          <div style="text-align:center;width:340px;">
-            <div style="font-family:'Great Vibes', 'Dancing Script', cursive;font-size:52px;font-weight:400;color:#0f172a;line-height:1;margin-bottom:2px;">
+          <!-- BÊN PHẢI: CHỮ KÝ THỦ LĨNH NGUYỄN NGỌC TRÍ CÂN ĐỐI -->
+          <div style="text-align:center;min-width:320px;">
+            <div style="font-family:'Great Vibes', 'Dancing Script', cursive;font-size:48px;font-weight:400;color:#0f172a;line-height:1;margin-bottom:4px;">
               Trí
             </div>
-            <div style="width:240px;height:1.5px;background:linear-gradient(90deg,transparent,#d97706,transparent);margin:0 auto 6px;"></div>
-            <div style="font-size:18px;font-weight:900;color:#0f172a;letter-spacing:2px;text-transform:uppercase;">
+            <div style="width:200px;height:1.5px;background:#0f172a;margin:0 auto 6px;"></div>
+            <div style="font-size:17px;font-weight:900;color:#0f172a;letter-spacing:1.5px;text-transform:uppercase;">
               Nguyễn Ngọc Trí
             </div>
-            <div style="font-size:12px;font-weight:850;color:#b45309;letter-spacing:1px;margin-top:2px;">
+            <div style="font-size:11.5px;font-weight:850;color:#d97706;letter-spacing:1px;margin-top:2px;text-transform:uppercase;">
               THỦ LĨNH TỐI CAO • BAN CHỈ HUY CREW LƯỚI BÚA
             </div>
-            <div style="font-size:11px;color:#64748b;margin-top:3px;font-style:italic;">
-              Ngày cấp: ${dateStr} &nbsp;•&nbsp; quan-ly-seven.vercel.app
+            <div style="font-size:11px;color:#64748b;margin-top:3px;font-weight:600;">
+              Ngày ban hành: ${dateStr}
             </div>
-          </div>
-
-          <!-- CON DẤU 2: HOA VĂN GUILLOCHE ROSETTE MÀU VÀNG KIM NỀN SÁNG -->
-          <div style="width:220px;display:flex;flex-direction:column;align-items:center;">
-            <svg viewBox="0 0 160 160" style="width:145px;height:145px;filter:drop-shadow(0 4px 12px rgba(217,119,6,0.25));">
-              <circle cx="80" cy="80" r="74" fill="none" stroke="url(#laurelBrightGold)" stroke-width="2"/>
-              <circle cx="80" cy="80" r="68" fill="none" stroke="url(#laurelBrightGold)" stroke-width="1" stroke-dasharray="4 3"/>
-              <circle cx="80" cy="80" r="56" fill="#fffbeb" stroke="url(#laurelBrightGold)" stroke-width="2.5"/>
-              <polygon points="80,28 85,42 98,34 98,49 113,46 107,60 122,64 111,76 122,87 108,93 114,107 100,105 100,119 87,112 80,126 73,112 60,119 60,105 46,107 52,93 38,87 49,76 38,64 53,60 47,46 62,49 62,34 75,42" fill="none" stroke="url(#laurelBrightGold)" stroke-width="1.5"/>
-              <circle cx="80" cy="80" r="40" fill="#fef3c7" stroke="url(#laurelBrightGold)" stroke-width="1.5"/>
-              <text x="80" y="74" fill="#92400e" font-size="11" font-weight="900" text-anchor="middle" letter-spacing="1">CHỨNG NHẬN</text>
-              <text x="80" y="90" fill="#b45309" font-size="10" font-weight="800" text-anchor="middle">XUẤT SẮC</text>
-              <text x="80" y="104" fill="#d97706" font-size="9" font-weight="900" text-anchor="middle">★ ★ ★</text>
-            </svg>
           </div>
 
         </div>
@@ -8158,7 +8221,7 @@ async function generateCertificateImage(targetUserId, customTitle, customCitatio
 
   try {
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
-    const certNode = container.querySelector('#goldCertNode');
+    const certNode = container.querySelector('#modernRoyalCertNode');
     const canvas = await html2canvas(certNode, {
       scale: 2.5,
       backgroundColor: '#ffffff',
@@ -8171,30 +8234,32 @@ async function generateCertificateImage(targetUserId, customTitle, customCitatio
     const previewModal = document.createElement('div');
     previewModal.className = 'modal-overlay';
     previewModal.innerHTML = `
-      <div class="modal-box" style="max-width:960px;max-height:92vh;overflow-y:auto;background:#ffffff;border:1.5px solid #f59e0b;border-radius:22px;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
+      <div class="modal-box" style="max-width:960px;max-height:92vh;overflow-y:auto;background:#ffffff;border:1.5px solid #0f172a;border-radius:24px;box-shadow:0 25px 70px rgba(15,23,42,0.18);">
         
-        <div class="modal-header-fancy" style="border-bottom:1.5px solid #e2e8f0;padding-bottom:12px;">
+        <div class="modal-header-fancy" style="border-bottom:1.5px solid #e2e8f0;padding-bottom:14px;">
           <div class="modal-title-group">
-            <div class="modal-icon-badge" style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#fff;">🏆</div>
+            <div class="modal-icon-badge" style="background:#0f172a;color:#fbbf24;">🏆</div>
             <div>
-              <h3 style="color:#0f172a;">Bằng Vinh Danh Hoàng Gia — ${escHtml(memberName)}</h3>
-              <span style="font-size:12px;color:#64748b;font-weight:600;">Mẫu Trắng Sáng &amp; Vàng Kim Sang Trọng Tinh Tế</span>
+              <h3 style="color:#0f172a;font-size:18px;">Bằng Vinh Danh Thành Tích — ${escHtml(memberName)}</h3>
+              <span style="font-size:12px;color:#64748b;font-weight:600;">Phong cách Modern Royal Premium (Navy &amp; Gold hiện đại)</span>
             </div>
           </div>
           <button class="modal-close-btn" id="closeCertPreview" title="Đóng">✕</button>
         </div>
 
         <div style="margin:16px 0;text-align:center;">
-          <img src="${dataUrl}" alt="Bằng Vinh Danh" style="border-radius:14px;border:1.5px solid #f59e0b;width:100%;box-shadow:0 8px 30px rgba(245,158,11,0.15);">
+          <img src="${dataUrl}" alt="Bằng Vinh Danh" style="border-radius:14px;border:1.5px solid #0f172a;width:100%;box-shadow:0 8px 30px rgba(15,23,42,0.12);">
         </div>
 
         <div class="modal-actions" style="flex-wrap:wrap;gap:10px;justify-content:flex-end;">
-          <button type="button" class="secondary" id="btnCloseCertPreviewBtn">Đóng</button>
-          <button type="button" class="gold" id="btnDownloadCertPng" style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#1a1202;font-weight:900;border:none;">
-            ⬇️ Tải Bằng Khen Hoàng Gia (PNG)
+          <button type="button" class="secondary" id="btnCloseCertPreviewBtn" style="border-radius:12px;font-weight:800;padding:10px 20px;">
+            Đóng
+          </button>
+          <button type="button" class="green" id="btnDownloadCertPng" style="background:linear-gradient(135deg,#0284c7,#0ea5e9);color:#ffffff;border:none;border-radius:12px;font-weight:900;padding:10px 22px;box-shadow:0 4px 14px rgba(2,132,199,0.3);">
+            ⬇️ Tải Bằng Khen (PNG)
           </button>
           ${isAdmin() ? `
-          <button type="button" class="gold" id="btnSendCertDiscord" style="background:#5865F2;color:#fff;border-color:#4752C4;font-weight:800;display:inline-flex;align-items:center;gap:6px;">
+          <button type="button" class="gold" id="btnSendCertDiscord" style="background:#5865F2;color:#fff;border:none;border-radius:12px;font-weight:850;padding:10px 22px;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(88,101,242,0.35);">
             <span>🚀 Vinh Danh Lên Discord</span>
           </button>
           ` : ''}
@@ -8214,7 +8279,7 @@ async function generateCertificateImage(targetUserId, customTitle, customCitatio
       const a = document.createElement('a');
       a.href = dataUrl;
       const safeName = memberName.toLowerCase().replace(/[^a-z0-9]/g, '-');
-      a.download = `bang-vinh-danh-hoang-gia-${safeName}-${Date.now()}.png`;
+      a.download = `vinh-danh-thanh-tich-${safeName}-${Date.now()}.png`;
       a.click();
     };
 
@@ -8227,8 +8292,8 @@ async function generateCertificateImage(targetUserId, customTitle, customCitatio
         const res = await (window.sendDiscordReport || sendDiscordReport)({
           type: 'weekly',
           targetChannelId: '1561985096943276042',
-          title: `🏆 BẰNG VINH DANH QUÁN QUÂN CREW: ${memberName}`,
-          description: `👑 Trân trọng tôn vinh chiến binh **${memberName}** đã xuất sắc đạt **${roundedHouses} nhà** dẫn đầu toàn hệ thống!`,
+          title: `🏆 VINH DANH THÀNH TÍCH CHIẾN BINH: ${memberName}`,
+          description: `👑 Trân trọng vinh danh chiến binh **${memberName}** đã xuất sắc đạt **${roundedHouses} nhà** (#${rank}) toàn hệ thống Crew Lưới Búa!`,
           imageDataUrl: dataUrl
         });
 
@@ -8236,7 +8301,7 @@ async function generateCertificateImage(targetUserId, customTitle, customCitatio
         btn.innerHTML = '<span>🚀 Vinh Danh Lên Discord</span>';
 
         if (res.success) {
-          alert('✅ Đã vinh danh và gửi Bằng Khen Quán Quân lên Discord thành công!');
+          alert('✅ Đã vinh danh và gửi Bằng Khen Thành Tích lên Discord thành công!');
         } else {
           alert('❌ Lỗi gửi Discord: ' + res.message);
         }
