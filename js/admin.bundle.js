@@ -1524,6 +1524,7 @@ try {
         <!-- Actions Footer -->
         <div style="display: flex; justify-content: flex-end; align-items: center; padding: 4px 4px 2px; gap: 10px;">
           ${canManageScars ? `<button type="button" class="btn-scar-action btn-remove-scar" id="btnDossierEditBasic" style="margin-right:auto;">✏️ Sửa Tên &amp; Nhà</button>` : ''}
+          <button type="button" class="btn-scar-action btn-add-scar" id="btnDossierExportCert" style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#1a1202;font-weight:900;border:none;">🏆 Bằng Vinh Danh</button>
           <button type="button" class="dossier-close-btn" id="btnDossierClose">
             ✕ Đóng Thẻ
           </button>
@@ -1749,6 +1750,14 @@ try {
 
     overlay.querySelector('#closeDossierBtn').onclick = closeDossier;
     overlay.querySelector('#btnDossierClose').onclick = closeDossier;
+    if (overlay.querySelector('#btnDossierExportCert')) {
+      overlay.querySelector('#btnDossierExportCert').onclick = () => {
+        closeDossier();
+        if (typeof generateCertificateImage === 'function') {
+          generateCertificateImage(userId);
+        }
+      };
+    }
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) closeDossier();
     });
@@ -7749,63 +7758,181 @@ $('sidebarBackupBtn')?.addEventListener('click', (e) => triggerManualBackup(e.cu
 $('manualBackupBtn')?.addEventListener('click', (e) => triggerManualBackup(e.currentTarget));
 
 /* ==========================================================================
-   SECTION 2: EXPORT LEADERBOARD REPORT (4 Ô LI & CON DẤU ĐỎ CHÍNH THỨC)
+   SECTION 2: BẢNG VINH DANH HOÀNG GIA (BLACK & GOLD CERTIFICATE)
+   & BÁO CÁO THỐNG KÊ DOANH SỐ HIỆN ĐẠI MỚI MẺ (T1 PRO INFOGRAPHIC)
    ========================================================================== */
 $('exportImgTopBtn')?.addEventListener('click', openExportModal);
 
 function openExportModal() {
-  let totalBinh = 0;
-  const userMap = {};
+  // 1. Tính toán danh sách xếp hạng & Quán quân
+  const memberTotals = {};
   allRecords.forEach(r => {
-    userMap[r.userId] = true;
-    totalBinh += Number(r.binh) || 0;
+    memberTotals[r.userId] = (memberTotals[r.userId] || 0) + (Number(r.binh) || 0);
   });
-  const memberCount = Object.keys(userMap).length;
+
+  const sortedList = Object.values(allUsers)
+    .map(u => ({
+      id: u.id,
+      name: u.name || 'Chiến Binh',
+      binh: Math.round((memberTotals[u.id] || 0) * 100) / 100
+    }))
+    .sort((a, b) => b.binh - a.binh);
+
+  const top1User = sortedList[0] || { id: '', name: 'Chưa có', binh: 0 };
+  const totalBinh = sortedList.reduce((s, u) => s + u.binh, 0);
 
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.innerHTML = `
-    <div class="modal-box" style="max-width:440px;">
+    <div class="modal-box" style="max-width:560px;padding:24px;">
       
       <!-- FANCY HEADER -->
-      <div class="modal-header-fancy">
+      <div class="modal-header-fancy" style="margin-bottom:18px;">
         <div class="modal-title-group">
-          <div class="modal-icon-badge">📸</div>
+          <div class="modal-icon-badge" style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#fff;">👑</div>
           <div>
-            <h3>Xuất Báo Cáo Số Nhà</h3>
-            <span style="font-size:12px;color:var(--slate-400);font-weight:600;">Mẫu giấy kẻ 4 ô li &amp; con dấu đỏ chính thức</span>
+            <h3 style="font-size:18px;font-weight:900;color:#0f172a;">Trung Tâm Xuất Ảnh &amp; Bằng Khen</h3>
+            <span style="font-size:12px;color:var(--slate-500);font-weight:600;">Mẫu Hoàng Gia Black &amp; Gold &amp; Báo Cáo Hiện Đại</span>
           </div>
         </div>
         <button class="modal-close-btn" id="closeExportModal" title="Đóng">✕</button>
       </div>
 
-      <div class="form-group" style="margin-bottom:14px;">
-        <label>Tiêu Đề Báo Cáo In Trên Giấy</label>
-        <input id="exportModalTitle" value="BẢNG THỐNG KÊ SỐ NHÀ" style="font-weight:700;">
+      <!-- TABS CHỌN MẪU XUẤT ẢNH -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+        <button type="button" id="tabExportCert" class="btn-3d-tab active" style="padding:12px;border-radius:14px;border:2px solid #f59e0b;background:#fffbeb;cursor:pointer;text-align:left;transition:all 0.2s;">
+          <div style="font-size:13px;font-weight:900;color:#b45309;display:flex;align-items:center;gap:6px;">
+            <span>🏆</span> Bằng Vinh Danh
+          </div>
+          <div style="font-size:11px;color:#78350f;margin-top:3px;font-weight:700;">Mẫu Hoàng Gia Black &amp; Gold</div>
+        </button>
+
+        <button type="button" id="tabExportStats" class="btn-3d-tab" style="padding:12px;border-radius:14px;border:1.5px solid #cbd5e1;background:#ffffff;cursor:pointer;text-align:left;transition:all 0.2s;">
+          <div style="font-size:13px;font-weight:850;color:#475569;display:flex;align-items:center;gap:6px;">
+            <span>📊</span> Báo Cáo Thống Kê
+          </div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:3px;font-weight:700;">Mẫu Hiện Đại &amp; Mới Mẻ</div>
+        </button>
       </div>
 
-      <div id="exportSummaryBox" style="background:#fdf2eb;border:1px solid #ebd4c4;padding:12px 14px;border-radius:12px;font-size:13px;color:#5d3e31;margin-bottom:18px;">
-        <div style="font-weight:800;color:var(--terracotta);margin-bottom:4px;">📊 Dữ liệu báo cáo hiện tại:</div>
-        <div>• Thành viên có nhà: <b>${memberCount} người</b></div>
-        <div>• Tổng số nhà: <b style="color:var(--terracotta);font-size:15px;">${Math.round(totalBinh * 100) / 100} nhà</b></div>
+      <!-- PANEL 1: BẰNG VINH DANH HOÀNG GIA (BLACK & GOLD CERTIFICATE) -->
+      <div id="panelExportCert">
+        <div style="background:linear-gradient(135deg, #18181b 0%, #09090b 100%);border:1.5px solid #d4af37;border-radius:16px;padding:16px;color:#fff;margin-bottom:16px;box-shadow:0 6px 20px rgba(0,0,0,0.25);">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+            <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#d97706);display:flex;align-items:center;justify-content:center;font-size:22px;border:2px solid #fef08a;">🥇</div>
+            <div>
+              <div style="font-size:11px;font-weight:800;color:#facc15;letter-spacing:1px;text-transform:uppercase;">BẢNG VINH DANH QUÁN QUÂN CREW</div>
+              <div style="font-size:14.5px;font-weight:900;color:#ffffff;letter-spacing:-0.2px;">Mẫu Certificate Hoàng Gia Đẳng Cấp</div>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:12px;">
+            <label style="color:#fde047;font-size:11.5px;font-weight:800;">Chọn Chiến Binh Trao Bằng Vinh Danh *</label>
+            <select id="certRecipientSelect" style="background:#27272a;color:#ffffff;border:1.5px solid #ca8a04;font-size:13px;font-weight:700;">
+              ${sortedList.map((u, i) => `
+                <option value="${u.id}" ${i === 0 ? 'selected' : ''}>
+                  ${i === 0 ? '🥇 [TOP 1 QUÁN QUÂN] ' : (i === 1 ? '🥈 [TOP 2] ' : (i === 2 ? '🥉 [TOP 3] ' : `#${i+1} `))} ${escHtml(u.name)} (${u.binh} nhà)
+                </option>
+              `).join('')}
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom:12px;">
+            <label style="color:#fde047;font-size:11.5px;font-weight:800;">Tiêu Đề / Danh Hiệu Vinh Danh</label>
+            <input id="certTitleInput" value="CERTIFICATE OF HONOR" style="background:#27272a;color:#fef08a;border:1.5px solid #ca8a04;font-size:13px;font-weight:800;">
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <label style="color:#fde047;font-size:11.5px;font-weight:800;">Lời Khen Tặng &amp; Ghi Nhận Thành Tích</label>
+            <textarea id="certCitationInput" rows="2" style="background:#27272a;color:#e4e4e7;border:1.5px solid #ca8a04;font-size:12px;font-weight:600;line-height:1.4;">Đã xuất sắc lập kỷ lục dẫn đầu toàn bộ hệ thống Crew Lưới Búa. Tôn vinh bản lĩnh kiên cường, sự cống hiến vượt bậc và tinh thần chiến binh quả cảm!</textarea>
+          </div>
+        </div>
+
+        <div class="modal-actions" style="margin-top:0;">
+          <button type="button" class="secondary" id="cancelExportCert">Huỷ bỏ</button>
+          <button type="button" class="gold" id="btnRunExportCert" style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#1a1202;font-weight:900;border:none;box-shadow:0 4px 14px rgba(245,158,11,0.4);">
+            🏆 Xuất Bằng Vinh Danh Hoàng Gia
+          </button>
+        </div>
       </div>
 
-      <div class="modal-actions">
-        <button type="button" class="secondary" id="cancelExportModalBtn">Huỷ bỏ</button>
-        <button type="button" class="green" id="runExportModalBtn">📸 Xuất Đơn Ngay</button>
+      <!-- PANEL 2: BÁO CÁO THỐNG KÊ DOANH SỐ HIỆN ĐẠI MỚI MẺ -->
+      <div id="panelExportStats" style="display:none;">
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Tiêu Đề Báo Cáo *</label>
+          <input id="exportModalTitle" value="BẢNG THỐNG KÊ DOANH SỐ &amp; NĂNG SUẤT CHU KỲ" style="font-weight:800;">
+        </div>
+
+        <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #bbf7d0;padding:14px;border-radius:14px;margin-bottom:16px;">
+          <div style="font-size:12.5px;font-weight:850;color:#166534;margin-bottom:4px;">📊 Dữ liệu báo cáo chuẩn bị xuất:</div>
+          <div style="font-size:12px;color:#15803d;font-weight:700;">• Tổng quân số ghi nhận: <b>${sortedList.length} chiến binh</b></div>
+          <div style="font-size:12px;color:#15803d;font-weight:700;">• Tổng số nhà toàn đội: <b style="color:#b45309;font-size:14px;">${Math.round(totalBinh * 100) / 100} nhà</b></div>
+          <div style="font-size:12px;color:#15803d;font-weight:700;">• Quán Quân Dẫn Đầu: <b>🥇 ${escHtml(top1User.name)} (${top1User.binh} nhà)</b></div>
+        </div>
+
+        <div class="modal-actions" style="margin-top:0;">
+          <button type="button" class="secondary" id="cancelExportStats">Huỷ bỏ</button>
+          <button type="button" class="green" id="btnRunExportStats">
+            📸 Xuất Báo Cáo Hiện Đại (HD)
+          </button>
+        </div>
       </div>
-    </div>  
+
+    </div>
   `;
   document.body.appendChild(overlay);
 
+  // Tab switching logic
+  const tabCert = overlay.querySelector('#tabExportCert');
+  const tabStats = overlay.querySelector('#tabExportStats');
+  const panelCert = overlay.querySelector('#panelExportCert');
+  const panelStats = overlay.querySelector('#panelExportStats');
+
+  tabCert.onclick = () => {
+    tabCert.style.border = '2px solid #f59e0b';
+    tabCert.style.background = '#fffbeb';
+    tabCert.querySelector('div').style.color = '#b45309';
+
+    tabStats.style.border = '1.5px solid #cbd5e1';
+    tabStats.style.background = '#ffffff';
+    tabStats.querySelector('div').style.color = '#475569';
+
+    panelCert.style.display = 'block';
+    panelStats.style.display = 'none';
+  };
+
+  tabStats.onclick = () => {
+    tabStats.style.border = '2px solid #0284c7';
+    tabStats.style.background = '#f0f9ff';
+    tabStats.querySelector('div').style.color = '#0369a1';
+
+    tabCert.style.border = '1.5px solid #cbd5e1';
+    tabCert.style.background = '#ffffff';
+    tabCert.querySelector('div').style.color = '#475569';
+
+    panelStats.style.display = 'block';
+    panelCert.style.display = 'none';
+  };
+
   const closeModal = () => overlay.remove();
   overlay.querySelector('#closeExportModal').onclick = closeModal;
-  overlay.querySelector('#cancelExportModalBtn').onclick = closeModal;
+  overlay.querySelector('#cancelExportCert').onclick = closeModal;
+  overlay.querySelector('#cancelExportStats').onclick = closeModal;
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) closeModal();
   });
 
-  overlay.querySelector('#runExportModalBtn').onclick = () => {
+  // Action: Export Certificate
+  overlay.querySelector('#btnRunExportCert').onclick = () => {
+    const selId = overlay.querySelector('#certRecipientSelect').value;
+    const certTitle = overlay.querySelector('#certTitleInput').value.trim();
+    const certCitation = overlay.querySelector('#certCitationInput').value.trim();
+    overlay.remove();
+    generateCertificateImage(selId, certTitle, certCitation);
+  };
+
+  // Action: Export Modern Statistics Report
+  overlay.querySelector('#btnRunExportStats').onclick = () => {
     const customTitle = overlay.querySelector('#exportModalTitle').value.trim();
     overlay.remove();
     generateExportImage(customTitle);
@@ -7813,6 +7940,305 @@ function openExportModal() {
 }
 window.openExportModal = openExportModal;
 
+/* ==========================================================================
+   HÀM XUẤT BẰNG VINH DANH HOÀNG GIA (BLACK & GOLD CERTIFICATE)
+   Theo đúng nguyên mẫu hình ảnh Đại ca yêu cầu
+   ========================================================================== */
+async function generateCertificateImage(targetUserId, customTitle, customCitation) {
+  const container = $('exportArea');
+  if (!container) return;
+
+  // Tính số liệu chiến binh
+  const user = allUsers[targetUserId] || Object.values(allUsers)[0] || { name: 'Chiến Binh Xuất Sắc' };
+  const memberName = user.name || 'Chiến Binh Xuất Sắc';
+  
+  const userHouses = allRecords
+    .filter(r => r.userId === targetUserId || r.userName === memberName)
+    .reduce((s, r) => s + (Number(r.binh) || 0), 0);
+  const roundedHouses = Math.round(userHouses * 100) / 100;
+
+  const now = new Date();
+  const dateStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+
+  // SVG Định dạng Hoa văn 4 góc Hoàng Gia (Vintage Baroque Gold Filigree Corner)
+  const cornerSvg = `
+    <svg viewBox="0 0 140 140" style="position:absolute;width:130px;height:130px;pointer-events:none;">
+      <defs>
+        <linearGradient id="goldFiligree" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#fffbeb"/>
+          <stop offset="25%" stop-color="#fde047"/>
+          <stop offset="50%" stop-color="#eab308"/>
+          <stop offset="75%" stop-color="#ca8a04"/>
+          <stop offset="100%" stop-color="#854d0e"/>
+        </linearGradient>
+      </defs>
+      <!-- Đường viền góc kép -->
+      <path d="M 12,12 L 132,12 M 12,12 L 12,132" stroke="url(#goldFiligree)" stroke-width="3" fill="none"/>
+      <path d="M 20,20 L 110,20 M 20,20 L 20,110" stroke="url(#goldFiligree)" stroke-width="1.5" fill="none"/>
+      <!-- Hoa văn lá lượn baroque acanthus -->
+      <path d="M 28,28 Q 50,26 65,40 Q 80,26 102,28 Q 68,68 28,102 Q 26,80 40,65 Q 26,50 28,28 Z" fill="url(#goldFiligree)" opacity="0.9"/>
+      <path d="M 24,60 Q 45,45 60,24" stroke="url(#goldFiligree)" stroke-width="2" fill="none"/>
+      <path d="M 24,80 Q 60,60 80,24" stroke="url(#goldFiligree)" stroke-width="1.5" fill="none"/>
+      <circle cx="36" cy="36" r="6" fill="url(#goldFiligree)"/>
+      <circle cx="16" cy="16" r="4" fill="#fef08a"/>
+      <circle cx="56" cy="56" r="4" fill="url(#goldFiligree)"/>
+    </svg>
+  `;
+
+  // HTML Khung Bằng Khen Hoàng Gia Chuẩn 1360px x 920px
+  container.innerHTML = `
+    <div id="goldCertNode" style="width:1360px;height:920px;box-sizing:border-box;position:relative;background:#070709;
+                background-image: repeating-linear-gradient(90deg, #070709, #070709 3px, #0e0f14 3px, #0e0f14 6px);
+                padding:40px;display:flex;align-items:center;justify-content:center;font-family:'Times New Roman',serif;overflow:hidden;">
+      
+      <!-- LỚP KHUNG VIỀN VÀNG RÒNG ĐA TẦNG -->
+      <div style="width:100%;height:100%;border:3px solid #d4af37;outline:2px solid #854d0e;outline-offset:-8px;
+                  position:relative;box-sizing:border-box;padding:26px;display:flex;flex-direction:column;
+                  justify-content:space-between;align-items:center;text-align:center;background:rgba(5,5,8,0.92);">
+
+        <!-- KHUNG HOA VĂN BỆT DẠNG LƯỚI KIM CƯƠNG VÀNG QUANH MÉP -->
+        <div style="position:absolute;inset:14px;border:4px double #ca8a04;pointer-events:none;"></div>
+        <div style="position:absolute;inset:20px;border:1px dashed rgba(250,204,21,0.4);pointer-events:none;"></div>
+
+        <!-- 4 GÓC HOA VĂN HOÀNG GIA -->
+        <div style="position:absolute;top:16px;left:16px;">${cornerSvg}</div>
+        <div style="position:absolute;top:16px;right:16px;transform:scaleX(-1);">${cornerSvg}</div>
+        <div style="position:absolute;bottom:16px;left:16px;transform:scaleY(-1);">${cornerSvg}</div>
+        <div style="position:absolute;bottom:16px;right:16px;transform:scale(-1,-1);">${cornerSvg}</div>
+
+        <!-- 1. TIÊU ĐỀ HOÀNG GIA: CERTIFICATE OF APPRECIATION / HONOR -->
+        <div style="margin-top:14px;position:relative;z-index:2;">
+          <div style="font-family:'Impact', 'Cinzel', 'Times New Roman', serif;font-size:68px;font-weight:900;
+                      letter-spacing:10px;text-transform:uppercase;line-height:1;margin-bottom:6px;
+                      background:linear-gradient(180deg, #fffbeb 0%, #fef08a 25%, #facc15 50%, #ca8a04 75%, #854d0e 100%);
+                      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+                      filter:drop-shadow(0 4px 10px rgba(0,0,0,0.8));">
+            ${escHtml(customTitle || 'CERTIFICATE')}
+          </div>
+          <div style="font-family:'Great Vibes', 'Playfair Display', cursive, serif;font-size:36px;color:#fde047;
+                      letter-spacing:3px;font-weight:400;margin-top:2px;text-shadow:0 2px 8px rgba(0,0,0,0.8);">
+            Of Appreciation &amp; Honorable Merit
+          </div>
+
+          <!-- DẢI PHÂN CÁCH VÀNG VINTAGE -->
+          <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-top:8px;">
+            <div style="width:140px;height:1.5px;background:linear-gradient(90deg,transparent,#facc15);"></div>
+            <span style="color:#fde047;font-size:16px;">✦ ❖ ✦</span>
+            <div style="width:140px;height:1.5px;background:linear-gradient(90deg,#facc15,transparent);"></div>
+          </div>
+        </div>
+
+        <!-- 2. PHẦN THÂN: LỜI TRAO TẶNG & TÊN NGƯỜI ĐƯỢC VINH DANH -->
+        <div style="position:relative;z-index:2;margin:10px 0;">
+          <div style="font-size:17px;font-style:italic;color:#e4e4e7;letter-spacing:1px;margin-bottom:12px;font-weight:600;">
+            This Certificate Is Proudly Presented For Honorable Achievement To
+          </div>
+          <div style="font-size:13.5px;color:#ca8a04;letter-spacing:3px;text-transform:uppercase;font-weight:800;margin-bottom:14px;">
+            ── BẢNG VINH DANH CHIẾN BINH XUẤT SẮC DẪN ĐẦU HỆ THỐNG CREW LƯỚI BÚA ──
+          </div>
+
+          <!-- TÊN CHIẾN BINH VÀNG RỰC RỠ -->
+          <div style="font-family:'Great Vibes', 'Playfair Display', cursive, serif;font-size:56px;font-weight:900;
+                      letter-spacing:2px;line-height:1.1;margin-bottom:14px;padding:0 30px;
+                      background:linear-gradient(180deg, #ffffff 0%, #fef08a 30%, #f59e0b 80%, #b45309 100%);
+                      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+                      filter:drop-shadow(0 4px 12px rgba(245,158,11,0.5));">
+            ${escHtml(memberName)}
+          </div>
+
+          <!-- THÀNH TÍCH ĐẠT ĐƯỢC -->
+          <div style="display:inline-flex;align-items:center;gap:12px;background:rgba(250,204,21,0.08);
+                      border:1.5px solid #ca8a04;border-radius:999px;padding:6px 28px;margin-bottom:16px;">
+            <span style="font-size:18px;">🏠</span>
+            <span style="font-size:16px;font-weight:900;color:#fef08a;letter-spacing:1px;">
+              KỶ LỤC DOANH SỐ: <span style="font-size:22px;color:#facc15;">${roundedHouses}</span> CĂN NHÀ
+            </span>
+            <span style="font-size:18px;">⭐</span>
+          </div>
+
+          <!-- LỜI TUYÊN DƯƠNG TRANG TRỌNG -->
+          <div style="max-width:860px;margin:0 auto;font-size:15px;color:#d4d4d8;line-height:1.6;font-style:italic;text-shadow:0 1px 2px rgba(0,0,0,0.8);">
+            "${escHtml(customCitation || 'Đã xuất sắc lập kỷ lục dẫn đầu toàn bộ hệ thống Crew Lưới Búa. Tôn vinh bản lĩnh kiên cường, sự cống hiến vượt bậc và tinh thần chiến binh quả cảm đưa toàn đội lên đỉnh vinh quang!')}"
+          </div>
+        </div>
+
+        <!-- 3. PHẦN ĐÁY: 2 CON DẤU HOÀNG GIA & CHỮ KÝ THỦ LĨNH -->
+        <div style="width:100%;display:flex;justify-content:space-between;align-items:flex-end;padding:0 36px 10px;position:relative;z-index:2;">
+          
+          <!-- CON DẤU 1 (BÊN TRÁI): HUY CHƯƠNG LÁ NGUYỆT QUẾ VÀNG (LAUREL WREATH MEDAL) -->
+          <div style="width:220px;display:flex;flex-direction:column;align-items:center;">
+            <svg viewBox="0 0 180 180" style="width:160px;height:160px;filter:drop-shadow(0 6px 14px rgba(0,0,0,0.9));">
+              <defs>
+                <linearGradient id="laurelGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#fffbeb"/>
+                  <stop offset="30%" stop-color="#facc15"/>
+                  <stop offset="70%" stop-color="#ca8a04"/>
+                  <stop offset="100%" stop-color="#854d0e"/>
+                </linearGradient>
+              </defs>
+              <!-- Lá nguyệt quế trái -->
+              <g fill="url(#laurelGold)">
+                <path d="M 40,90 C 35,70 45,50 65,35 C 60,45 62,60 52,70 Z"/>
+                <path d="M 32,105 C 25,85 32,65 48,50 C 45,60 50,75 42,85 Z"/>
+                <path d="M 36,125 C 28,110 32,90 45,78 C 44,90 52,102 46,112 Z"/>
+                <path d="M 50,145 C 40,135 40,115 50,105 C 52,118 62,126 58,136 Z"/>
+                <!-- Lá nguyệt quế phải -->
+                <path d="M 140,90 C 145,70 135,50 115,35 C 120,45 118,60 128,70 Z"/>
+                <path d="M 148,105 C 155,85 148,65 132,50 C 135,60 130,75 138,85 Z"/>
+                <path d="M 144,125 C 152,110 148,90 135,78 C 136,90 128,102 134,112 Z"/>
+                <path d="M 130,145 C 140,135 140,115 130,105 C 128,118 118,126 122,136 Z"/>
+                <!-- Nơ thắt dưới -->
+                <path d="M 90,155 C 80,165 65,160 60,170 C 75,168 85,160 90,155 Z"/>
+                <path d="M 90,155 C 100,165 115,160 120,170 C 105,168 95,160 90,155 Z"/>
+              </g>
+              <!-- Đồng xu kim loại trung tâm -->
+              <circle cx="90" cy="90" r="54" fill="#181307" stroke="url(#laurelGold)" stroke-width="4"/>
+              <circle cx="90" cy="90" r="46" fill="#120e03" stroke="url(#laurelGold)" stroke-width="1.5" stroke-dasharray="3 2"/>
+              <text x="90" y="66" fill="#fde047" font-size="10.5" font-weight="900" text-anchor="middle" letter-spacing="1">CREW LƯỚI BÚA</text>
+              <text x="90" y="86" fill="url(#laurelGold)" font-size="17" font-weight="900" text-anchor="middle">★ TOP 1 ★</text>
+              <text x="90" y="104" fill="#fef08a" font-size="11" font-weight="900" text-anchor="middle" letter-spacing="1.5">QUÁN QUÂN</text>
+              <text x="90" y="120" fill="#ca8a04" font-size="9" font-weight="800" text-anchor="middle">DANH DỰ CAO NHẤT</text>
+            </svg>
+          </div>
+
+          <!-- CHỮ KÝ VÀNG & TÊN THỦ LĨNH NGUYỄN NGỌC TRÍ -->
+          <div style="text-align:center;width:340px;">
+            <div style="font-family:'Great Vibes', 'Dancing Script', cursive;font-size:52px;font-weight:400;color:#fef08a;line-height:1;margin-bottom:2px;filter:drop-shadow(0 2px 6px rgba(245,158,11,0.4));">
+              Trí
+            </div>
+            <div style="width:240px;height:1.5px;background:linear-gradient(90deg,transparent,#facc15,transparent);margin:0 auto 6px;"></div>
+            <div style="font-size:18px;font-weight:900;color:#ffffff;letter-spacing:2px;text-transform:uppercase;">
+              Nguyễn Ngọc Trí
+            </div>
+            <div style="font-size:12px;font-weight:800;color:#facc15;letter-spacing:1px;margin-top:2px;">
+              THỦ LĨNH TỐI CAO • BAN CHỈ HUY CREW LƯỚI BÚA
+            </div>
+            <div style="font-size:11px;color:#a1a1aa;margin-top:3px;font-style:italic;">
+              Ngày cấp: ${dateStr} &nbsp;•&nbsp; quan-ly-seven.vercel.app
+            </div>
+          </div>
+
+          <!-- CON DẤU 2 (BÊN PHẢI): HOA VĂN THÁNH ĐƯỜNG GUILLOCHE (ROSETTE MEDALLION) -->
+          <div style="width:220px;display:flex;flex-direction:column;align-items:center;">
+            <svg viewBox="0 0 160 160" style="width:145px;height:145px;filter:drop-shadow(0 6px 14px rgba(0,0,0,0.9));">
+              <circle cx="80" cy="80" r="74" fill="none" stroke="url(#laurelGold)" stroke-width="2"/>
+              <circle cx="80" cy="80" r="68" fill="none" stroke="url(#laurelGold)" stroke-width="1" stroke-dasharray="4 3"/>
+              <circle cx="80" cy="80" r="56" fill="#181307" stroke="url(#laurelGold)" stroke-width="2.5"/>
+              <!-- Bông hoa ren 24 cánh đa giác -->
+              <polygon points="80,28 85,42 98,34 98,49 113,46 107,60 122,64 111,76 122,87 108,93 114,107 100,105 100,119 87,112 80,126 73,112 60,119 60,105 46,107 52,93 38,87 49,76 38,64 53,60 47,46 62,49 62,34 75,42" fill="none" stroke="url(#laurelGold)" stroke-width="1.5"/>
+              <circle cx="80" cy="80" r="40" fill="#120e03" stroke="url(#laurelGold)" stroke-width="1.5"/>
+              <text x="80" y="74" fill="url(#laurelGold)" font-size="11" font-weight="900" text-anchor="middle" letter-spacing="1">CHỨNG NHẬN</text>
+              <text x="80" y="90" fill="#fef08a" font-size="10" font-weight="800" text-anchor="middle">XUẤT SẮC</text>
+              <text x="80" y="104" fill="#ca8a04" font-size="9" font-weight="900" text-anchor="middle">★ ★ ★</text>
+            </svg>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  `;
+
+  try {
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    const certNode = container.querySelector('#goldCertNode');
+    const canvas = await html2canvas(certNode, {
+      scale: 2.5,
+      backgroundColor: '#070709',
+      logging: false,
+      useCORS: true
+    });
+    const dataUrl = canvas.toDataURL('image/png');
+    if (container) container.innerHTML = '';
+
+    // Hiển thị modal preview cho Đại ca
+    const previewModal = document.createElement('div');
+    previewModal.className = 'modal-overlay';
+    previewModal.innerHTML = `
+      <div class="modal-box" style="max-width:960px;max-height:92vh;overflow-y:auto;background:#0f172a;border:2px solid #ca8a04;">
+        
+        <div class="modal-header-fancy" style="border-bottom:1px solid #334155;padding-bottom:12px;">
+          <div class="modal-title-group">
+            <div class="modal-icon-badge" style="background:#f59e0b;color:#000;">🏆</div>
+            <div>
+              <h3 style="color:#ffffff;">Bằng Vinh Danh Hoàng Gia — ${escHtml(memberName)}</h3>
+              <span style="font-size:12px;color:#94a3b8;font-weight:600;">Mẫu Black &amp; Gold Certificate siêu sang trọng</span>
+            </div>
+          </div>
+          <button class="modal-close-btn" id="closeCertPreview" title="Đóng" style="color:#ffffff;border-color:#475569;">✕</button>
+        </div>
+
+        <div style="margin:16px 0;text-align:center;">
+          <img src="${dataUrl}" alt="Bằng Vinh Danh" style="border-radius:14px;border:2px solid #ca8a04;width:100%;box-shadow:0 8px 30px rgba(0,0,0,0.5);">
+        </div>
+
+        <div class="modal-actions" style="flex-wrap:wrap;gap:10px;justify-content:flex-end;">
+          <button type="button" class="secondary" id="btnCloseCertPreviewBtn" style="background:#1e293b;color:#cbd5e1;border-color:#475569;">Đóng</button>
+          <button type="button" class="gold" id="btnDownloadCertPng" style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#1a1202;font-weight:900;border:none;">
+            ⬇️ Tải Bằng Khen Hoàng Gia (PNG)
+          </button>
+          ${isAdmin() ? `
+          <button type="button" class="gold" id="btnSendCertDiscord" style="background:#5865F2;color:#fff;border-color:#4752C4;font-weight:800;display:inline-flex;align-items:center;gap:6px;">
+            <span>🚀 Vinh Danh Lên Discord</span>
+          </button>
+          ` : ''}
+        </div>
+      </div>
+    `;
+    document.body.appendChild(previewModal);
+
+    const closePreview = () => previewModal.remove();
+    previewModal.querySelector('#closeCertPreview').onclick = closePreview;
+    previewModal.querySelector('#btnCloseCertPreviewBtn').onclick = closePreview;
+    previewModal.addEventListener('click', (e) => {
+      if (e.target === previewModal) closePreview();
+    });
+
+    previewModal.querySelector('#btnDownloadCertPng').onclick = () => {
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      const safeName = memberName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      a.download = `bang-vinh-danh-${safeName}-${Date.now()}.png`;
+      a.click();
+    };
+
+    if (previewModal.querySelector('#btnSendCertDiscord')) {
+      previewModal.querySelector('#btnSendCertDiscord').onclick = async () => {
+        const btn = previewModal.querySelector('#btnSendCertDiscord');
+        btn.innerHTML = '<span>⏳ Đang gửi lên Discord...</span>';
+        btn.disabled = true;
+
+        const res = await (window.sendDiscordReport || sendDiscordReport)({
+          type: 'weekly',
+          targetChannelId: '1561985096943276042',
+          title: `🏆 BẰNG VINH DANH QUÁN QUÂN CREW: ${memberName}`,
+          description: `👑 Trân trọng tôn vinh chiến binh **${memberName}** đã xuất sắc đạt **${roundedHouses} nhà** dẫn đầu toàn hệ thống!`,
+          imageDataUrl: dataUrl
+        });
+
+        btn.disabled = false;
+        btn.innerHTML = '<span>🚀 Vinh Danh Lên Discord</span>';
+
+        if (res.success) {
+          alert('✅ Đã vinh danh và gửi Bằng Khen Quán Quân lên Discord thành công!');
+        } else {
+          alert('❌ Lỗi gửi Discord: ' + res.message);
+        }
+      };
+    }
+
+  } catch (err) {
+    alert('❌ Lỗi tạo ảnh bằng khen: ' + err.message);
+  } finally {
+    if (container) container.innerHTML = '';
+  }
+}
+window.generateCertificateImage = generateCertificateImage;
+
+/* ==========================================================================
+   HÀM XUẤT ẢNH BÁO CÁO THỐNG KÊ SỐ NHÀ HIỆN ĐẠI MỚI MẺ (T1 PRO INFOGRAPHIC)
+   Thay thế mẫu giấy cũ bằng phong cách Cyber-Luxury sắc nét, đẳng cấp
+   ========================================================================== */
 async function generateExportImage(customTitle) {
   const totals = {};
   let totalBinh = 0;
@@ -7850,118 +8276,164 @@ async function generateExportImage(customTitle) {
     columns.push(periodStatsData.slice(c * rowsPerCol, (c + 1) * rowsPerCol));
   }
 
-  const widths = { 1: 960, 2: 1050, 3: 1200, 4: 1400 };
-  const padH = { 1: '24px', 2: '16px', 3: '10px', 4: '8px' };
-  const padV = { 1: '14px', 2: '11px', 3: '8px', 4: '6px' };
-  const fontT = { 1: '17px', 2: '15px', 3: '12.5px', 4: '11px' };
-  const fontN = { 1: '18px', 2: '16px', 3: '13.5px', 4: '12px' };
-  const sttW = { 1: '70px', 2: '55px', 3: '45px', 4: '40px' };
-  const binhW = { 1: '160px', 2: '130px', 3: '95px', 4: '80px' };
+  const widths = { 1: 1050, 2: 1180, 3: 1320, 4: 1480 };
   const W = widths[colCount];
 
+  // Header bảng hiện đại
   const headerCells = Array.from({ length: colCount }).map((_, c) => {
     const last = c === colCount - 1;
-    const br = last ? '' : 'border-right:2.5px solid #000;';
+    const br = last ? '' : 'border-right:1.5px solid rgba(255,255,255,0.15);';
     return `
-      <th style="padding:${colCount === 1 ? '14px 20px' : '11px 10px'};font-weight:900;
-                 font-size:${colCount === 1 ? '15px' : '13px'};letter-spacing:1px;
-                 border-right:1.5px solid #000;width:${sttW[colCount]};text-align:center;">STT</th>
-      <th style="padding:${colCount === 1 ? '14px 20px' : '11px 10px'};font-weight:900;
-                 font-size:${colCount === 1 ? '15px' : '13px'};letter-spacing:1px;
-                 border-right:1.5px solid #000;text-align:left;">TÊN THÀNH VIÊN</th>
-      <th style="padding:${colCount === 1 ? '14px 20px' : '11px 10px'};font-weight:900;
-                 font-size:${colCount === 1 ? '15px' : '13px'};letter-spacing:1px;
-                 ${br}text-align:right;width:${binhW[colCount]};">SỐ NHÀ</th>`;
+      <th style="padding:14px 12px;font-weight:900;font-size:12px;letter-spacing:1px;color:#94a3b8;border-right:1px solid rgba(255,255,255,0.1);width:55px;text-align:center;">HẠNG</th>
+      <th style="padding:14px 12px;font-weight:900;font-size:12px;letter-spacing:1px;color:#94a3b8;border-right:1px solid rgba(255,255,255,0.1);text-align:left;">CHIẾN BINH</th>
+      <th style="padding:14px 12px;font-weight:900;font-size:12px;letter-spacing:1px;color:#94a3b8;${br}text-align:right;width:120px;">SỐ NHÀ</th>`;
   }).join('');
 
+  // Hàng dữ liệu phong cách Cyber-Modern
   const bodyRows = Array.from({ length: rowsPerCol }).map((_, r) => {
     const cells = Array.from({ length: colCount }).map((_, c) => {
       const item = columns[c][r];
       const last = c === colCount - 1;
-      const br = last ? '' : 'border-right:2.5px solid #000;';
-      if (!item) return `<td colspan="3" style="border-bottom:1.5px solid #000;background:#fff;${br}"></td>`;
+      const br = last ? '' : 'border-right:1.5px solid rgba(255,255,255,0.12);';
+      if (!item) return `<td colspan="3" style="border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(15,23,42,0.4);${br}"></td>`;
       const idx = c * rowsPerCol + r + 1;
-      const medal = idx === 1 ? '🥇' : idx === 2 ? '🥈' : idx === 3 ? '🥉' : idx;
-      const maxW = colCount === 1 ? 'auto' : colCount === 2 ? '260px' : colCount === 3 ? '180px' : '140px';
+      
+      let rankPill = '';
+      let rowBg = 'rgba(15,23,42,0.5)';
+      let nameColor = '#f8fafc';
+
+      if (idx === 1) {
+        rankPill = '<span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#d97706);color:#1a1202;font-weight:900;font-size:14px;box-shadow:0 0 10px rgba(245,158,11,0.5);">🥇</span>';
+        rowBg = 'rgba(245,158,11,0.12)';
+        nameColor = '#fef08a';
+      } else if (idx === 2) {
+        rankPill = '<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#e2e8f0,#94a3b8);color:#0f172a;font-weight:900;font-size:13px;">🥈</span>';
+        rowBg = 'rgba(148,163,184,0.08)';
+      } else if (idx === 3) {
+        rankPill = '<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#fed7aa,#ea580c);color:#ffffff;font-weight:900;font-size:13px;">🥉</span>';
+        rowBg = 'rgba(234,88,12,0.08)';
+      } else {
+        rankPill = `<span style="display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:22px;padding:0 6px;border-radius:999px;background:#1e293b;color:#94a3b8;font-weight:800;font-size:11.5px;border:1px solid #334155;">#${idx}</span>`;
+      }
+
       return `
-        <td style="padding:${padV[colCount]} ${padH[colCount]};border-bottom:1.5px solid #000;
-                   text-align:center;font-weight:900;font-size:${fontT[colCount]};color:#000;
-                   border-right:1.5px solid #000;background:rgba(255,255,255,.95);">${medal}</td>
-        <td style="padding:${padV[colCount]} ${padH[colCount]};border-bottom:1.5px solid #000;
-                   border-right:1.5px solid #000;font-weight:800;font-size:${fontT[colCount]};
-                   color:#000;letter-spacing:.2px;white-space:nowrap;overflow:hidden;
-                   text-overflow:ellipsis;max-width:${maxW};background:rgba(255,255,255,.95);">
+        <td style="padding:10px 8px;border-bottom:1px solid rgba(255,255,255,0.07);text-align:center;border-right:1px solid rgba(255,255,255,0.08);background:${rowBg};">
+          ${rankPill}
+        </td>
+        <td style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.07);border-right:1px solid rgba(255,255,255,0.08);font-weight:800;font-size:13.5px;color:${nameColor};background:${rowBg};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
           ${escHtml(item.name)}
         </td>
-        <td style="padding:${padV[colCount]} ${padH[colCount]};border-bottom:1.5px solid #000;
-                   text-align:right;font-weight:900;font-size:${fontN[colCount]};color:#b45309;
-                   background:rgba(255,255,255,.95);${br}">
-          <span style="background:#fef3c7;color:#b45309;padding:3px 10px;border-radius:999px;font-weight:900;">🏠 ${Math.round(item.binh * 100) / 100}</span>
+        <td style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.07);text-align:right;font-weight:900;font-size:14px;background:${rowBg};${br}">
+          <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(2,132,199,0.18);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);padding:3px 10px;border-radius:999px;font-weight:900;">
+            🏠 ${Math.round(item.binh * 100) / 100}
+          </span>
         </td>`;
     }).join('');
     return `<tr>${cells}</tr>`;
   }).join('');
 
-  const totalRow = colCount === 1 ? `
-    <tr style="background:#fff7ed;border-top:2px solid #000;">
-      <td colspan="2" style="padding:16px 24px;font-weight:900;font-size:16px;
-                              letter-spacing:1px;color:#000;border-right:1.5px solid #000;
-                              text-align:right;">TỔNG CỘNG TOÀN ĐỘI</td>
-      <td style="padding:16px 24px;font-weight:900;font-size:20px;color:#c2410c;text-align:right;">
-        🏠 ${Math.round(totalBinh * 100) / 100} nhà</td>
-    </tr>` : `
-    <tr style="background:#fff7ed;border-top:2px solid #000;">
-      <td colspan="${colCount * 3 - 1}" style="padding:14px 20px;font-weight:900;
-              font-size:15px;letter-spacing:1px;color:#000;border-right:1.5px solid #000;
-              text-align:right;">TỔNG CỘNG TOÀN ĐỘI</td>
-      <td style="padding:14px 20px;font-weight:900;font-size:19px;color:#c2410c;text-align:right;">
-        🏠 ${Math.round(totalBinh * 100) / 100} nhà</td>
-    </tr>`;
+  // Hàng tổng kết hiện đại
+  const totalRow = `
+    <tr style="background:linear-gradient(90deg, rgba(2,132,199,0.2), rgba(245,158,11,0.2));border-top:2px solid #0284c7;">
+      <td colspan="${colCount * 3 - 1}" style="padding:16px 20px;font-weight:900;font-size:14px;letter-spacing:1.5px;color:#ffffff;border-right:1px solid rgba(255,255,255,0.15);text-align:right;text-transform:uppercase;">
+        ⚡ TỔNG CỘNG DOANH SỐ TOÀN CREW
+      </td>
+      <td style="padding:16px 20px;font-weight:900;font-size:20px;color:#fde047;text-align:right;white-space:nowrap;">
+        🏠 ${Math.round(totalBinh * 100) / 100} nhà
+      </td>
+    </tr>
+  `;
 
   const container = $('exportArea');
   if (!container) return;
+
+  // HTML Infographic Mới Mẻ & Hiện Đại
   container.innerHTML = `
-    <div style="width:${W}px;background:#fdfcf7;padding:40px 48px;color:#000;
-                box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;border:3px solid #000;position:relative;">
+    <div id="modernReportNode" style="width:${W}px;box-sizing:border-box;background:#090d16;
+                background-image: radial-gradient(circle at 10% 10%, rgba(2, 132, 199, 0.18), transparent 45%),
+                                  radial-gradient(circle at 90% 90%, rgba(245, 158, 11, 0.15), transparent 45%);
+                padding:40px 46px;color:#ffffff;font-family:'Plus Jakarta Sans',sans-serif;
+                border:2.5px solid #0ea5e9;border-radius:24px;position:relative;box-shadow:0 25px 60px rgba(0,0,0,0.8);">
 
-      <div style="text-align:center;border-bottom:2px solid #000;padding-bottom:12px;margin-bottom:18px;">
-        <div style="font-size:13px;font-weight:800;letter-spacing:3px;color:#000;">HỆ THỐNG QUẢN LÝ NHÀ • CREW LƯỚI BÚA</div>
-        <div style="font-size:13px;font-weight:800;letter-spacing:2px;color:#000;margin-top:4px;">────────── ✦ ──────────</div>
-      </div>
+      <!-- TOP BADGE & BRAND -->
+      <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid rgba(255,255,255,0.12);padding-bottom:18px;margin-bottom:22px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#0284c7,#0ea5e9);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 0 16px rgba(14,165,233,0.5);">🏠</div>
+          <div>
+            <div style="font-size:12px;font-weight:900;letter-spacing:2px;color:#38bdf8;text-transform:uppercase;">HỆ THỐNG QUẢN LÝ NHÀ • CREW LƯỚI BÚA</div>
+            <div style="font-size:11px;color:#94a3b8;font-weight:700;margin-top:2px;">Báo Cáo Hiệu Suất Chiến Binh &amp; Doanh Số Thực Tế</div>
+          </div>
+        </div>
 
-      <div style="text-align:center;margin-bottom:20px;">
-        <div style="font-size:26px;font-weight:900;letter-spacing:1px;color:#000;text-transform:uppercase;">
-          ${escHtml(customTitle || 'BẢNG THỐNG KÊ SỐ NHÀ CHU KỲ / HÀNG TUẦN')}
-        </div>
-        <div style="font-size:14px;font-weight:700;color:#444;margin-top:6px;letter-spacing:.3px;">
-          Ngày xuất báo cáo: ${dateStr} &nbsp;•&nbsp; ${timeStr}
-        </div>
-      </div>
-
-      <!-- 4 THẺ CHỈ SỐ TỔNG QUAN RÕ RÀNG -->
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;">
-        <div style="border:2px solid #000;padding:12px;text-align:center;background:rgba(255,255,255,.95);border-radius:6px;">
-          <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#555;">TỔNG SỐ NHÀ</div>
-          <div style="font-size:22px;font-weight:900;margin-top:4px;color:#d97706;">🏠 ${Math.round(totalBinh * 100) / 100} nhà</div>
-        </div>
-        <div style="border:2px solid #000;padding:12px;text-align:center;background:rgba(255,255,255,.95);border-radius:6px;">
-          <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#555;">SỐ THÀNH VIÊN</div>
-          <div style="font-size:22px;font-weight:900;margin-top:4px;color:#0284c7;">👥 ${total} người</div>
-        </div>
-        <div style="border:2px solid #000;padding:12px;text-align:center;background:rgba(255,255,255,.95);border-radius:6px;">
-          <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#555;">TOP 1 TOÀN ĐỘI</div>
-          <div style="font-size:16px;font-weight:900;margin-top:7px;color:#b45309;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🥇 ${escHtml(periodStatsData[0]?.name || '-')}</div>
-        </div>
-        <div style="border:2px solid #000;padding:12px;text-align:center;background:rgba(255,255,255,.95);border-radius:6px;">
-          <div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#555;">TRUNG BÌNH</div>
-          <div style="font-size:20px;font-weight:900;margin-top:5px;color:#15803d;">${(totalBinh / (total || 1)).toFixed(1)} nhà/người</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(52,211,153,0.3);font-size:12px;font-weight:800;">
+            <span style="width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;"></span>Đồng Bộ Trực Tuyến
+          </span>
+          <span style="display:inline-flex;padding:5px 12px;border-radius:999px;background:#1e293b;color:#cbd5e1;font-size:11.5px;font-weight:700;border:1px solid #334155;">
+            📅 ${dateStr} • ${timeStr}
+          </span>
         </div>
       </div>
 
-      <table style="width:100%;border-collapse:collapse;border:2.5px solid #000;
-                    background:rgba(255,255,255,.95);table-layout:fixed;">
+      <!-- TIÊU ĐỀ BÁO CÁO TO RỰC RỠ -->
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="font-size:28px;font-weight:900;letter-spacing:1px;text-transform:uppercase;
+                    background:linear-gradient(180deg,#ffffff 0%,#e0f2fe 50%,#bae6fd 100%);
+                    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+                    filter:drop-shadow(0 2px 8px rgba(14,165,233,0.3));">
+          ${escHtml(customTitle || 'BẢNG THỐNG KÊ DOANH SỐ & NĂNG SUẤT CHU KỲ')}
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#94a3b8;margin-top:6px;">
+          Chu kỳ theo dõi toàn diện • Ghi nhận số nhà hoàn thành của từng thành viên
+        </div>
+      </div>
+
+      <!-- 4 THẺ KPI HIỆN ĐẠI (GLOWING GLASS METRICS) -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;">
+        
+        <div style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(217,119,6,0.06));border:1.5px solid rgba(245,158,11,0.35);padding:14px 16px;border-radius:16px;">
+          <div style="font-size:11px;font-weight:850;color:#fde047;letter-spacing:0.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+            <span>🏠</span> TỔNG SỐ NHÀ
+          </div>
+          <div style="font-size:26px;font-weight:900;color:#facc15;margin-top:4px;">
+            ${Math.round(totalBinh * 100) / 100} <span style="font-size:13px;color:#fde047;font-weight:700;">nhà</span>
+          </div>
+        </div>
+
+        <div style="background:linear-gradient(135deg,rgba(2,132,199,0.12),rgba(14,165,233,0.06));border:1.5px solid rgba(56,189,248,0.35);padding:14px 16px;border-radius:16px;">
+          <div style="font-size:11px;font-weight:850;color:#38bdf8;letter-spacing:0.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+            <span>👥</span> CHIẾN BINH CÓ NHÀ
+          </div>
+          <div style="font-size:26px;font-weight:900;color:#38bdf8;margin-top:4px;">
+            ${total} <span style="font-size:13px;color:#7dd3fc;font-weight:700;">người</span>
+          </div>
+        </div>
+
+        <div style="background:linear-gradient(135deg,rgba(234,88,12,0.12),rgba(194,65,12,0.06));border:1.5px solid rgba(251,146,60,0.35);padding:14px 16px;border-radius:16px;">
+          <div style="font-size:11px;font-weight:850;color:#fdba74;letter-spacing:0.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+            <span>👑</span> QUÁN QUÂN TOP 1
+          </div>
+          <div style="font-size:15px;font-weight:900;color:#fed7aa;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+            🥇 ${escHtml(periodStatsData[0]?.name || '-')}
+          </div>
+        </div>
+
+        <div style="background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(5,150,105,0.06));border:1.5px solid rgba(52,211,153,0.35);padding:14px 16px;border-radius:16px;">
+          <div style="font-size:11px;font-weight:850;color:#6ee7b7;letter-spacing:0.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+            <span>📈</span> NĂNG SUẤT TRUNG BÌNH
+          </div>
+          <div style="font-size:24px;font-weight:900;color:#34d399;margin-top:4px;">
+            ${(totalBinh / (total || 1)).toFixed(1)} <span style="font-size:13px;color:#a7f3d0;font-weight:700;">nhà/người</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- BẢNG DỮ LIỆU CYBER-GLASS CHUYÊN NGHIỆP -->
+      <table style="width:100%;border-collapse:collapse;border:1.5px solid rgba(255,255,255,0.15);
+                    background:rgba(15,23,42,0.6);border-radius:14px;overflow:hidden;table-layout:fixed;margin-bottom:22px;">
         <thead>
-          <tr style="background:#000;color:#fff;">${headerCells}</tr>
+          <tr style="background:#0f172a;border-bottom:2px solid #0284c7;">${headerCells}</tr>
         </thead>
         <tbody>
           ${bodyRows}
@@ -7969,82 +8441,62 @@ async function generateExportImage(customTitle) {
         </tbody>
       </table>
 
-      <!-- KHUNG THÔNG BÁO WEBSITE THEO YÊU CẦU ĐẠI CA -->
-      <div style="margin-top:20px;background:#fff8ee;border:2.5px solid #d97706;border-radius:14px;padding:18px 24px;text-align:center;box-shadow:inset 0 0 10px rgba(217,119,6,0.1);">
-        <div style="display:inline-block;background:#b45309;color:#fff;padding:4px 16px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">
-          ✦ THÔNG BÁO TỪ BAN QUẢN LÝ CREW LƯỠI BÚA ✦
+      <!-- KHUNG THÔNG BÁO WEBSITE MỚI MẺ -->
+      <div style="background:linear-gradient(135deg,rgba(2,132,199,0.15),rgba(14,165,233,0.08));border:1.5px solid #0284c7;border-radius:16px;padding:16px 20px;text-align:center;box-shadow:0 0 16px rgba(2,132,199,0.15);margin-bottom:22px;">
+        <div style="font-size:12px;font-weight:900;letter-spacing:1.5px;color:#38bdf8;text-transform:uppercase;margin-bottom:4px;">
+          ✦ HỆ THỐNG TRỰC TUYẾN CREW LƯỚI BÚA ✦
         </div>
-        <div style="font-size:17px;font-weight:900;color:#1e293b;letter-spacing:0.5px;margin-bottom:5px;">
-          🌐 WEBSITE: <span style="color:#b45309;text-decoration:underline;">https://quan-ly-seven.vercel.app/</span>
+        <div style="font-size:18px;font-weight:900;color:#ffffff;letter-spacing:0.5px;margin-bottom:4px;">
+          🌐 TRUY CẬP WEBSITE: <span style="color:#fde047;text-decoration:underline;">https://quan-ly-seven.vercel.app/</span>
         </div>
-        <div style="font-size:19px;font-weight:900;color:#b45309;letter-spacing:0.5px;margin-bottom:5px;">
-          👉 AE TỰ VÀO CHECK NHÀ MÌNH LẤY ĐƯỢC MẤY CĂN NHÉ .
-        </div>
-        <div style="font-size:12px;font-weight:700;color:#78350f;letter-spacing:0.3px;">
-          ⚡ Hệ thống tự động đồng bộ thời gian thực 24/7 • Minh bạch &amp; Chính xác tuyệt đối
+        <div style="font-size:16px;font-weight:900;color:#38bdf8;letter-spacing:0.3px;">
+          👉 AE TỰ VÀO CHECK XEM NHÀ MÌNH LẤY ĐƯỢC MẤY CĂN NHÉ!
         </div>
       </div>
 
-      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;">
-        <div style="font-size:12px;font-weight:700;color:#555;font-style:italic;">
-          * Bản kê khai số nhà chính thức được trích xuất từ cơ sở dữ liệu hệ thống.
+      <!-- CHỮ KÝ VÀ CON DẤU XÁC NHẬN -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+        <div style="font-size:12px;font-weight:700;color:#64748b;font-style:italic;">
+          * Bản thống kê điện tử chính thức được trích xuất trực tiếp từ máy chủ Firebase.
         </div>
-        <div style="position:relative;width:340px;height:170px;">
-
-          <div style="position:absolute;left:0;top:0;text-align:center;width:210px;">
-            <div style="font-size:13.5px;font-weight:800;color:#000;letter-spacing:1px;">QUẢN LÝ</div>
-            <div style="font-size:11px;font-weight:600;color:#000;font-style:italic;margin-top:2px;">(Ký, ghi rõ họ tên)</div>
-            <div style="font-family:'Great Vibes',cursive;font-size:46px;font-weight:400;color:#000;line-height:1;margin-top:4px;">
+        <div style="position:relative;width:340px;height:140px;">
+          <div style="position:absolute;left:0;top:0;text-align:center;width:200px;">
+            <div style="font-size:12.5px;font-weight:800;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">QUẢN LÝ / THỦ LĨNH</div>
+            <div style="font-family:'Great Vibes',cursive;font-size:42px;font-weight:400;color:#facc15;line-height:1;margin-top:2px;">
               Trí
             </div>
-            <div style="font-family:'Dancing Script','Brush Script MT',cursive;font-size:28px;font-weight:700;color:#000;line-height:1.1;margin-top:4px;">
+            <div style="font-size:16px;font-weight:900;color:#ffffff;line-height:1.1;margin-top:2px;">
               Nguyễn Ngọc Trí
             </div>
           </div>
 
+          <!-- DẤU ĐỎ CHỨNG NHẬN SVG -->
           <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"
-               style="position:absolute;right:0;top:10px;width:140px;height:140px;
-                      transform:rotate(-12deg);opacity:0.88;">
+               style="position:absolute;right:0;top:0;width:130px;height:130px;transform:rotate(-10deg);opacity:0.92;">
+            <circle cx="80" cy="80" r="76" fill="none" stroke="#ef4444" stroke-width="3"/>
+            <circle cx="80" cy="80" r="66" fill="none" stroke="#ef4444" stroke-width="1"/>
+            <circle cx="80" cy="80" r="40" fill="none" stroke="#ef4444" stroke-width="1"/>
+            <text fill="#ef4444" font-size="10" font-weight="900" font-family="'Plus Jakarta Sans',sans-serif" letter-spacing="1.2">
+              <textPath href="#stampArc" startOffset="50%" text-anchor="middle">CREW LƯỚI BÚA</textPath>
+            </text>
             <defs>
-              <path id="stampTopArc" d="M 22,80 A 58,58 0 0,1 138,80" fill="none"/>
-              <path id="stampBotArc" d="M 24,80 A 56,56 0 0,0 136,80" fill="none"/>
+              <path id="stampArc" d="M 22,80 A 58,58 0 0,1 138,80" fill="none"/>
             </defs>
-            <circle cx="80" cy="80" r="76" fill="none" stroke="#c81e1e" stroke-width="3.5"/>
-            <circle cx="80" cy="80" r="66" fill="none" stroke="#c81e1e" stroke-width="1"/>
-            <circle cx="80" cy="80" r="40" fill="none" stroke="#c81e1e" stroke-width="1"/>
-            <text fill="#c81e1e" font-size="10.5" font-weight="bold" font-family="Times New Roman, serif" letter-spacing="1.4">
-              <textPath href="#stampTopArc" startOffset="50%" text-anchor="middle">HỆ THỐNG QUẢN LÝ NHÀ</textPath>
-            </text>
-            <text fill="#c81e1e" font-size="10" font-weight="bold" font-family="Times New Roman, serif" letter-spacing="1.4">
-              <textPath href="#stampBotArc" startOffset="50%" text-anchor="middle">★ CHÍNH THỨC ★</textPath>
-            </text>
-            <polygon points="80,50 83.8,63 97,63 86.5,71 90.2,84 80,76 69.8,84 73.5,71 63,63 76.2,63"
-                     fill="#d4a017" stroke="#d4a017" stroke-width="0.5" stroke-linejoin="round"/>
-            <g fill="#c81e1e" transform="translate(80,110)">
-              <path d="M -13,-1 C -15,-7 -11,-12 -3,-13 C 3,-14 8,-11 10,-6
-                       C 4,-9 -2,-8 -5,-4 C -8,0 -6,5 -2,7 C 2,9 7,8 10,5
-                       C 6,10 -1,12 -7,8 C -12,5 -14,3 -13,-1 Z"/>
-              <rect x="-1" y="-14" width="2.8" height="18" transform="rotate(35 -0.5 -5)"/>
-              <rect x="-9.5" y="-16.5" width="13" height="5" transform="rotate(35 -3 -14)"/>
-            </g>
-            <circle cx="80" cy="8" r="2.2" fill="#c81e1e"/>
+            <polygon points="80,52 83.8,64 97,64 86.5,72 90.2,85 80,77 69.8,85 73.5,72 63,64 76.2,64" fill="#fbbf24"/>
+            <text x="80" y="112" fill="#ef4444" font-size="11" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif">★ CHÍNH THỨC ★</text>
           </svg>
-
         </div>
       </div>
 
-      <div style="text-align:center;margin-top:18px;padding-top:12px;border-top:2px solid #000;
-                  font-size:11px;font-weight:700;color:#000;letter-spacing:1px;">
-        ── BẢN THỐNG KÊ CHÍNH THỨC ──
-      </div>
-
-    </div>`;
+    </div>
+  `;
 
   try {
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
-    const canvas = await html2canvas(container.firstElementChild, {
-      scale: 3,
-      backgroundColor: '#fdfcf7',
+    const reportNode = container.querySelector('#modernReportNode');
+    const canvas = await html2canvas(reportNode, {
+      scale: 2.5,
+      backgroundColor: '#090d16',
       logging: false,
       useCORS: true
     });
@@ -8054,11 +8506,24 @@ async function generateExportImage(customTitle) {
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
     overlay.innerHTML = `
-      <div class="modal-box" style="max-width:${W + 40}px;">
-        <h3>📸 Báo Cáo (${escHtml(customTitle || 'Thống Kê')} — ${total} người)</h3>
-        <img src="${dataUrl}" alt="Thống kê" style="border-radius:12px;border:1px solid #e2e8f0;width:100%;">
+      <div class="modal-box" style="max-width:${Math.min(W + 40, 1100)}px;max-height:92vh;overflow-y:auto;">
+        <div class="modal-header-fancy">
+          <div class="modal-title-group">
+            <div class="modal-icon-badge">📊</div>
+            <div>
+              <h3>Báo Cáo Doanh Số Hiện Đại (${total} người)</h3>
+              <span style="font-size:12px;color:var(--slate-500);font-weight:600;">Mẫu Infographic Cyber-Luxury sắc nét</span>
+            </div>
+          </div>
+          <button class="modal-close-btn" id="closeModernModal" title="Đóng">✕</button>
+        </div>
+
+        <div style="margin:16px 0;text-align:center;">
+          <img src="${dataUrl}" alt="Thống kê" style="border-radius:14px;border:1.5px solid #0ea5e9;width:100%;box-shadow:0 8px 30px rgba(0,0,0,0.3);">
+        </div>
+
         <div class="modal-actions" style="flex-wrap:wrap;gap:8px;justify-content:flex-end;">
-          <button class="secondary" id="closeModal">Đóng</button>
+          <button class="secondary" id="closeModernModalBtn">Đóng</button>
           <button class="green" id="downloadImg">⬇️ Tải Xuống Ảnh PNG</button>
           ${isAdmin() ? `
           <button type="button" class="gold" id="sendDiscordWeeklyHouseBtn" style="background:#5865F2;color:#fff;border-color:#4752C4;font-weight:800;display:inline-flex;align-items:center;gap:6px;">
@@ -8069,12 +8534,18 @@ async function generateExportImage(customTitle) {
       </div>`;
     document.body.appendChild(overlay);
 
-    overlay.querySelector('#closeModal').onclick = () => overlay.remove();
+    const closeMod = () => overlay.remove();
+    overlay.querySelector('#closeModernModal').onclick = closeMod;
+    overlay.querySelector('#closeModernModalBtn').onclick = closeMod;
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeMod();
+    });
+
     overlay.querySelector('#downloadImg').onclick = () => {
       const a = document.createElement('a');
       a.href = dataUrl;
       const safeTitle = (customTitle || 'bao-cao').toLowerCase().replace(/[^a-z0-9]/g, '-');
-      a.download = `thong-ke-${safeTitle}-${Date.now()}.png`;
+      a.download = `thong-ke-doanh-so-${safeTitle}-${Date.now()}.png`;
       a.click();
     };
 
@@ -8086,34 +8557,31 @@ async function generateExportImage(customTitle) {
         }
 
         const btn = overlay.querySelector('#sendDiscordWeeklyHouseBtn');
-        const originalText = btn.innerHTML;
         btn.innerHTML = '<span>⏳ Đang gửi...</span>';
         btn.disabled = true;
 
         const res = await (window.sendDiscordReport || sendDiscordReport)({
           type: 'weekly',
           targetChannelId: '1561985096943276042',
-          title: customTitle || 'BẢNG THỐNG KÊ SỐ NHÀ CHU KỲ / HÀNG TUẦN',
-          stats: { totalHouses: Math.round(totalBinh * 100) / 100, memberCount: total },
-          imageBase64: dataUrl
+          title: `📊 BÁO CÁO DOANH SỐ SỐ NHÀ CHU KỲ (CREW LƯỚI BÚA)`,
+          description: `Tổng số nhà: **${Math.round(totalBinh * 100) / 100}** nhà | Số chiến binh: **${total}** người`,
+          imageDataUrl: dataUrl
         });
 
-        btn.innerHTML = originalText;
         btn.disabled = false;
+        btn.innerHTML = '<span>🚀 Gửi Discord</span>';
 
         if (res.success) {
-          alert('✅ ĐÃ GỬI BÁO CÁO NHÀ HÀNG TUẦN VỀ DISCORD THÀNH CÔNG!');
+          alert('✅ Đã gửi ảnh báo cáo doanh số hiện đại lên Discord thành công!');
         } else {
-          if (typeof showDiscordBotHelpModal === 'function') {
-            showDiscordBotHelpModal(res.message, res.inviteUrl);
-          } else {
-            alert('❌ ' + res.message);
-          }
+          alert('❌ ' + res.message);
         }
       };
     }
   } catch (err) {
     alert('❌ Lỗi tạo ảnh: ' + err.message);
+  } finally {
+    if (container) container.innerHTML = '';
   }
 }
 window.generateExportImage = generateExportImage;
