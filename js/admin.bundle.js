@@ -7783,7 +7783,7 @@ function openExportModal() {
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.innerHTML = `
-    <div class="modal-box" style="max-width:540px;padding:24px;background:#ffffff;border:1.5px solid #e2e8f0;box-shadow:0 20px 50px rgba(0,0,0,0.12);">
+    <div class="modal-box" style="max-width:540px;padding:24px;background:#ffffff;border:1.5px solid #e2e8f0;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,0.12);">
       
       <!-- FANCY HEADER TRẮNG SÁNG -->
       <div class="modal-header-fancy" style="margin-bottom:18px;">
@@ -7798,7 +7798,7 @@ function openExportModal() {
       </div>
 
       <!-- TABS CHỌN MẪU TRẮNG SÁNG -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
         <button type="button" id="tabExportCert" class="btn-3d-tab" style="padding:14px;border-radius:16px;border:2px solid #f59e0b;background:linear-gradient(180deg,#fffbeb 0%,#fef3c7 100%);cursor:pointer;text-align:left;transition:all 0.2s;box-shadow:0 4px 12px rgba(245,158,11,0.15);">
           <div style="font-size:13.5px;font-weight:900;color:#b45309;display:flex;align-items:center;gap:6px;">
             <span>🏆</span> Bằng Vinh Danh
@@ -7816,18 +7816,13 @@ function openExportModal() {
 
       <!-- PANEL 1: BẰNG VINH DANH HOÀNG GIA TRẮNG SÁNG (WHITE & GOLD CERTIFICATE) -->
       <div id="panelExportCert">
-        <div style="background:linear-gradient(135deg,#ffffff 0%,#fffdf7 100%);border:2px solid #fcd34d;border-radius:18px;padding:18px;margin-bottom:18px;box-shadow:0 6px 18px rgba(245,158,11,0.08);">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-            <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#d97706);display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid #ffffff;box-shadow:0 4px 12px rgba(245,158,11,0.35);">🥇</div>
-            <div>
-              <div style="font-size:11px;font-weight:900;color:#d97706;letter-spacing:1px;text-transform:uppercase;">BẢNG VINH DANH QUÁN QUÂN CREW</div>
-              <div style="font-size:15px;font-weight:900;color:#0f172a;letter-spacing:-0.2px;">Mẫu Bằng Khen Hoàng Gia Dát Vàng (Nền Trắng)</div>
-            </div>
-          </div>
-
-          <div class="form-group" style="margin-bottom:14px;">
-            <label style="color:#92400e;font-size:12px;font-weight:850;">Chọn Chiến Binh Trao Bằng Vinh Danh *</label>
-            <select id="certRecipientSelect" style="background:#ffffff;color:#0f172a;border:1.5px solid #f59e0b;font-size:13.5px;font-weight:750;">
+        <div style="background:#ffffff;border:1.5px solid #e2e8f0;border-radius:18px;padding:18px;margin-bottom:20px;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
+          
+          <div class="form-group" style="margin-bottom:16px;">
+            <label style="color:#0f172a;font-size:12.5px;font-weight:850;margin-bottom:8px;display:block;">
+              👑 Chọn Chiến Binh Vinh Danh:
+            </label>
+            <select id="certRecipientSelect" style="width:100%;padding:12px 14px;border-radius:14px;border:1.5px solid #cbd5e1;background:#ffffff;color:#0f172a;font-size:13.5px;font-weight:800;outline:none;box-shadow:0 2px 6px rgba(0,0,0,0.04);cursor:pointer;transition:all 0.2s;">
               ${sortedList.map((u, i) => `
                 <option value="${u.id}" ${i === 0 ? 'selected' : ''}>
                   ${i === 0 ? '🥇 [TOP 1 QUÁN QUÂN] ' : (i === 1 ? '🥈 [TOP 2] ' : (i === 2 ? '🥉 [TOP 3] ' : `#${i+1} `))} ${escHtml(u.name)} (${u.binh} nhà)
@@ -7836,15 +7831,16 @@ function openExportModal() {
             </select>
           </div>
 
-          <div class="form-group" style="margin-bottom:14px;">
-            <label style="color:#92400e;font-size:12px;font-weight:850;">Tiêu Đề Bằng Khen</label>
-            <input id="certTitleInput" value="CERTIFICATE OF HONOR" style="background:#ffffff;color:#b45309;border:1.5px solid #f59e0b;font-size:13.5px;font-weight:850;">
+          <!-- THẺ PREVIEW CHIẾN BINH VINH DANH VIP (T1 NEUMORPHIC-GLASS) -->
+          <div id="certVipBadgePreview" style="background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border:1.5px solid #fde68a;border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 14px rgba(245,158,11,0.12);">
+            <div id="certVipRankIcon" style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#d97706);display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid #ffffff;box-shadow:0 4px 10px rgba(245,158,11,0.3);flex-shrink:0;">🥇</div>
+            <div style="flex:1;min-width:0;">
+              <div id="certVipTitleTag" style="font-size:11px;font-weight:900;color:#d97706;letter-spacing:1px;text-transform:uppercase;">QUÁN QUÂN XUẤT SẮC NHẤT CREW</div>
+              <div id="certVipName" style="font-size:17px;font-weight:900;color:#0f172a;margin:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(top1User.name)}</div>
+              <div id="certVipHouses" style="font-size:12.5px;font-weight:750;color:#92400e;">Thành tích: <b style="color:#b45309;font-size:14px;">${top1User.binh} nhà</b> • Được trao tặng Bằng Khen Hoàng Gia Dát Vàng</div>
+            </div>
           </div>
 
-          <div class="form-group" style="margin-bottom:0;">
-            <label style="color:#92400e;font-size:12px;font-weight:850;">Lời Tuyên Dương &amp; Khen Tặng</label>
-            <textarea id="certCitationInput" rows="2" style="background:#ffffff;color:#334155;border:1.5px solid #f59e0b;font-size:12.5px;font-weight:650;line-height:1.4;">Đã xuất sắc lập kỷ lục dẫn đầu toàn bộ hệ thống Crew Lưới Búa. Tôn vinh bản lĩnh kiên cường, sự cống hiến vượt bậc và tinh thần chiến binh quả cảm!</textarea>
-          </div>
         </div>
 
         <div class="modal-actions" style="margin-top:0;">
@@ -7857,21 +7853,35 @@ function openExportModal() {
 
       <!-- PANEL 2: BÁO CÁO THỐNG KÊ DOANH SỐ TRẮNG SÁNG T1 PRO -->
       <div id="panelExportStats" style="display:none;">
-        <div class="form-group" style="margin-bottom:14px;">
-          <label style="font-weight:850;">Tiêu Đề Báo Cáo *</label>
-          <input id="exportModalTitle" value="BẢNG THỐNG KÊ DOANH SỐ &amp; NĂNG SUẤT CHU KỲ" style="font-weight:800;border:1.5px solid #0284c7;">
-        </div>
+        <div style="background:#ffffff;border:1.5px solid #e2e8f0;border-radius:18px;padding:18px;margin-bottom:20px;box-shadow:0 4px 16px rgba(0,0,0,0.04);">
+          <div class="form-group" style="margin-bottom:16px;">
+            <label style="color:#0f172a;font-size:12.5px;font-weight:850;margin-bottom:8px;display:block;">
+              📊 Tiêu Đề Báo Cáo Thống Kê:
+            </label>
+            <input id="exportModalTitle" value="BẢNG THỐNG KÊ DOANH SỐ &amp; NĂNG SUẤT CHU KỲ" 
+                   style="width:100%;padding:12px 14px;border-radius:14px;border:1.5px solid #cbd5e1;background:#ffffff;color:#0f172a;font-size:13.5px;font-weight:800;outline:none;box-shadow:0 2px 6px rgba(0,0,0,0.04);transition:all 0.2s;">
+          </div>
 
-        <div style="background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);border:1.5px solid #bae6fd;padding:16px;border-radius:18px;margin-bottom:18px;box-shadow:0 4px 14px rgba(2,132,199,0.08);">
-          <div style="font-size:13px;font-weight:900;color:#0369a1;margin-bottom:6px;">📊 Dữ liệu báo cáo chuẩn bị xuất:</div>
-          <div style="font-size:12.5px;color:#0284c7;font-weight:750;">• Quân số ghi nhận: <b>${sortedList.length} chiến binh</b></div>
-          <div style="font-size:12.5px;color:#0284c7;font-weight:750;">• Tổng số nhà toàn đội: <b style="color:#b45309;font-size:14.5px;">${Math.round(totalBinh * 100) / 100} nhà</b></div>
-          <div style="font-size:12.5px;color:#0284c7;font-weight:750;">• Quán Quân Dẫn Đầu: <b>🥇 ${escHtml(top1User.name)} (${top1User.binh} nhà)</b></div>
+          <div style="background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);border:1.5px solid #bae6fd;padding:16px;border-radius:16px;box-shadow:0 4px 14px rgba(2,132,199,0.08);">
+            <div style="font-size:13px;font-weight:900;color:#0369a1;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+              <span>📈</span> Dữ liệu báo cáo chuẩn bị xuất:
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div style="background:#ffffff;padding:10px 12px;border-radius:12px;border:1px solid #bae6fd;">
+                <div style="font-size:11px;color:#64748b;font-weight:700;">Quân số có nhà:</div>
+                <div style="font-size:15px;color:#0284c7;font-weight:900;">${sortedList.length} chiến binh</div>
+              </div>
+              <div style="background:#ffffff;padding:10px 12px;border-radius:12px;border:1px solid #bae6fd;">
+                <div style="font-size:11px;color:#64748b;font-weight:700;">Tổng số nhà:</div>
+                <div style="font-size:15px;color:#b45309;font-weight:900;">${Math.round(totalBinh * 100) / 100} nhà</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="modal-actions" style="margin-top:0;">
           <button type="button" class="secondary" id="cancelExportStats">Huỷ bỏ</button>
-          <button type="button" class="green" id="btnRunExportStats" style="background:linear-gradient(135deg,#0284c7,#0ea5e9);border:none;box-shadow:0 4px 14px rgba(2,132,199,0.35);">
+          <button type="button" class="green" id="btnRunExportStats" style="background:linear-gradient(135deg,#0284c7,#0ea5e9);border:none;box-shadow:0 4px 14px rgba(2,132,199,0.35);font-weight:900;">
             📸 Xuất Báo Cáo Trắng Sáng (HD)
           </button>
         </div>
@@ -7916,6 +7926,23 @@ function openExportModal() {
     panelCert.style.display = 'none';
   };
 
+  // Cập nhật thẻ VIP preview theo chiến binh được chọn
+  const recipientSelect = overlay.querySelector('#certRecipientSelect');
+  const updateVipPreview = (selectedId) => {
+    const idx = sortedList.findIndex(u => u.id === selectedId);
+    const u = sortedList[idx] || top1User;
+    const rankIcon = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : '🎖️'));
+    const rankTitle = idx === 0 ? 'QUÁN QUÂN XUẤT SẮC NHẤT CREW' : (idx === 1 ? 'Á QUÂN DẪN ĐẦU HỆ THỐNG' : (idx === 2 ? 'TOP 3 CHIẾN BINH ƯU TÚ' : `CHIẾN BINH VINH DANH HẠNG #${idx+1}`));
+    const vipPreview = overlay.querySelector('#certVipBadgePreview');
+    if (vipPreview) {
+      overlay.querySelector('#certVipRankIcon').textContent = rankIcon;
+      overlay.querySelector('#certVipTitleTag').textContent = rankTitle;
+      overlay.querySelector('#certVipName').textContent = u.name;
+      overlay.querySelector('#certVipHouses').innerHTML = `Thành tích: <b style="color:#b45309;font-size:14px;">${u.binh} nhà</b> • Được trao tặng Bằng Khen Hoàng Gia Dát Vàng`;
+    }
+  };
+  recipientSelect.onchange = (e) => updateVipPreview(e.target.value);
+
   const closeModal = () => overlay.remove();
   overlay.querySelector('#closeExportModal').onclick = closeModal;
   overlay.querySelector('#cancelExportCert').onclick = closeModal;
@@ -7925,11 +7952,9 @@ function openExportModal() {
   });
 
   overlay.querySelector('#btnRunExportCert').onclick = () => {
-    const selId = overlay.querySelector('#certRecipientSelect').value;
-    const certTitle = overlay.querySelector('#certTitleInput').value.trim();
-    const certCitation = overlay.querySelector('#certCitationInput').value.trim();
+    const selId = recipientSelect.value;
     overlay.remove();
-    generateCertificateImage(selId, certTitle, certCitation);
+    generateCertificateImage(selId);
   };
 
   overlay.querySelector('#btnRunExportStats').onclick = () => {
@@ -7979,6 +8004,9 @@ async function generateCertificateImage(targetUserId, customTitle, customCitatio
     </svg>
   `;
 
+  const finalTitle = customTitle || 'CERTIFICATE OF HONOR';
+  const finalCitation = customCitation || 'Đã xuất sắc lập kỷ lục dẫn đầu toàn bộ hệ thống Crew Lưới Búa. Tôn vinh bản lĩnh kiên cường, sự cống hiến vượt bậc và tinh thần chiến binh quả cảm đưa toàn đội lên đỉnh vinh quang!';
+
   // HTML Khung Bằng Khen Hoàng Gia TRẮNG SÁNG & VÀNG KIM
   container.innerHTML = `
     <div id="goldCertNode" style="width:1360px;height:920px;box-sizing:border-box;position:relative;background:#ffffff;
@@ -8008,7 +8036,7 @@ async function generateCertificateImage(targetUserId, customTitle, customCitatio
                       background:linear-gradient(180deg, #d97706 0%, #b45309 60%, #78350f 100%);
                       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
                       filter:drop-shadow(0 2px 4px rgba(217,119,6,0.25));">
-            ${escHtml(customTitle || 'CERTIFICATE')}
+            ${escHtml(finalTitle)}
           </div>
           <div style="font-family:'Great Vibes', 'Playfair Display', cursive, serif;font-size:38px;color:#b45309;
                       letter-spacing:3px;font-weight:400;margin-top:2px;">
@@ -8053,7 +8081,7 @@ async function generateCertificateImage(targetUserId, customTitle, customCitatio
 
           <!-- LỜI TUYÊN DƯƠNG TRANG TRỌNG -->
           <div style="max-width:880px;margin:0 auto;font-size:15.5px;color:#334155;line-height:1.6;font-style:italic;">
-            "${escHtml(customCitation || 'Đã xuất sắc lập kỷ lục dẫn đầu toàn bộ hệ thống Crew Lưới Búa. Tôn vinh bản lĩnh kiên cường, sự cống hiến vượt bậc và tinh thần chiến binh quả cảm đưa toàn đội lên đỉnh vinh quang!')}"
+            "${escHtml(finalCitation)}"
           </div>
         </div>
 
@@ -8143,7 +8171,7 @@ async function generateCertificateImage(targetUserId, customTitle, customCitatio
     const previewModal = document.createElement('div');
     previewModal.className = 'modal-overlay';
     previewModal.innerHTML = `
-      <div class="modal-box" style="max-width:960px;max-height:92vh;overflow-y:auto;background:#ffffff;border:2px solid #f59e0b;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
+      <div class="modal-box" style="max-width:960px;max-height:92vh;overflow-y:auto;background:#ffffff;border:1.5px solid #f59e0b;border-radius:22px;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
         
         <div class="modal-header-fancy" style="border-bottom:1.5px solid #e2e8f0;padding-bottom:12px;">
           <div class="modal-title-group">
@@ -8157,7 +8185,7 @@ async function generateCertificateImage(targetUserId, customTitle, customCitatio
         </div>
 
         <div style="margin:16px 0;text-align:center;">
-          <img src="${dataUrl}" alt="Bằng Vinh Danh" style="border-radius:14px;border:2px solid #f59e0b;width:100%;box-shadow:0 8px 30px rgba(245,158,11,0.15);">
+          <img src="${dataUrl}" alt="Bằng Vinh Danh" style="border-radius:14px;border:1.5px solid #f59e0b;width:100%;box-shadow:0 8px 30px rgba(245,158,11,0.15);">
         </div>
 
         <div class="modal-actions" style="flex-wrap:wrap;gap:10px;justify-content:flex-end;">
@@ -8491,7 +8519,7 @@ async function generateExportImage(customTitle) {
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
     overlay.innerHTML = `
-      <div class="modal-box" style="max-width:${Math.min(W + 40, 1100)}px;max-height:92vh;overflow-y:auto;background:#ffffff;border:1.5px solid #0284c7;">
+      <div class="modal-box" style="max-width:${Math.min(W + 40, 1100)}px;max-height:92vh;overflow-y:auto;background:#ffffff;border:1.5px solid #0284c7;border-radius:22px;">
         <div class="modal-header-fancy">
           <div class="modal-title-group">
             <div class="modal-icon-badge" style="background:#0284c7;color:#fff;">📊</div>
