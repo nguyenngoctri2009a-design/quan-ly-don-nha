@@ -8402,7 +8402,7 @@ window.generateCertificateImage = generateCertificateImage;
 
 /* ==========================================================================
    HÀM XUẤT ẢNH BÁO CÁO THỐNG KÊ DOANH SỐ TRẮNG SÁNG TINH TẾ (T1 PRO BRIGHT INFOGRAPHIC)
-   Tone màu: Trắng sáng tinh khôi, Cyan & Gold cao cấp, sắc nét 100%
+   Tone màu: Trắng sáng tinh khôi, Cyan & Gold cao cấp, sắc nét 100% không lệch
    ========================================================================== */
 async function generateExportImage(customTitle) {
   const totals = {};
@@ -8441,17 +8441,17 @@ async function generateExportImage(customTitle) {
     columns.push(periodStatsData.slice(c * rowsPerCol, (c + 1) * rowsPerCol));
   }
 
-  const widths = { 1: 1050, 2: 1180, 3: 1320, 4: 1480 };
+  const widths = { 1: 1050, 2: 1240, 3: 1380, 4: 1520 };
   const W = widths[colCount];
 
-  // Header bảng trắng sáng
+  // Header bảng trắng sáng căn chỉnh chuẩn xác từng cột
   const headerCells = Array.from({ length: colCount }).map((_, c) => {
     const last = c === colCount - 1;
-    const br = last ? '' : 'border-right:1.5px solid #e2e8f0;';
+    const br = last ? '' : 'border-right:2px solid #bae6fd;';
     return `
-      <th style="padding:14px 12px;font-weight:900;font-size:12px;letter-spacing:1px;color:#475569;border-right:1px solid #e2e8f0;width:55px;text-align:center;">HẠNG</th>
-      <th style="padding:14px 12px;font-weight:900;font-size:12px;letter-spacing:1px;color:#475569;border-right:1px solid #e2e8f0;text-align:left;">CHIẾN BINH</th>
-      <th style="padding:14px 12px;font-weight:900;font-size:12px;letter-spacing:1px;color:#475569;${br}text-align:right;width:120px;">SỐ NHÀ</th>`;
+      <th style="padding:14px 10px;font-weight:900;font-size:12px;letter-spacing:1px;color:#0284c7;border-right:1px solid #e2e8f0;width:65px;text-align:center;">HẠNG</th>
+      <th style="padding:14px 16px;font-weight:900;font-size:12px;letter-spacing:1px;color:#0284c7;border-right:1px solid #e2e8f0;text-align:left;">CHIẾN BINH</th>
+      <th style="padding:14px 16px;font-weight:900;font-size:12px;letter-spacing:1px;color:#0284c7;${br}text-align:right;width:130px;">SỐ NHÀ</th>`;
   }).join('');
 
   // Hàng dữ liệu trắng sáng
@@ -8459,7 +8459,7 @@ async function generateExportImage(customTitle) {
     const cells = Array.from({ length: colCount }).map((_, c) => {
       const item = columns[c][r];
       const last = c === colCount - 1;
-      const br = last ? '' : 'border-right:1.5px solid #e2e8f0;';
+      const br = last ? '' : 'border-right:2px solid #bae6fd;';
       if (!item) return `<td colspan="3" style="border-bottom:1px solid #f1f5f9;background:#ffffff;${br}"></td>`;
       const idx = c * rowsPerCol + r + 1;
       
@@ -8482,13 +8482,13 @@ async function generateExportImage(customTitle) {
       }
 
       return `
-        <td style="padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:center;border-right:1px solid #e2e8f0;background:${rowBg};">
+        <td style="width:65px;padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:center;border-right:1px solid #e2e8f0;background:${rowBg};">
           ${rankPill}
         </td>
-        <td style="padding:10px 12px;border-bottom:1px solid #e2e8f0;border-right:1px solid #e2e8f0;font-weight:800;font-size:13.5px;color:${nameColor};background:${rowBg};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+        <td style="padding:10px 16px;border-bottom:1px solid #e2e8f0;border-right:1px solid #e2e8f0;font-weight:800;font-size:14px;color:${nameColor};background:${rowBg};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
           ${escHtml(item.name)}
         </td>
-        <td style="padding:10px 12px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:900;font-size:14px;background:${rowBg};${br}">
+        <td style="width:130px;padding:10px 16px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:900;font-size:14px;background:${rowBg};${br}">
           <span style="display:inline-flex;align-items:center;gap:4px;background:#f0f9ff;color:#0284c7;border:1px solid #bae6fd;padding:3px 10px;border-radius:999px;font-weight:900;">
             🏠 ${Math.round(item.binh * 100) / 100}
           </span>
@@ -8512,13 +8512,24 @@ async function generateExportImage(customTitle) {
   const container = $('exportArea');
   if (!container) return;
 
+  // ĐẶT VỊ TRÍ CHUẨN XÁC KHÔNG BỊ LỆCH TỌA ĐỘ
+  container.style.position = 'fixed';
+  container.style.left = '0';
+  container.style.top = '0';
+  container.style.width = '1600px';
+  container.style.height = 'auto';
+  container.style.opacity = '0';
+  container.style.pointerEvents = 'none';
+  container.style.zIndex = '-9999';
+  container.style.overflow = 'visible';
+
   // HTML Infographic TRẮNG SÁNG TINH TẾ (T1 BRIGHT THEME)
   container.innerHTML = `
     <div id="modernReportNode" style="width:${W}px;box-sizing:border-box;background:#ffffff;
                 background-image: radial-gradient(#cbd5e1 0.8px, transparent 0.8px);
                 background-size: 24px 24px;
                 padding:40px 46px;color:#0f172a;font-family:'Plus Jakarta Sans',sans-serif;
-                border:2.5px solid #0284c7;border-radius:24px;position:relative;box-shadow:0 20px 50px rgba(0,0,0,0.08);">
+                border:2.5px solid #0284c7;border-radius:24px;position:relative;margin:0 auto;box-shadow:0 20px 50px rgba(0,0,0,0.08);">
 
       <!-- TOP BRAND HEADER -->
       <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #e2e8f0;padding-bottom:18px;margin-bottom:22px;">
@@ -8592,8 +8603,8 @@ async function generateExportImage(customTitle) {
       </div>
 
       <!-- BẢNG DỮ LIỆU PRO TRẮNG SÁNG -->
-      <table style="width:100%;border-collapse:collapse;border:1.5px solid #e2e8f0;
-                    background:#ffffff;border-radius:16px;overflow:hidden;table-layout:fixed;margin-bottom:22px;box-shadow:0 4px 16px rgba(0,0,0,0.03);">
+      <table style="width:100%;border-collapse:collapse;border:2px solid #bae6fd;
+                    background:#ffffff;border-radius:18px;overflow:hidden;margin-bottom:24px;box-shadow:0 6px 20px rgba(2,132,199,0.06);">
         <thead>
           <tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">${headerCells}</tr>
         </thead>
@@ -8657,10 +8668,14 @@ async function generateExportImage(customTitle) {
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
     const reportNode = container.querySelector('#modernReportNode');
     const canvas = await html2canvas(reportNode, {
-      scale: 2.5,
+      scale: 2.25,
       backgroundColor: '#ffffff',
       logging: false,
-      useCORS: true
+      useCORS: true,
+      scrollX: 0,
+      scrollY: 0,
+      x: 0,
+      y: 0
     });
     const dataUrl = canvas.toDataURL('image/png');
     if (container) container.innerHTML = '';
@@ -8668,20 +8683,20 @@ async function generateExportImage(customTitle) {
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
     overlay.innerHTML = `
-      <div class="modal-box" style="max-width:${Math.min(W + 40, 1100)}px;max-height:92vh;overflow-y:auto;background:#ffffff;border:1.5px solid #0284c7;border-radius:22px;">
+      <div class="modal-box" style="max-width:1150px;max-height:92vh;overflow-y:auto;background:#ffffff;border:1.5px solid #0284c7;border-radius:24px;padding:24px;box-shadow:0 25px 70px rgba(2,132,199,0.18);">
         <div class="modal-header-fancy">
           <div class="modal-title-group">
             <div class="modal-icon-badge" style="background:#0284c7;color:#fff;">📊</div>
             <div>
               <h3>Báo Cáo Doanh Số Trắng Sáng (${total} người)</h3>
-              <span style="font-size:12px;color:#64748b;font-weight:600;">Mẫu Infographic T1 Pro tinh tế &amp; sắc nét</span>
+              <span style="font-size:12px;color:#64748b;font-weight:600;">Mẫu Infographic T1 Pro chuẩn xác 100% không lệch</span>
             </div>
           </div>
           <button class="modal-close-btn" id="closeModernModal" title="Đóng">✕</button>
         </div>
 
-        <div style="margin:16px 0;text-align:center;">
-          <img src="${dataUrl}" alt="Thống kê" style="border-radius:14px;border:1.5px solid #0284c7;width:100%;box-shadow:0 8px 30px rgba(2,132,199,0.15);">
+        <div style="margin:16px 0;text-align:center;width:100%;overflow-x:auto;">
+          <img src="${dataUrl}" alt="Thống kê" style="border-radius:14px;border:1.5px solid #0284c7;max-width:100%;height:auto;display:block;margin:0 auto;box-shadow:0 8px 30px rgba(2,132,199,0.15);">
         </div>
 
         <div class="modal-actions" style="flex-wrap:wrap;gap:8px;justify-content:flex-end;">
