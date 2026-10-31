@@ -3795,24 +3795,13 @@ function editMember(id) {
         <!-- Add / Remove Scar Controls -->
         <div style="display:flex;flex-direction:column;gap:8px;">
           <div style="display:flex;gap:8px;">
-            <input type="text" id="scarReasonInput" placeholder="Nhập lý do đánh sẹo (bắt buộc khi +sẹo)..." style="flex:1;font-size:12px;padding:8px 12px;border:1.5px solid #fca5a5;border-radius:12px;background:#ffffff;">
+            <input type="text" id="scarReasonInput" placeholder="Nhập lý do đánh sẹo..." style="flex:1;font-size:12px;padding:8px 12px;border:1.5px solid #fca5a5;border-radius:12px;background:#ffffff;">
             <button type="button" class="btn-scar-action btn-add-scar" id="btnAddScar" title="Đánh thêm 1 sẹo">
               <span>+1 Sẹo 🪓</span>
             </button>
             <button type="button" class="btn-scar-action btn-remove-scar" id="btnRemoveScar" title="Ân xá / Xóa bớt 1 sẹo">
               <span>-1 Ân Xá 🛡️</span>
             </button>
-          </div>
-
-          <!-- Quick presets for reasons -->
-          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:5px;">
-            <span style="font-size:11px;font-weight:800;color:#991b1b;">Gợi ý lý do:</span>
-            <button type="button" class="tag-scar-btn" data-reason="Bỏ ca / Vắng mặt không phép">🏃 Bỏ ca</button>
-            <button type="button" class="tag-scar-btn" data-reason="Nợ chỉ tiêu nhà">📉 Nợ chỉ tiêu nhà</button>
-            <button type="button" class="tag-scar-btn" data-reason="Phá quy chế Crew">⚠️ Phá quy chế Crew</button>
-            <button type="button" class="tag-scar-btn" data-reason="Gây gổ anh em trong Crew">🥊 Gây gổ anh em</button>
-            <button type="button" class="tag-scar-btn" data-reason="Bắn lung tung / Vi phạm kỷ luật">💥 Bắn lung tung</button>
-            <button type="button" class="tag-scar-btn" data-reason="Nợ tiền chuộc quỹ">💸 Nợ tiền chuộc quỹ</button>
           </div>
         </div>
 
@@ -3918,22 +3907,11 @@ function editMember(id) {
 
   // Initial UI render
   updateScarUI();
-
-  // Preset tag click
-  overlay.querySelectorAll('.tag-scar-btn').forEach(tag => {
-    tag.onclick = () => {
-      if (scarReasonInput) {
-        scarReasonInput.value = tag.dataset.reason;
-        scarReasonInput.focus();
-      }
-    };
-  });
-
-  // Add scar button click
+// Add scar button click
   overlay.querySelector('#btnAddScar').onclick = () => {
     const reason = (scarReasonInput?.value || '').trim();
     if (!reason) {
-      alert('⚠️ Đại ca vui lòng nhập hoặc bấm chọn 1 gợi ý lý do đánh sẹo!');
+      alert('⚠️ Đại ca vui lòng nhập lý do đánh sẹo!');
       scarReasonInput?.focus();
       return;
     }
