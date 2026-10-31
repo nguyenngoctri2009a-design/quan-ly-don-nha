@@ -7758,7 +7758,7 @@ $('sidebarBackupBtn')?.addEventListener('click', (e) => triggerManualBackup(e.cu
 $('manualBackupBtn')?.addEventListener('click', (e) => triggerManualBackup(e.currentTarget));
 
 /* ==========================================================================
-   SECTION 2: BẢNG VINH DANH THÀNH TÍCH (MODERN ELITE 3D - 16:9 RATIO)
+   SECTION 2: BẢNG VINH DANH THÀNH TÍCH (MODERN ELITE 3D - 16:9 RATIO - 10/10 EDITION)
    Phong cách: Premium Gaming Award + Modern Corporate + 3D Glass UI
    Tone màu: Trắng sáng, Xanh băng (Ice Blue/Cyan) và Vàng Champagne
    ========================================================================== */
@@ -7772,7 +7772,7 @@ function openExportModal() {
 
   const sortedList = Object.values(allUsers)
     .map(u => ({
-      id: u.id,
+      id: String(u.id),
       name: u.name || 'Chiến Binh',
       binh: Math.round((memberTotals[u.id] || 0) * 100) / 100
     }))
@@ -7792,7 +7792,7 @@ function openExportModal() {
           <div class="modal-icon-badge" style="background:linear-gradient(135deg,#0284c7,#0ea5e9);color:#ffffff;box-shadow:0 4px 12px rgba(2,132,199,0.3);">👑</div>
           <div>
             <h3 style="font-size:18px;font-weight:900;color:#0f172a;">Xuất Ảnh Báo Cáo &amp; Bằng Khen</h3>
-            <span style="font-size:12px;color:#64748b;font-weight:600;">Mẫu Modern Elite 3D &amp; Báo Cáo T1 Pro</span>
+            <span style="font-size:12px;color:#64748b;font-weight:600;">Mẫu Modern Elite 3D (10/10) &amp; Báo Cáo T1 Pro</span>
           </div>
         </div>
         <button class="modal-close-btn" id="closeExportModal" title="Đóng">✕</button>
@@ -7826,17 +7826,17 @@ function openExportModal() {
             <select id="certRecipientSelect" style="width:100%;padding:12px 14px;border-radius:14px;border:1.5px solid #cbd5e1;background:#ffffff;color:#0f172a;font-size:13.5px;font-weight:800;outline:none;box-shadow:0 2px 6px rgba(0,0,0,0.04);cursor:pointer;transition:all 0.2s;">
               ${sortedList.map((u, i) => `
                 <option value="${u.id}" ${i === 0 ? 'selected' : ''}>
-                  ${i === 0 ? '🥇 [TOP 1 QUÁN QUÂN] ' : (i === 1 ? '🥈 [TOP 2 Á QUÂN] ' : (i === 2 ? '🥉 [TOP 3] ' : `#${i+1} `))} ${escHtml(u.name)} (${u.binh} nhà)
+                  ${i === 0 ? '🥇 [TOP 1 QUÁN QUÂN - VÀNG] ' : (i === 1 ? '🥈 [TOP 2 Á QUÂN - BẠC] ' : (i === 2 ? '🥉 [TOP 3 - ĐỒNG] ' : `#${i+1} `))} ${escHtml(u.name)} (${u.binh} nhà)
                 </option>
               `).join('')}
             </select>
           </div>
 
-          <!-- THẺ PREVIEW CHIẾN BINH VINH DANH VIP (MODERN ELITE 3D) -->
-          <div id="certVipBadgePreview" style="background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);border:1.5px solid #38bdf8;border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px;box-shadow:0 6px 18px rgba(2,132,199,0.12);">
+          <!-- THẺ PREVIEW CHIẾN BINH VINH DANH VIP (MODERN ELITE 3D - LIVE RANK PREVIEW) -->
+          <div id="certVipBadgePreview" style="background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);border:1.5px solid #38bdf8;border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px;box-shadow:0 6px 18px rgba(2,132,199,0.12);transition:all 0.25s;">
             <div id="certVipRankIcon" style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#fbbf24,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:24px;border:1.5px solid #ffffff;box-shadow:0 4px 12px rgba(245,158,11,0.3);flex-shrink:0;">🥇</div>
             <div style="flex:1;min-width:0;">
-              <div id="certVipTitleTag" style="font-size:11px;font-weight:900;color:#0284c7;letter-spacing:1px;text-transform:uppercase;">QUÁN QUÂN XUẤT SẮC TOÀN HỆ THỐNG</div>
+              <div id="certVipTitleTag" style="font-size:11px;font-weight:900;color:#0284c7;letter-spacing:1px;text-transform:uppercase;">QUÁN QUÂN TOÀN HỆ THỐNG (HUY CHƯƠNG VÀNG)</div>
               <div id="certVipName" style="font-size:17px;font-weight:900;color:#0f172a;margin:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(top1User.name)}</div>
               <div id="certVipHouses" style="font-size:12.5px;font-weight:750;color:#0369a1;">Thành tích: <b style="color:#0284c7;font-size:14px;">${top1User.binh} nhà</b> • Trao tặng Bằng Vinh Danh Modern Elite 3D</div>
             </div>
@@ -7927,16 +7927,26 @@ function openExportModal() {
     panelCert.style.display = 'none';
   };
 
-  // Cập nhật thẻ VIP preview theo chiến binh được chọn
+  // Cập nhật thẻ VIP preview theo chiến binh được chọn (Chuẩn Vàng / Bạc / Đồng)
   const recipientSelect = overlay.querySelector('#certRecipientSelect');
   const updateVipPreview = (selectedId) => {
-    const idx = sortedList.findIndex(u => u.id === selectedId);
+    const idx = sortedList.findIndex(u => String(u.id) === String(selectedId));
     const u = sortedList[idx] || top1User;
     const rankIcon = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : '🎖️'));
-    const rankTitle = idx === 0 ? 'QUÁN QUÂN XUẤT SẮC TOÀN HỆ THỐNG' : (idx === 1 ? 'Á QUÂN DẪN ĐẦU HỆ THỐNG' : (idx === 2 ? 'TOP 3 CHIẾN BINH ƯU TÚ' : `CHIẾN BINH VINH DANH HẠNG #${idx+1}`));
+    const rankTitle = idx === 0 ? 'QUÁN QUÂN TOÀN HỆ THỐNG (HUY CHƯƠNG VÀNG)' : 
+                      (idx === 1 ? 'Á QUÂN DẪN ĐẦU CREW (HUY CHƯƠNG BẠC)' : 
+                      (idx === 2 ? 'TOP 3 CHIẾN BINH ƯU TÚ (HUY CHƯƠNG ĐỒNG)' : 
+                      `CHIẾN BINH TIÊU BIỂU • HẠNG #${idx+1}`));
+    const iconBg = idx === 0 ? 'linear-gradient(135deg,#fbbf24,#f59e0b)' : 
+                   (idx === 1 ? 'linear-gradient(135deg,#e2e8f0,#94a3b8)' : 
+                   (idx === 2 ? 'linear-gradient(135deg,#fed7aa,#ea580c)' : 
+                   'linear-gradient(135deg,#38bdf8,#0284c7)'));
+
     const vipPreview = overlay.querySelector('#certVipBadgePreview');
     if (vipPreview) {
-      overlay.querySelector('#certVipRankIcon').textContent = rankIcon;
+      const iconEl = overlay.querySelector('#certVipRankIcon');
+      iconEl.textContent = rankIcon;
+      iconEl.style.background = iconBg;
       overlay.querySelector('#certVipTitleTag').textContent = rankTitle;
       overlay.querySelector('#certVipName').textContent = u.name;
       overlay.querySelector('#certVipHouses').innerHTML = `Thành tích: <b style="color:#0284c7;font-size:14px;">${u.binh} nhà</b> • Trao tặng Bằng Vinh Danh Modern Elite 3D`;
@@ -7967,8 +7977,9 @@ function openExportModal() {
 window.openExportModal = openExportModal;
 
 /* ==========================================================================
-   HÀM XUẤT BẰNG VINH DANH THÀNH TÍCH MODERN ELITE 3D (TỶ LỆ CHUẨN 16:9 - 1600x900)
-   Tone màu: Trắng sáng tinh khôi, Xanh băng (Ice Blue/Cyan) và Vàng Champagne
+   HÀM XUẤT BẰNG VINH DANH THÀNH TÍCH MODERN ELITE 3D (10/10 EDITION)
+   Tỷ lệ 16:9 (1600x900px), góc hình học tinh tế, thẻ 3D có chiều sâu,
+   Huy chương 3D lớn +20% phân định rõ rệt Vàng (Top 1), Bạc (Top 2), Đồng (Top 3)
    ========================================================================== */
 async function generateCertificateImage(targetUserId) {
   const container = $('exportArea');
@@ -7984,13 +7995,13 @@ async function generateCertificateImage(targetUserId) {
 
   const sortedList = Object.values(allUsers)
     .map(u => ({
-      id: u.id,
+      id: String(u.id),
       name: u.name || 'Chiến Binh',
       binh: Math.round((memberTotals[u.id] || 0) * 100) / 100
     }))
     .sort((a, b) => b.binh - a.binh);
 
-  const rankIndex = sortedList.findIndex(u => u.id === targetUserId);
+  const rankIndex = sortedList.findIndex(u => String(u.id) === String(targetUserId) || u.name === targetUserId);
   const rank = rankIndex !== -1 ? rankIndex + 1 : 1;
   const user = sortedList[rankIndex !== -1 ? rankIndex : 0] || { name: 'Chiến Binh Xuất Sắc', binh: 0 };
   const memberName = user.name || 'Chiến Binh Xuất Sắc';
@@ -8001,9 +8012,13 @@ async function generateCertificateImage(targetUserId) {
   const now = new Date();
   const dateStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
 
-  // Thiết lập huy chương 3D lớn theo thứ hạng (Large 3D Medal with Ribbons)
+  // PHÂN BIỆT RÕ RÀNG HUY CHƯƠNG 3D: VÀNG (TOP 1), BẠC (TOP 2), ĐỒNG (TOP 3)
   let rankIcon = '🥇';
   let rankLabel = 'QUÁN QUÂN TOÀN HỆ THỐNG';
+  let rankBadgeText = 'TOP 1 QUÁN QUÂN';
+  let badgeBorder = '#fde68a';
+  let badgeTextColor = '#b45309';
+
   let medalTitle = 'TOP 1';
   let medalSub = 'QUÁN QUÂN';
   let medalGradStart = '#fef08a';
@@ -8012,32 +8027,47 @@ async function generateCertificateImage(targetUserId) {
   let medalRimColor = '#eab308';
   let medalRibbonColor = '#0284c7';
   let medalRibbonDark = '#0369a1';
+  let medalRibbonBorder = '#fde047';
 
   if (rank === 2) {
     rankIcon = '🥈';
     rankLabel = 'Á QUÂN DẪN ĐẦU CREW';
+    rankBadgeText = 'TOP 2 Á QUÂN';
+    badgeBorder = '#e2e8f0';
+    badgeTextColor = '#334155';
+
     medalTitle = 'TOP 2';
     medalSub = 'Á QUÂN';
     medalGradStart = '#ffffff';
     medalGradMid = '#e2e8f0';
     medalGradEnd = '#94a3b8';
     medalRimColor = '#cbd5e1';
-    medalRibbonColor = '#0369a1';
-    medalRibbonDark = '#075985';
+    medalRibbonColor = '#1e3a8a';
+    medalRibbonDark = '#0f172a';
+    medalRibbonBorder = '#cbd5e1';
   } else if (rank === 3) {
     rankIcon = '🥉';
     rankLabel = 'TOP 3 CHIẾN BINH ƯU TÚ';
+    rankBadgeText = 'TOP 3 ƯU TÚ';
+    badgeBorder = '#fed7aa';
+    badgeTextColor = '#c2410c';
+
     medalTitle = 'TOP 3';
     medalSub = 'ƯU TÚ';
     medalGradStart = '#ffedd5';
     medalGradMid = '#fb923c';
     medalGradEnd = '#c2410c';
-    medalRimColor = '#f97316';
+    medalRimColor = '#ea580c';
     medalRibbonColor = '#0284c7';
     medalRibbonDark = '#0369a1';
+    medalRibbonBorder = '#fdba74';
   } else if (rank > 3) {
     rankIcon = '🎖️';
     rankLabel = `CHIẾN BINH TIÊU BIỂU • HẠNG #${rank}`;
+    rankBadgeText = `HẠNG #${rank}`;
+    badgeBorder = '#bae6fd';
+    badgeTextColor = '#0284c7';
+
     medalTitle = `#${rank}`;
     medalSub = 'CHIẾN BINH';
     medalGradStart = '#e0f2fe';
@@ -8046,11 +8076,12 @@ async function generateCertificateImage(targetUserId) {
     medalRimColor = '#0ea5e9';
     medalRibbonColor = '#0369a1';
     medalRibbonDark = '#0c4a6e';
+    medalRibbonBorder = '#7dd3fc';
   }
 
-  // SVG Huy chương 3D lớn (120 x 140 px) với ruy băng tinh tế
+  // SVG HUY CHƯƠNG 3D LỚN TĂNG +20% (145 x 170 px) CÓ RUY BĂNG THẢ DÀI TINH TẾ
   const big3dMedalSvg = `
-    <svg viewBox="0 0 140 160" style="width:120px;height:140px;filter:drop-shadow(0 8px 18px rgba(2,132,199,0.3));">
+    <svg viewBox="0 0 160 190" style="width:145px;height:170px;filter:drop-shadow(0 10px 22px rgba(2,132,199,0.32));">
       <defs>
         <linearGradient id="medalFaceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="${medalGradStart}"/>
@@ -8067,34 +8098,34 @@ async function generateCertificateImage(targetUserId) {
         </linearGradient>
       </defs>
 
-      <!-- DẢI RUY BĂNG THẢ DƯỚI (RIBBONS) -->
-      <polygon points="50,75 30,150 45,140 60,150 62,75" fill="url(#ribbonLeftGrad)" stroke="#ffffff" stroke-width="1"/>
-      <polygon points="90,75 78,150 95,140 110,150 90,75" fill="url(#ribbonRightGrad)" stroke="#ffffff" stroke-width="1"/>
+      <!-- DẢI RUY BĂNG THẢ DƯỚI (RIBBONS) CÓ VIỀN MẠ KIM LOẠI -->
+      <polygon points="56,90 32,180 50,168 68,180 72,90" fill="url(#ribbonLeftGrad)" stroke="${medalRibbonBorder}" stroke-width="1.5"/>
+      <polygon points="104,90 92,180 110,168 128,180 104,90" fill="url(#ribbonRightGrad)" stroke="${medalRibbonBorder}" stroke-width="1.5"/>
 
-      <!-- KHỐI MẶT HUY CHƯƠNG 3D TRÒN LỚN -->
-      <circle cx="70" cy="62" r="54" fill="url(#medalFaceGrad)" stroke="#ffffff" stroke-width="4"/>
-      <circle cx="70" cy="62" r="46" fill="none" stroke="${medalRimColor}" stroke-width="2.5" stroke-dasharray="4 2"/>
-      <circle cx="70" cy="62" r="40" fill="#ffffff" opacity="0.2"/>
+      <!-- KHỐI MẶT HUY CHƯƠNG 3D TRÒN LỚN (ĐƯỜNG KÍNH R=62) -->
+      <circle cx="80" cy="74" r="62" fill="url(#medalFaceGrad)" stroke="#ffffff" stroke-width="4.5"/>
+      <circle cx="80" cy="74" r="53" fill="none" stroke="${medalRimColor}" stroke-width="2.5" stroke-dasharray="4 2"/>
+      <circle cx="80" cy="74" r="46" fill="#ffffff" opacity="0.25"/>
 
       <!-- NGÔI SAO TRÊN ĐỈNH HUY CHƯƠNG -->
-      <polygon points="70,22 72.5,29 80,29 74,33.5 76,40 70,36 64,40 66,33.5 60,29 67.5,29" fill="#ffffff"/>
+      <polygon points="80,28 83,36 92,36 85,41 87,49 80,44 73,49 75,41 68,36 77,36" fill="#ffffff"/>
 
       <!-- CHỮ TIÊU ĐỀ TRONG HUY CHƯƠNG -->
-      <text x="70" y="58" fill="#0f172a" font-size="20" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" letter-spacing="0.5">${medalTitle}</text>
-      <text x="70" y="74" fill="#0369a1" font-size="10.5" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" letter-spacing="1.2">${medalSub}</text>
+      <text x="80" y="70" fill="#0f172a" font-size="24" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" letter-spacing="0.5">${medalTitle}</text>
+      <text x="80" y="88" fill="#0369a1" font-size="12" font-weight="900" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" letter-spacing="1.5">${medalSub}</text>
 
       <!-- VÒNG LÁ NGUYỆT QUẾ MẢNH TINH TẾ -->
-      <circle cx="70" cy="62" r="34" fill="none" stroke="${medalRimColor}" stroke-width="1.2"/>
+      <circle cx="80" cy="74" r="40" fill="none" stroke="${medalRimColor}" stroke-width="1.5"/>
     </svg>
   `;
 
-  // KHUNG BẰNG KHEN MODERN ELITE 3D (TỶ LỆ CHUẨN 16:9 - 1600 x 900 px)
+  // KHUNG BẰNG KHEN MODERN ELITE 3D (TỶ LỆ CHUẨN 16:9 - 1600 x 900 px - 10/10 EDITION)
   container.innerHTML = `
     <div id="modernEliteCertNode" style="width:1600px;height:900px;box-sizing:border-box;position:relative;background:#f8fafc;
                 display:flex;align-items:center;justify-content:center;
                 font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;overflow:hidden;">
       
-      <!-- HỆ THỐNG MẢNG HÌNH HỌC 3D HIỆN ĐẠI (SAPPHIRE CYAN, ICE BLUE & CHAMPAGNE GOLD) -->
+      <!-- HỆ THỐNG MẢNG HÌNH HỌC 3D ĐÃ TINH GIẢN GỌN GÀNG (KHÔNG CHIẾM TẦM NHÌN) -->
       <svg viewBox="0 0 1600 900" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;">
         <defs>
           <linearGradient id="sapphire3D" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -8114,44 +8145,44 @@ async function generateCertificateImage(targetUserId) {
           </linearGradient>
         </defs>
 
-        <!-- LỚP HÌNH HỌC GÓC TRÊN BÊN TRÁI -->
-        <polygon points="0,0 460,0 0,460" fill="url(#sapphire3D)"/>
-        <polygon points="0,460 28,460 488,0 460,0" fill="url(#champagneGoldGrad)"/>
-        <polygon points="0,0 300,0 0,300" fill="url(#iceCyanGrad)" opacity="0.85"/>
-        <polygon points="0,300 18,300 318,0 300,0" fill="url(#champagneGoldGrad)"/>
+        <!-- LỚP HÌNH HỌC GÓC TRÊN BÊN TRÁI (THU GỌN CHUẨN MỰC) -->
+        <polygon points="0,0 280,0 0,280" fill="url(#sapphire3D)"/>
+        <polygon points="0,280 18,280 298,0 280,0" fill="url(#champagneGoldGrad)"/>
+        <polygon points="0,0 180,0 0,180" fill="url(#iceCyanGrad)" opacity="0.85"/>
+        <polygon points="0,180 12,180 192,0 180,0" fill="url(#champagneGoldGrad)"/>
 
-        <!-- LỚP HÌNH HỌC GÓC TRÊN BÊN PHẢI -->
-        <polygon points="1600,0 1140,0 1600,460" fill="url(#sapphire3D)"/>
-        <polygon points="1600,460 1572,460 1112,0 1140,0" fill="url(#champagneGoldGrad)"/>
-        <polygon points="1600,0 1300,0 1600,300" fill="url(#iceCyanGrad)" opacity="0.85"/>
-        <polygon points="1600,300 1582,300 1282,0 1300,0" fill="url(#champagneGoldGrad)"/>
+        <!-- LỚP HÌNH HỌC GÓC TRÊN BÊN PHẢI (THU GỌN CHUẨN MỰC) -->
+        <polygon points="1600,0 1320,0 1600,280" fill="url(#sapphire3D)"/>
+        <polygon points="1600,280 1582,280 1302,0 1320,0" fill="url(#champagneGoldGrad)"/>
+        <polygon points="1600,0 1420,0 1600,180" fill="url(#iceCyanGrad)" opacity="0.85"/>
+        <polygon points="1600,180 1588,180 1408,0 1420,0" fill="url(#champagneGoldGrad)"/>
 
-        <!-- LỚP HÌNH HỌC GÓC DƯỚI BÊN TRÁI -->
-        <polygon points="0,900 400,900 0,500" fill="url(#sapphire3D)"/>
-        <polygon points="0,500 24,500 424,900 400,900" fill="url(#champagneGoldGrad)"/>
+        <!-- LỚP HÌNH HỌC GÓC DƯỚI BÊN TRÁI (THU GỌN CHUẨN MỰC) -->
+        <polygon points="0,900 260,900 0,640" fill="url(#sapphire3D)"/>
+        <polygon points="0,640 16,640 276,900 260,900" fill="url(#champagneGoldGrad)"/>
 
-        <!-- LỚP HÌNH HỌC GÓC DƯỚI BÊN PHẢI -->
-        <polygon points="1600,900 1200,900 1600,500" fill="url(#sapphire3D)"/>
-        <polygon points="1600,500 1576,500 1176,900 1200,900" fill="url(#champagneGoldGrad)"/>
+        <!-- LỚP HÌNH HỌC GÓC DƯỚI BÊN PHẢI (THU GỌN CHUẨN MỰC) -->
+        <polygon points="1600,900 1340,900 1600,640" fill="url(#sapphire3D)"/>
+        <polygon points="1600,640 1584,640 1324,900 1340,900" fill="url(#champagneGoldGrad)"/>
       </svg>
 
-      <!-- TẤM NỀN TRUNG TÂM NỔI KHỐI 3D (CENTRAL 3D FLOATING WHITE CARD) -->
-      <div style="position:relative;z-index:2;width:1380px;height:760px;background:#ffffff;
+      <!-- TẤM NỀN TRUNG TÂM NỔI KHỐI 3D RỘNG RÃI (CENTRAL 3D FLOATING WHITE CARD) -->
+      <div style="position:relative;z-index:2;width:1440px;height:780px;background:#ffffff;
                   border-radius:26px;box-shadow:0 30px 70px rgba(2,132,199,0.16), 0 0 0 1px rgba(226,232,240,0.9);
                   border:2.5px solid #ffffff;outline:2px solid #bae6fd;outline-offset:-6px;
-                  box-sizing:border-box;padding:36px 64px 30px;
+                  box-sizing:border-box;padding:34px 64px 26px;
                   display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;">
 
         <!-- 1. PHẦN ĐẦU: LOGO CREW LƯỚI BÚA & TIÊU ĐỀ VINH DANH THÀNH TÍCH -->
         <div style="width:100%;display:flex;flex-direction:column;align-items:center;">
           
-          <div style="display:inline-flex;align-items:center;gap:12px;padding:8px 26px;border-radius:999px;
+          <div style="display:inline-flex;align-items:center;gap:12px;padding:8px 28px;border-radius:999px;
                       background:linear-gradient(135deg,#0284c7 0%,#0369a1 100%);color:#ffffff;
                       box-shadow:0 6px 18px rgba(2,132,199,0.25);border:1.5px solid #facc15;">
-            <span style="font-size:18px;">⚒️</span>
-            <span style="font-size:14px;font-weight:900;letter-spacing:3px;color:#fef08a;text-transform:uppercase;">CREW LƯỚI BÚA</span>
+            <span style="font-size:20px;">⚒️</span>
+            <span style="font-size:14.5px;font-weight:900;letter-spacing:3px;color:#fef08a;text-transform:uppercase;">CREW LƯỚI BÚA</span>
             <span style="width:4px;height:4px;border-radius:50%;background:#ffffff;opacity:0.6;"></span>
-            <span style="font-size:12px;font-weight:800;letter-spacing:1px;color:#e0f2fe;text-transform:uppercase;">HỆ THỐNG QUẢN LÝ DỌN NHÀ</span>
+            <span style="font-size:12.5px;font-weight:800;letter-spacing:1px;color:#e0f2fe;text-transform:uppercase;">HỆ THỐNG QUẢN LÝ DỌN NHÀ</span>
           </div>
 
           <div style="font-size:46px;font-weight:900;letter-spacing:5px;color:#0f172a;text-transform:uppercase;margin-top:14px;line-height:1;">
@@ -8167,91 +8198,100 @@ async function generateCertificateImage(targetUserId) {
 
         </div>
 
-        <!-- 2. PHẦN GIỮA: TÊN THÀNH VIÊN TÂM ĐIỂM & THẺ THỐNG KÊ 3D CÓ CHIỀU SÂU -->
-        <div style="width:100%;display:flex;flex-direction:column;align-items:center;margin:4px 0;">
+        <!-- 2. PHẦN GIỮA: TÊN THÀNH VIÊN TÂM ĐIỂM & THẺ THỐNG KÊ 3D CÓ CHIỀU SÂU VƯỢT TRỘI -->
+        <div style="width:100%;display:flex;flex-direction:column;align-items:center;margin:2px 0;">
           
-          <div style="font-size:13.5px;font-weight:850;letter-spacing:3px;color:#0284c7;text-transform:uppercase;margin-bottom:6px;">
+          <div style="font-size:14px;font-weight:850;letter-spacing:3px;color:#0284c7;text-transform:uppercase;margin-bottom:6px;">
             TRÂN TRỌNG TRAO TẶNG CHIẾN BINH
           </div>
 
-          <!-- TÊN THÀNH VIÊN LÀ TÂM ĐIỂM, KÍCH THƯỚC LỚN, FONT CHỮ HIỆN ĐẠI, KHÔNG BỊ BỆT MÀU -->
-          <div style="font-size:62px;font-weight:900;letter-spacing:-0.5px;color:#0f172a;line-height:1.15;margin-bottom:14px;max-width:1150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+          <!-- TÊN THÀNH VIÊN LÀ TÂM ĐIỂM, KÍCH THƯỚC LỚN (64px), KHÔNG BỊ BỆT MÀU -->
+          <div style="font-size:64px;font-weight:900;letter-spacing:-0.5px;color:#0f172a;line-height:1.15;margin-bottom:14px;max-width:1200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
             ${escHtml(memberName)}
           </div>
 
-          <!-- THẺ THỐNG KÊ 3D CÓ CHIỀU SÂU (NỀN TRẮNG SÁNG, XANH BĂNG VÀ VÀNG CHAMPAGNE) -->
-          <div style="background:linear-gradient(135deg,#ffffff 0%,#f0f9ff 100%);
-                      border:2px solid #38bdf8;border-radius:20px;padding:16px 48px;
-                      display:inline-flex;align-items:center;gap:40px;
-                      box-shadow:0 12px 30px rgba(2,132,199,0.12), inset 0 1px 2px #ffffff;">
+          <!-- THẺ THỐNG KÊ 3D CÓ CHIỀU SÂU (3D DEPTH GLASS CARD) -->
+          <div style="background:linear-gradient(145deg, #ffffff 0%, #f0f9ff 55%, #e0f2fe 100%);
+                      border:2.5px solid #38bdf8;border-radius:24px;padding:16px 42px;
+                      display:inline-flex;align-items:center;gap:36px;
+                      box-shadow:0 18px 40px rgba(2,132,199,0.18), 0 4px 12px rgba(2,132,199,0.08), inset 0 2px 4px #ffffff, inset 0 -2px 6px rgba(2,132,199,0.06);">
             
-            <div style="display:flex;align-items:center;gap:14px;">
-              <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#0284c7,#0ea5e9);display:flex;align-items:center;justify-content:center;font-size:26px;color:#ffffff;box-shadow:0 4px 12px rgba(2,132,199,0.3);">🏠</div>
+            <!-- KHỐI 3D SỐ NHÀ NỔI BẬT NGUYÊN BẢN -->
+            <div style="background:linear-gradient(135deg,#0284c7 0%,#0369a1 100%);
+                        border:2px solid #7dd3fc;border-radius:18px;padding:10px 24px;
+                        display:flex;align-items:center;gap:14px;
+                        box-shadow:0 8px 24px rgba(2,132,199,0.35), inset 0 2px 3px rgba(255,255,255,0.4);">
+              <div style="font-size:32px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.2));">🏠</div>
               <div style="text-align:left;">
-                <div style="font-size:11px;font-weight:850;color:#0369a1;letter-spacing:1.5px;text-transform:uppercase;">KỶ LỤC DỌN NHÀ</div>
-                <div style="font-size:38px;font-weight:900;color:#0284c7;line-height:1;margin-top:2px;">
-                  ${roundedHouses} <span style="font-size:16px;color:#64748b;font-weight:800;">CĂN</span>
+                <div style="font-size:11px;font-weight:900;color:#e0f2fe;letter-spacing:2px;text-transform:uppercase;">KỶ LỤC DỌN NHÀ</div>
+                <div style="font-size:42px;font-weight:900;color:#ffffff;line-height:1;margin-top:2px;text-shadow:0 2px 8px rgba(0,0,0,0.25);">
+                  ${roundedHouses} <span style="font-size:17px;color:#bae6fd;font-weight:800;">CĂN</span>
                 </div>
               </div>
             </div>
 
-            <div style="width:1.5px;height:44px;background:#bae6fd;"></div>
-
-            <div style="text-align:left;">
-              <div style="font-size:11px;font-weight:850;color:#0369a1;letter-spacing:1.5px;text-transform:uppercase;">TỶ TRỌNG ĐÓNG GÓP</div>
-              <div style="font-size:24px;font-weight:900;color:#0f172a;line-height:1;margin-top:4px;">
-                ${sharePercent}% <span style="font-size:13px;color:#64748b;font-weight:700;">toàn hệ thống</span>
+            <!-- TỶ TRỌNG ĐÓNG GÓP -->
+            <div style="text-align:left;background:#ffffff;padding:10px 22px;border-radius:16px;border:1.5px solid #bae6fd;box-shadow:0 4px 12px rgba(2,132,199,0.06);">
+              <div style="font-size:11px;font-weight:850;color:#0369a1;letter-spacing:1.5px;text-transform:uppercase;">TỶ TRỌNG CỐNG HIẾN</div>
+              <div style="font-size:28px;font-weight:900;color:#0f172a;line-height:1;margin-top:4px;">
+                ${sharePercent}% <span style="font-size:13.5px;color:#64748b;font-weight:700;">toàn đội</span>
               </div>
             </div>
 
-            <div style="width:1.5px;height:44px;background:#bae6fd;"></div>
-
-            <div style="text-align:left;">
-              <div style="font-size:11px;font-weight:850;color:#0369a1;letter-spacing:1.5px;text-transform:uppercase;">DANH HIỆU THI ĐUA</div>
-              <div style="font-size:22px;font-weight:900;color:#b45309;line-height:1;margin-top:4px;">
-                ${rankIcon} ${rankLabel}
+            <!-- DANH HIỆU THI ĐUA -->
+            <div style="text-align:left;background:#ffffff;padding:10px 22px;border-radius:16px;border:1.5px solid ${badgeBorder};box-shadow:0 4px 12px rgba(0,0,0,0.06);">
+              <div style="font-size:11px;font-weight:850;color:#64748b;letter-spacing:1.5px;text-transform:uppercase;">DANH HIỆU CREW</div>
+              <div style="font-size:24px;font-weight:900;color:${badgeTextColor};line-height:1;margin-top:4px;">
+                ${rankIcon} ${rankBadgeText}
               </div>
             </div>
 
           </div>
 
           <!-- LỜI TUYÊN DƯƠNG TRANG TRỌNG -->
-          <div style="max-width:980px;font-size:14.5px;font-weight:600;color:#475569;line-height:1.6;margin-top:14px;">
+          <div style="max-width:1020px;font-size:14.5px;font-weight:600;color:#475569;line-height:1.6;margin-top:14px;">
             "Đã phát huy tinh thần quả cảm, kiên trì và kỷ luật thép, xuất sắc hoàn thành vượt bậc chỉ tiêu dọn nhà và cống hiến to lớn cho tập thể Crew Lưới Búa. Thành tích xứng đáng được toàn hệ thống vinh danh!"
           </div>
 
         </div>
 
-        <!-- 3. PHẦN ĐÁY: DẢI THÔNG TIN CÂN ĐỐI, HUY CHƯƠNG 3D LỚN & CHỮ KÝ QUẢN LÝ -->
+        <!-- 3. PHẦN ĐÁY: DẢI THÔNG TIN TO RÕ, HUY CHƯƠNG 3D LỚN (+20%) & CHỮ KÝ SẮC NÉT KHI XUẤT PNG -->
         <div style="width:100%;background:linear-gradient(90deg,#f8fafc 0%,#ffffff 50%,#f8fafc 100%);
-                    border:1.5px solid #e2e8f0;border-radius:18px;padding:12px 36px;
+                    border:1.5px solid #e2e8f0;border-radius:20px;padding:14px 42px;
                     display:flex;justify-content:space-between;align-items:center;position:relative;box-shadow:0 4px 16px rgba(0,0,0,0.03);">
 
-          <!-- BÊN TRÁI: MÃ CHỨNG NHẬN ĐIỆN TỬ -->
-          <div style="text-align:left;width:280px;">
-            <div style="font-size:11px;font-weight:850;color:#0284c7;letter-spacing:1.5px;text-transform:uppercase;">XÁC THỰC ĐIỆN TỬ</div>
-            <div style="font-size:13px;font-weight:900;color:#0f172a;margin-top:2px;">CLB-${targetUserId ? targetUserId.substring(0,8).toUpperCase() : 'VIP2026'}</div>
-            <div style="font-size:11px;color:#64748b;font-weight:600;margin-top:1px;">🌐 quan-ly-seven.vercel.app</div>
+          <!-- BÊN TRÁI: MÃ CHỨNG NHẬN ĐIỆN TỬ TO RÕ DỄ ĐỌC -->
+          <div style="text-align:left;width:320px;">
+            <div style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:900;color:#0284c7;letter-spacing:1.5px;text-transform:uppercase;">
+              <span style="width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;"></span>
+              XÁC THỰC ĐIỆN TỬ
+            </div>
+            <div style="font-size:15px;font-weight:900;color:#0f172a;margin-top:2px;letter-spacing:1px;">
+              CLB-${targetUserId ? targetUserId.substring(0,8).toUpperCase() : 'VIP2026'}
+            </div>
+            <div style="font-size:12px;color:#0284c7;font-weight:750;margin-top:1px;">
+              🌐 quan-ly-seven.vercel.app
+            </div>
           </div>
 
-          <!-- Ở GIỮA: HUY CHƯƠNG 3D LỚN NỔI BẬT THEO THỨ HẠNG -->
-          <div style="position:relative;display:flex;flex-direction:column;align-items:center;margin-top:-38px;">
+          <!-- Ở GIỮA: HUY CHƯƠNG 3D LỚN TĂNG +20% NỔI KHỐI RỰC RỠ -->
+          <div style="position:relative;display:flex;flex-direction:column;align-items:center;margin-top:-48px;">
             ${big3dMedalSvg}
           </div>
 
-          <!-- BÊN PHẢI: CHỮ KÝ THỦ LĨNH NGUYỄN NGỌC TRÍ CÂN ĐỐI -->
-          <div style="text-align:center;width:280px;">
-            <div style="font-family:'Great Vibes','Dancing Script',cursive;font-size:38px;color:#0f172a;line-height:1;">
+          <!-- BÊN PHẢI: CHỮ KÝ THỦ LĨNH NGUYỄN NGỌC TRÍ TO RÕ, SẮC NÉT KHI XUẤT PNG -->
+          <div style="text-align:center;width:320px;">
+            <div style="font-family:'Great Vibes','Dancing Script',cursive;font-size:50px;color:#0f172a;line-height:0.95;margin-bottom:2px;">
               Trí
             </div>
-            <div style="width:140px;height:1px;background:#0f172a;margin:2px auto 4px;"></div>
-            <div style="font-size:14px;font-weight:900;color:#0f172a;letter-spacing:1px;text-transform:uppercase;">
+            <div style="width:160px;height:1.5px;background:#0f172a;margin:3px auto 4px;"></div>
+            <div style="font-size:16px;font-weight:900;color:#0f172a;letter-spacing:1px;text-transform:uppercase;">
               Nguyễn Ngọc Trí
             </div>
-            <div style="font-size:10px;font-weight:850;color:#0284c7;letter-spacing:0.5px;text-transform:uppercase;">
+            <div style="font-size:11.5px;font-weight:850;color:#0284c7;letter-spacing:0.5px;text-transform:uppercase;margin-top:1px;">
               Thủ Lĩnh Tối Cao • Crew Lưới Búa
             </div>
-            <div style="font-size:10px;color:#64748b;font-weight:600;margin-top:1px;">
+            <div style="font-size:11px;color:#64748b;font-weight:600;margin-top:1px;">
               Ngày ban hành: ${dateStr}
             </div>
           </div>
@@ -8284,7 +8324,7 @@ async function generateCertificateImage(targetUserId) {
             <div class="modal-icon-badge" style="background:#0284c7;color:#ffffff;">🏆</div>
             <div>
               <h3 style="color:#0f172a;font-size:18px;">Bằng Vinh Danh Thành Tích — ${escHtml(memberName)}</h3>
-              <span style="font-size:12px;color:#64748b;font-weight:600;">Phong cách Modern Elite 3D (16:9 • Trắng Sáng, Xanh Băng &amp; Champagne)</span>
+              <span style="font-size:12px;color:#64748b;font-weight:600;">Phong cách Modern Elite 3D (16:9 • Đẳng Cấp 10/10)</span>
             </div>
           </div>
           <button class="modal-close-btn" id="closeCertPreview" title="Đóng">✕</button>
@@ -8322,7 +8362,7 @@ async function generateCertificateImage(targetUserId) {
       const a = document.createElement('a');
       a.href = dataUrl;
       const safeName = memberName.toLowerCase().replace(/[^a-z0-9]/g, '-');
-      a.download = `vinh-danh-modern-elite-${safeName}-${Date.now()}.png`;
+      a.download = `vinh-danh-10-10-${safeName}-${Date.now()}.png`;
       a.click();
     };
 
