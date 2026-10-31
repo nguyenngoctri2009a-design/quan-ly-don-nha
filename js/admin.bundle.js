@@ -1302,14 +1302,21 @@ try {
       .slice(0, 5);
 
     const rank = getRankInfo(roundedHouses);
-    const userScars = Number(user ? user.scars : 0) || 0;
-    const isExpelled = userScars >= 3 || !!(user && user.isExpelled);
+
+    let currentScars = Number(user ? user.scars : 0) || 0;
+    let isExpelled = currentScars >= 3 || !!(user && user.isExpelled);
+    let scarHistoryList = Array.isArray(user ? user.scarHistory : null)
+      ? [...user.scarHistory]
+      : (user && user.scarHistory ? Object.values(user.scarHistory) : []);
+
     let scarBadgeDossier = '';
     if (isExpelled) {
       scarBadgeDossier = '<span style="background:#fee2e2;color:#991b1b;font-size:11px;font-weight:900;padding:3px 9px;border-radius:8px;border:1.5px solid #ef4444;text-transform:uppercase;">⛔ ĐÃ BỊ ĐUỔI (3/3 SẸO)</span>';
-    } else if (userScars > 0) {
-      scarBadgeDossier = `<span style="background:#fffbeb;color:#b45309;font-size:11px;font-weight:800;padding:3px 9px;border-radius:8px;border:1.5px solid #fde68a;">🪓 ${userScars}/3 SẸO KỶ LUẬT</span>`;
+    } else if (currentScars > 0) {
+      scarBadgeDossier = `<span style="background:#fffbeb;color:#b45309;font-size:11px;font-weight:800;padding:3px 9px;border-radius:8px;border:1.5px solid #fde68a;">🪓 ${currentScars}/3 SẸO KỶ LUẬT</span>`;
     }
+
+    const canManageScars = typeof isAdmin === 'function' && isAdmin();
 
     // Tạo modal DOM
     const overlay = document.createElement('div');
@@ -1320,7 +1327,7 @@ try {
     overlay.style.webkitBackdropFilter = 'blur(6px)';
 
     overlay.innerHTML = `
-      <div class="modal-box dossier-glass-card">
+      <div class="modal-box dossier-glass-card" style="max-height:92vh;overflow-y:auto;">
         
         <!-- BRIGHT LUXURY GOLD & WHITE HEADER -->
         <div class="dossier-glass-header">
@@ -1334,7 +1341,7 @@ try {
                 <span style="background: ${rank.bg}; color: ${rank.color}; font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 8px; border: 1.5px solid ${rank.color}; text-transform: uppercase;">
                   ${rank.title}
                 </span>
-                ${scarBadgeDossier}
+                <span id="dossierHeaderScarBadge">${scarBadgeDossier}</span>
               </div>
               <div style="font-size: 12.5px; color: #64748b; font-weight: 700; margin-top: 4px; display: flex; align-items: center; gap: 8px;">
                 <span>${rank.desc}</span>
@@ -1346,7 +1353,7 @@ try {
           <button type="button" class="modal-close-btn" id="closeDossierBtn" title="Đóng" style="background: #ffffff; border: 1.5px solid #cbd5e1; color: #64748b; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; font-size: 15px; font-weight: 800;">✕</button>
         </div>
 
-        <!-- 4 Ô Thống Kê Năng Suất (Mini KPI Grid Sáng Tươi Tắn) -->
+        <!-- 4 Ô Thống Kê Năng Suất (Mini KPI Grid) -->
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px;">
           
           <div class="dossier-kpi-card" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1.5px solid #fde68a;">
@@ -1389,6 +1396,86 @@ try {
             <div style="font-size: 12px; color: #0369a1; font-weight: 700;">Trung bình mỗi chuyến</div>
           </div>
 
+        </div>
+
+        <!-- Ô ĐÁNH SẸO & KỶ LUẬT CREW (HIỂN THỊ TRỰC TIẾP TRÊN THẺ) -->
+        <div class="scar-management-card" style="margin-bottom: 16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-size:18px;">🪓</span>
+              <div>
+                <div style="font-size:13.5px;font-weight:900;color:#991b1b;letter-spacing:0.2px;">Ô ĐÁNH SẸO &amp; KỶ LUẬT CREW</div>
+                <div style="font-size:10.5px;color:#dc2626;font-weight:700;">Quy tắc: Đủ 3 Sẹo đuổi thẳng khỏi Crew Lưới Búa!</div>
+              </div>
+            </div>
+            <div id="dossierScarPill" class="scar-counter-pill ${isExpelled ? 'expelled' : (currentScars === 2 ? 'warn2' : (currentScars === 1 ? 'warn1' : 'clean'))}">
+              ${isExpelled ? `⛔ ĐÃ ĐUỔI (${currentScars}/3)` : (currentScars > 0 ? `🪓 ${currentScars}/3 Sẹo` : '🟢 0/3 Sẹo (Sạch)')}
+            </div>
+          </div>
+
+          <!-- 3-Segment Visual Tracker -->
+          <div class="scar-tracker-track">
+            <div class="scar-seg ${currentScars >= 1 ? 'active-1' : ''}" id="dossierSeg1">
+              <span>Sẹo 1</span>
+              <small>Cảnh cáo</small>
+            </div>
+            <div class="scar-seg ${currentScars >= 2 ? 'active-2' : ''}" id="dossierSeg2">
+              <span>Sẹo 2</span>
+              <small>Nghiêm khắc</small>
+            </div>
+            <div class="scar-seg ${currentScars >= 3 ? 'active-3' : ''}" id="dossierSeg3">
+              <span>Sẹo 3</span>
+              <small>ĐUỔI THẲNG</small>
+            </div>
+          </div>
+
+          <!-- Expelled Alert Banner -->
+          <div id="dossierExpelledBanner" style="display:${isExpelled ? 'block' : 'none'};background:#fee2e2;border:1.5px solid #ef4444;border-radius:12px;padding:8px 12px;margin-bottom:10px;text-align:center;">
+            <div style="font-size:12.5px;font-weight:900;color:#991b1b;">⛔ ĐÃ BỊ ĐUỔI THẲNG KHỎI CREW LƯỚI BÚA!</div>
+            <div style="font-size:11px;font-weight:700;color:#dc2626;margin-top:2px;">Thành viên này đã tích lũy đủ 3/3 sẹo kỷ luật và bị khóa quyền hạn dọn nhà.</div>
+          </div>
+
+          ${canManageScars ? `
+            <!-- Ô Nhập Lý Do & Nút Đánh Sẹo (Chỉ Quản Trị Viên Mới Có Quyền Thao Tác) -->
+            <div style="display:flex;gap:8px;margin-bottom:10px;">
+              <input type="text" id="dossierScarReason" placeholder="Nhập lý do đánh sẹo..." style="flex:1;font-size:12.5px;padding:8px 12px;border:1.5px solid #fca5a5;border-radius:12px;background:#ffffff;">
+              <button type="button" class="btn-scar-action btn-add-scar" id="btnDossierAddScarAction" title="Đánh thêm 1 sẹo">
+                <span>+1 Sẹo 🪓</span>
+              </button>
+              <button type="button" class="btn-scar-action btn-remove-scar" id="btnDossierRemoveScarAction" title="Ân xá / Xóa bớt 1 sẹo" ${currentScars <= 0 ? 'disabled' : ''}>
+                <span>-1 Ân Xá 🛡️</span>
+              </button>
+            </div>
+          ` : `
+            <div style="font-size:11.5px;color:#64748b;background:#f8fafc;padding:6px 10px;border-radius:8px;border:1px solid #e2e8f0;margin-bottom:10px;">
+              🔒 Chế độ xem thành viên: Chỉ Quản Trị Viên đăng nhập mới có quyền đánh sẹo hoặc ân xá.
+            </div>
+          `}
+
+          <!-- Lịch Sử Sẹo & Vi Phạm -->
+          <div>
+            <div style="font-size:11.5px;font-weight:800;color:#7f1d1d;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;">
+              <span>Lịch sử các vết sẹo &amp; vi phạm:</span>
+              <span id="dossierHistCount" style="font-size:11px;color:#94a3b8;">${scarHistoryList.length} lần</span>
+            </div>
+            <div id="dossierHistList" style="display:flex;flex-direction:column;gap:5px;max-height:130px;overflow-y:auto;padding-right:2px;">
+              ${!scarHistoryList.length 
+                ? '<div style="font-size:11.5px;color:#94a3b8;font-style:italic;padding:4px 0;">Chưa có vết sẹo hay vi phạm nào.</div>'
+                : scarHistoryList.slice().reverse().map((sc, revIdx) => {
+                    const origIdx = scarHistoryList.length - 1 - revIdx;
+                    return `
+                      <div class="scar-history-item">
+                        <div style="display:flex;flex-direction:column;gap:1px;flex:1;overflow:hidden;">
+                          <span class="reason" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🪓 ${escHtml(sc.reason || 'Kỷ luật Crew')}</span>
+                          <span class="meta">${escHtml(sc.date || '')} ${escHtml(sc.time || '')} • Bởi: <b>${escHtml(sc.admin || 'Admin')}</b></span>
+                        </div>
+                        ${canManageScars ? `<button type="button" class="btn-del-scar" data-idx="${origIdx}" title="Xóa bản ghi sẹo này">✕</button>` : ''}
+                      </div>
+                    `;
+                  }).join('')
+              }
+            </div>
+          </div>
         </div>
 
         <!-- 5 Chuyến Dọn Nhà Gần Nhất (Bright Solid White Table Container) -->
@@ -1436,7 +1523,7 @@ try {
 
         <!-- Actions Footer -->
         <div style="display: flex; justify-content: flex-end; align-items: center; padding: 4px 4px 2px; gap: 10px;">
-          ${(typeof isAdmin === 'function' && isAdmin()) ? `<button type="button" class="btn-scar-action btn-add-scar" id="btnDossierEditScar" style="margin-right:auto;">🪓 Đánh Sẹo / Kỷ Luật</button>` : ''}
+          ${canManageScars ? `<button type="button" class="btn-scar-action btn-remove-scar" id="btnDossierEditBasic" style="margin-right:auto;">✏️ Sửa Tên &amp; Nhà</button>` : ''}
           <button type="button" class="dossier-close-btn" id="btnDossierClose">
             ✕ Đóng Thẻ
           </button>
@@ -1447,6 +1534,213 @@ try {
 
     document.body.appendChild(overlay);
 
+    function updateDossierScarUI() {
+      const exp = currentScars >= 3;
+      const pill = overlay.querySelector('#dossierScarPill');
+      if (pill) {
+        if (exp) {
+          pill.className = 'scar-counter-pill expelled';
+          pill.innerHTML = `⛔ ĐÃ ĐUỔI (${currentScars}/3)`;
+        } else if (currentScars === 2) {
+          pill.className = 'scar-counter-pill warn2';
+          pill.innerHTML = '🪓🪓 2/3 Sẹo';
+        } else if (currentScars === 1) {
+          pill.className = 'scar-counter-pill warn1';
+          pill.innerHTML = '🪓 1/3 Sẹo';
+        } else {
+          pill.className = 'scar-counter-pill clean';
+          pill.innerHTML = '🟢 0/3 Sẹo (Sạch)';
+        }
+      }
+
+      // Segments
+      const s1 = overlay.querySelector('#dossierSeg1');
+      const s2 = overlay.querySelector('#dossierSeg2');
+      const s3 = overlay.querySelector('#dossierSeg3');
+      if (s1) s1.className = 'scar-seg' + (currentScars >= 1 ? ' active-1' : '');
+      if (s2) s2.className = 'scar-seg' + (currentScars >= 2 ? ' active-2' : '');
+      if (s3) s3.className = 'scar-seg' + (currentScars >= 3 ? ' active-3' : '');
+
+      // Banner
+      const banner = overlay.querySelector('#dossierExpelledBanner');
+      if (banner) banner.style.display = exp ? 'block' : 'none';
+
+      // Remove button disabled state
+      const btnRem = overlay.querySelector('#btnDossierRemoveScarAction');
+      if (btnRem) btnRem.disabled = currentScars <= 0 && scarHistoryList.length === 0;
+
+      // Header badge
+      const headerBadge = overlay.querySelector('#dossierHeaderScarBadge');
+      if (headerBadge) {
+        if (exp) {
+          headerBadge.innerHTML = '<span style="background:#fee2e2;color:#991b1b;font-size:11px;font-weight:900;padding:3px 9px;border-radius:8px;border:1.5px solid #ef4444;text-transform:uppercase;">⛔ ĐÃ BỊ ĐUỔI (3/3 SẸO)</span>';
+        } else if (currentScars > 0) {
+          headerBadge.innerHTML = `<span style="background:#fffbeb;color:#b45309;font-size:11px;font-weight:800;padding:3px 9px;border-radius:8px;border:1.5px solid #fde68a;">🪓 ${currentScars}/3 SẸO KỶ LUẬT</span>`;
+        } else {
+          headerBadge.innerHTML = '';
+        }
+      }
+
+      // History count & list
+      const hCount = overlay.querySelector('#dossierHistCount');
+      if (hCount) hCount.textContent = `${scarHistoryList.length} lần`;
+
+      const hList = overlay.querySelector('#dossierHistList');
+      if (hList) {
+        if (!scarHistoryList.length) {
+          hList.innerHTML = '<div style="font-size:11.5px;color:#94a3b8;font-style:italic;padding:4px 0;">Chưa có vết sẹo hay vi phạm nào.</div>';
+        } else {
+          hList.innerHTML = scarHistoryList.slice().reverse().map((sc, revIdx) => {
+            const origIdx = scarHistoryList.length - 1 - revIdx;
+            return `
+              <div class="scar-history-item">
+                <div style="display:flex;flex-direction:column;gap:1px;flex:1;overflow:hidden;">
+                  <span class="reason" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🪓 ${escHtml(sc.reason || 'Kỷ luật Crew')}</span>
+                  <span class="meta">${escHtml(sc.date || '')} ${escHtml(sc.time || '')} • Bởi: <b>${escHtml(sc.admin || 'Admin')}</b></span>
+                </div>
+                ${canManageScars ? `<button type="button" class="btn-del-scar" data-idx="${origIdx}" title="Xóa bản ghi sẹo này">✕</button>` : ''}
+              </div>
+            `;
+          }).join('');
+
+          if (canManageScars) {
+            hList.querySelectorAll('.btn-del-scar').forEach(btn => {
+              btn.onclick = async (e) => {
+                e.stopPropagation();
+                const idx = Number(btn.dataset.idx);
+                if (confirm('Đại ca có chắc chắn muốn xoá bản ghi sẹo này không?')) {
+                  scarHistoryList.splice(idx, 1);
+                  if (currentScars > 0) currentScars--;
+                  await saveScarChanges('Xóa bản ghi sẹo');
+                }
+              };
+            });
+          }
+        }
+      }
+    }
+
+    async function saveScarChanges(actionName) {
+      const exp = currentScars >= 3;
+      try {
+        const updates = {};
+        updates[`users/${userId}/scars`] = currentScars;
+        updates[`users/${userId}/isExpelled`] = exp;
+        updates[`users/${userId}/scarHistory`] = scarHistoryList;
+        if (exp && !(user && user.isExpelled)) {
+          updates[`users/${userId}/expelledAt`] = new Date().toISOString();
+        } else if (!exp && user && user.isExpelled) {
+          updates[`users/${userId}/expelledAt`] = null;
+        }
+
+        await db.ref().update(updates);
+        if (user) {
+          user.scars = currentScars;
+          user.isExpelled = exp;
+          user.scarHistory = scarHistoryList;
+        }
+
+        if (exp && !(user && user.isExpelled)) {
+          logAudit('EXPEL_MEMBER', 'Đuổi Thành Viên (3 Sẹo)', `Thành viên "${memberName}" đã nhận đủ 3 sẹo và BỊ ĐUỔI THẲNG khỏi Crew Lưới Búa.`);
+        } else {
+          logAudit('DISCIPLINE_SCAR', 'Cập Nhật Kỷ Luật Sẹo', `${actionName} cho "${memberName}": ${currentScars}/3 sẹo (${scarHistoryList.length} bản ghi)`);
+        }
+
+        updateDossierScarUI();
+        if (typeof renderMembersTable === 'function') renderMembersTable();
+        if (typeof renderStatsTable === 'function' && typeof lastTotalBinh !== 'undefined') renderStatsTable(lastTotalBinh);
+
+        if (window.SoundFX && typeof window.SoundFX.playClick === 'function') {
+          window.SoundFX.playClick();
+        }
+      } catch (e) {
+        alert('❌ Lỗi cập nhật sẹo: ' + e.message);
+      }
+    }
+
+    if (canManageScars) {
+      // Add scar handler
+      const btnAdd = overlay.querySelector('#btnDossierAddScarAction');
+      if (btnAdd) {
+        btnAdd.onclick = async () => {
+          const rInp = overlay.querySelector('#dossierScarReason');
+          const reason = (rInp?.value || '').trim();
+          if (!reason) {
+            alert('⚠️ Đại ca vui lòng nhập lý do đánh sẹo!');
+            rInp?.focus();
+            return;
+          }
+
+          const willExpel = (currentScars + 1) >= 3;
+          if (willExpel) {
+            const ok = confirm(`⚠️ CẢNH BÁO QUY CHẾ 3 SẸO:\nĐánh thêm sẹo này sẽ làm thành viên "${memberName}" đạt 3/3 SẸO và BỊ ĐUỔI THẲNG KHỎI CREW LƯỚI BÚA!\n\nLý do: "${reason}"\n\nĐại ca có chắc chắn muốn thi hành kỷ luật đuổi không?`);
+            if (!ok) return;
+          }
+
+          const adminName = sessionStorage.getItem('luoibua_admin_name') || 'Nguyễn Trí';
+          const now = new Date();
+          const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+          scarHistoryList.push({
+            id: 'scar_' + Date.now(),
+            reason: reason,
+            admin: adminName,
+            date: todayStr(),
+            time: timeStr,
+            timestamp: Date.now()
+          });
+          currentScars++;
+          if (rInp) rInp.value = '';
+
+          await saveScarChanges(`Đánh +1 sẹo (Lý do: ${reason})`);
+
+          if (currentScars >= 3) {
+            alert(`⛔ ĐÃ THI HÀNH KỶ LUẬT:\nThành viên "${memberName}" đã đạt 3/3 sẹo và CHÍNH THỨC BỊ ĐUỔI THẲNG KHỎI CREW LƯỚI BÚA!`);
+          } else {
+            alert(`✅ Đã đánh +1 sẹo cho "${memberName}". Hiện có ${currentScars}/3 sẹo.`);
+          }
+        };
+      }
+
+      // Remove scar handler
+      const btnRem = overlay.querySelector('#btnDossierRemoveScarAction');
+      if (btnRem) {
+        btnRem.onclick = async () => {
+          if (currentScars <= 0 && !scarHistoryList.length) {
+            alert('Thành viên này hiện tại trong sạch (0 sẹo), không có sẹo nào để xoá!');
+            return;
+          }
+          if (!confirm(`Đại ca có muốn ân xá (-1 sẹo) cho thành viên "${memberName}" không?`)) return;
+          if (scarHistoryList.length) {
+            scarHistoryList.pop();
+          }
+          if (currentScars > 0) currentScars--;
+          await saveScarChanges('Ân xá (-1 sẹo)');
+          alert(`🛡️ Đã ân xá cho "${memberName}". Hiện còn ${currentScars}/3 sẹo.`);
+        };
+      }
+
+      // Initial history delete bindings
+      overlay.querySelectorAll('#dossierHistList .btn-del-scar').forEach(btn => {
+        btn.onclick = async (e) => {
+          e.stopPropagation();
+          const idx = Number(btn.dataset.idx);
+          if (confirm('Đại ca có chắc chắn muốn xoá bản ghi sẹo này không?')) {
+            scarHistoryList.splice(idx, 1);
+            if (currentScars > 0) currentScars--;
+            await saveScarChanges('Xóa bản ghi sẹo');
+          }
+        };
+      });
+
+      if (overlay.querySelector('#btnDossierEditBasic')) {
+        overlay.querySelector('#btnDossierEditBasic').onclick = () => {
+          closeDossier();
+          if (typeof editMember === 'function') editMember(userId);
+        };
+      }
+    }
+
     function closeDossier() {
       overlay.style.opacity = '0';
       overlay.style.transition = 'opacity 0.15s ease';
@@ -1455,12 +1749,6 @@ try {
 
     overlay.querySelector('#closeDossierBtn').onclick = closeDossier;
     overlay.querySelector('#btnDossierClose').onclick = closeDossier;
-    if (overlay.querySelector('#btnDossierEditScar')) {
-      overlay.querySelector('#btnDossierEditScar').onclick = () => {
-        closeDossier();
-        if (typeof editMember === 'function') editMember(userId);
-      };
-    }
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) closeDossier();
     });
