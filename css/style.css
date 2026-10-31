@@ -6250,6 +6250,10 @@ html, body {
     gap: 6px !important;
   }
 
+  .admin-name-tag {
+    display: none;
+  }
+
   .nav-action-cluster {
     display: flex !important;
     flex-wrap: wrap !important;
@@ -6259,16 +6263,17 @@ html, body {
     box-sizing: border-box !important;
   }
 
-  /* Row 1: Search button (takes majority width) + Sound button (circular 3D pill) */
+  /* Row 1: Search button (flex: 1) + Sound button (38px 3D circle) */
   .btn-spotlight-nav {
+    order: 1 !important;
     flex: 1 1 calc(100% - 46px) !important;
     height: 38px !important;
-    padding: 0 12px !important;
+    padding: 0 14px !important;
     border-radius: 999px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: flex-start !important;
-    gap: 7px !important;
+    gap: 8px !important;
     box-sizing: border-box !important;
   }
 
@@ -6284,6 +6289,7 @@ html, body {
   }
 
   .btn-sound-toggle {
+    order: 2 !important;
     flex: 0 0 38px !important;
     width: 38px !important;
     height: 38px !important;
@@ -6297,16 +6303,13 @@ html, body {
     font-size: 15px !important;
   }
 
-  /* Row 2: Two equal 3D action buttons */
-  .btn-nav-export,
-  .btn-admin-login,
-  .btn-nav-member,
-  .btn-nav-reset,
-  .btn-nav-logout {
+  /* Row 2: View Member (order 3) & Export Report (order 4) */
+  .btn-nav-member {
+    order: 3 !important;
     flex: 1 1 calc(50% - 4px) !important;
     height: 38px !important;
-    padding: 0 8px !important;
-    font-size: 12px !important;
+    padding: 0 10px !important;
+    font-size: 12.5px !important;
     font-weight: 850 !important;
     border-radius: 999px !important;
     display: flex !important;
@@ -6317,12 +6320,89 @@ html, body {
     white-space: nowrap !important;
   }
 
-  .nav-admin-profile {
-    flex: 1 1 100% !important;
-    height: 36px !important;
+  .btn-nav-export {
+    order: 4 !important;
+    flex: 1 1 calc(50% - 4px) !important;
+    height: 38px !important;
+    padding: 0 10px !important;
+    font-size: 12.5px !important;
+    font-weight: 850 !important;
     border-radius: 999px !important;
+    display: flex !important;
+    align-items: center !important;
     justify-content: center !important;
+    text-align: center !important;
     box-sizing: border-box !important;
+    white-space: nowrap !important;
+  }
+
+  /* Member Dashboard Login Button (order 4 in member view) */
+  .btn-admin-login {
+    order: 4 !important;
+    flex: 1 1 calc(50% - 4px) !important;
+    height: 38px !important;
+    padding: 0 10px !important;
+    font-size: 12.5px !important;
+    font-weight: 850 !important;
+    border-radius: 999px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+  }
+
+  /* Row 3: Reset Cycle (order 5) & Logout (order 6) - Perfect 50/50 Pair! */
+  .btn-nav-reset {
+    order: 5 !important;
+    flex: 1 1 calc(50% - 4px) !important;
+    height: 38px !important;
+    padding: 0 10px !important;
+    font-size: 12.5px !important;
+    font-weight: 850 !important;
+    border-radius: 999px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+  }
+
+  .btn-nav-logout {
+    order: 6 !important;
+    flex: 1 1 calc(50% - 4px) !important;
+    height: 38px !important;
+    padding: 0 10px !important;
+    font-size: 12.5px !important;
+    font-weight: 850 !important;
+    border-radius: 999px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+  }
+
+  /* Hide admin profile fake button from header on mobile (shown in top title & sidebar) */
+  .nav-admin-profile {
+    display: none !important;
+  }
+
+  .admin-name-tag {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    font-size: 11px;
+    font-weight: 850;
+    color: #b45309;
+    margin-left: 6px;
   }
 
   /* --- 4 KPI CARDS & SUMMARY STRIPS (ZERO CLIPPING, PERFECT 2-COL FIT) --- */
