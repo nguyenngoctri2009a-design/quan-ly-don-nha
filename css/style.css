@@ -6147,3 +6147,290 @@ button:active,
     transform: translateY(0);
   }
 }
+
+
+/* ==========================================================================
+   MASTER MOBILE RESPONSIVE ENGINE (ZERO HORIZONTAL OVERFLOW, PERFECT 3D PILLS)
+   Applied for all mobile viewports: iPhone, Android, Foldables, Tablets
+   ========================================================================== */
+
+/* 1. Global Viewport Clamping */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+}
+
+.app-layout {
+  width: 100% !important;
+  max-width: 100vw !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+}
+
+.app-body-container,
+.app-main-content,
+.dashboard-main-grid,
+.dashboard-left,
+.dashboard-right,
+.view-section {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.card,
+.analytics-card,
+.quick-add-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.table-responsive {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* 2. Responsive Breakpoint: Mobile & Small Screens (<= 768px) */
+@media (max-width: 768px) {
+  .app-layout {
+    padding: 6px 8px 36px !important;
+  }
+
+  /* --- TOP HEADER NAVBAR & 3D ACTION BUTTONS --- */
+  .navbar {
+    padding: 8px 10px !important;
+    border-radius: 18px !important;
+    gap: 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .nav-left-group {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+  }
+
+  .brand-title {
+    font-size: 15px !important;
+  }
+
+  .brand-logo-img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .brand-sub,
+  .nav-status-cluster,
+  .nav-divider {
+    display: none !important;
+  }
+
+  .nav-meta {
+    width: 100% !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+
+  .nav-action-cluster {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 7px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Row 1: Search button (takes majority width) + Sound button (circular 3D pill) */
+  .btn-spotlight-nav {
+    flex: 1 1 calc(100% - 46px) !important;
+    height: 38px !important;
+    padding: 0 12px !important;
+    border-radius: 999px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 7px !important;
+    box-sizing: border-box !important;
+  }
+
+  .btn-spotlight-nav .spotlight-nav-label {
+    display: inline-block !important;
+    font-size: 13px !important;
+    font-weight: 850 !important;
+    color: #0891b2 !important;
+  }
+
+  .btn-spotlight-nav .spotlight-kbd {
+    display: none !important;
+  }
+
+  .btn-sound-toggle {
+    flex: 0 0 38px !important;
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    font-size: 15px !important;
+  }
+
+  /* Row 2: Two equal 3D action buttons */
+  .btn-nav-export,
+  .btn-admin-login,
+  .btn-nav-member,
+  .btn-nav-reset,
+  .btn-nav-logout {
+    flex: 1 1 calc(50% - 4px) !important;
+    height: 38px !important;
+    padding: 0 8px !important;
+    font-size: 12px !important;
+    font-weight: 850 !important;
+    border-radius: 999px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+  }
+
+  .nav-admin-profile {
+    flex: 1 1 100% !important;
+    height: 36px !important;
+    border-radius: 999px !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* --- 4 KPI CARDS & SUMMARY STRIPS (ZERO CLIPPING, PERFECT 2-COL FIT) --- */
+  .kpi-row,
+  .fund-stat-row,
+  .analytics-mini-row {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin-bottom: 12px !important;
+  }
+
+  .records-summary-strip {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .kpi-card,
+  .fund-stat-card,
+  .summary-mini-card,
+  .analytics-mini-item {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    padding: 9px 8px !important;
+    gap: 7px !important;
+    border-radius: 16px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  .kpi-icon,
+  .mini-icon {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    font-size: 16px !important;
+    border-radius: 10px !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .kpi-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .kpi-label,
+  .mini-label {
+    font-size: 9.5px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin-bottom: 2px !important;
+  }
+
+  .kpi-value,
+  .kpi-value-name,
+  .mini-val {
+    font-size: 15px !important;
+    font-weight: 900 !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .kpi-sub {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin-top: 2px !important;
+  }
+
+  /* --- CHARTS & CARDS FIT --- */
+  .chart-art-wrapper,
+  .chart-art-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 8px 6px !important;
+    border-radius: 16px !important;
+  }
+
+  #chartContainer {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 250px !important;
+  }
+
+  .card {
+    padding: 12px 10px !important;
+    border-radius: 16px !important;
+  }
+}

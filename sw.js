@@ -1,5 +1,5 @@
 // Service Worker cho PWA "Thống Kê Nhập Nhà" - Crew Lưới Búa
-const CACHE_NAME = 'tknn-pwa-v20261031_12_score10';
+const CACHE_NAME = 'tknn-pwa-v20261031_14_mobile_perfect';
 const STATIC_ASSETS = [
   './',
   './index.html',
