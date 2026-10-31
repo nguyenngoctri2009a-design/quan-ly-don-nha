@@ -2028,6 +2028,13 @@ function renderColumnChart() {
             [1, '#06b6d4']
           ]
         },
+        states: {
+          hover: {
+            brightness: 0.22,
+            borderColor: '#22d3ee',
+            borderWidth: 2.5
+          }
+        },
         borderRadius: 20,
         pointPadding: 0.12,
         groupPadding: 0.08,

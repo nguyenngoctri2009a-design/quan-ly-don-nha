@@ -6009,3 +6009,141 @@ button, a, input, select, .sidebar-nav-item, .view-mode-btn, .filter-pill {
     -webkit-font-smoothing: subpixel-antialiased;
   }
 }
+
+/* ==========================================================================
+   10/10 PERFECT UPGRADE: 3D SOFT UI + GLASSMORPHISM LIGHT MODE SUPREME
+   ========================================================================== */
+
+/* 1. Background: Light Mode Premium Soft Ambient Glow */
+body {
+  background: 
+    radial-gradient(at 0% 0%, rgba(224, 242, 254, 0.85) 0px, transparent 55%),
+    radial-gradient(at 100% 0%, rgba(243, 232, 255, 0.75) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(220, 252, 231, 0.6) 0px, transparent 55%),
+    #f0f5fc !important;
+  background-attachment: fixed !important;
+}
+
+body::before {
+  opacity: 0.35 !important;
+}
+
+/* 2. Nút bấm 3D Xúc giác cơ học (Super 3D Tactile Buttons) */
+button,
+.btn-nav-export,
+.btn-export-report,
+.btn-export-csv,
+.btn-clear-filter,
+.btn-spotlight-nav,
+.btn-sound-toggle,
+.shield-badge,
+.btn-admin-login,
+.btn-install-pc,
+.btn-sidebar-toggle,
+.sidebar-action-pill,
+.view-mode-btn,
+.pg-btn,
+.custom-modal-actions button {
+  box-shadow: 
+    0 8px 20px -3px rgba(148, 163, 184, 0.42),
+    0 3px 8px -2px rgba(15, 23, 42, 0.05),
+    inset 0 2px 2.5px #ffffff,
+    inset 0 -2.5px 4px rgba(165, 180, 252, 0.22) !important;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+button:hover,
+.btn-nav-export:hover,
+.btn-export-report:hover,
+.btn-export-csv:hover,
+.btn-clear-filter:hover,
+.btn-spotlight-nav:hover,
+.btn-sound-toggle:hover,
+.shield-badge:hover,
+.btn-admin-login:hover,
+.btn-install-pc:hover,
+.btn-sidebar-toggle:hover,
+.sidebar-action-pill:hover,
+.view-mode-btn:hover,
+.pg-btn:hover {
+  transform: translateY(-3.5px) scale(1.02) !important;
+  box-shadow: 
+    0 16px 36px -4px rgba(148, 163, 184, 0.52),
+    0 6px 14px -2px rgba(15, 23, 42, 0.08),
+    inset 0 2.5px 3px #ffffff !important;
+}
+
+button:active,
+.btn-nav-export:active,
+.btn-export-report:active,
+.btn-export-csv:active,
+.btn-clear-filter:active,
+.btn-spotlight-nav:active,
+.btn-sound-toggle:active,
+.shield-badge:active,
+.btn-admin-login:active,
+.btn-install-pc:active,
+.btn-sidebar-toggle:active,
+.sidebar-action-pill:active,
+.view-mode-btn:active,
+.pg-btn:active {
+  transform: translateY(2.5px) scale(0.97) !important;
+  box-shadow: 
+    0 2px 6px -1px rgba(148, 163, 184, 0.32),
+    inset 0 3px 6px rgba(100, 116, 139, 0.22) !important;
+}
+
+/* 3. Card Chiều Sâu 3D & Soft Ambient Shadows */
+.card,
+.analytics-card,
+.kpi-card,
+.sidebar-inner,
+.navbar {
+  box-shadow: 
+    0 18px 40px -8px rgba(148, 163, 184, 0.35),
+    0 6px 16px -3px rgba(15, 23, 42, 0.04),
+    inset 0 2px 2px #ffffff,
+    inset 0 -2px 3px rgba(165, 180, 252, 0.16) !important;
+}
+
+/* 4. Sidebar: Tab đang chọn nổi bật rực rỡ */
+.sidebar-nav-item.active {
+  background: 
+    linear-gradient(180deg, #ffffff 0%, #e0f2fe 100%) padding-box,
+    linear-gradient(135deg, #0284c7 0%, #06b6d4 50%, #818cf8 100%) border-box !important;
+  border: 2px solid transparent !important;
+  color: #0369a1 !important;
+  font-weight: 900 !important;
+  box-shadow: 
+    0 14px 30px -4px rgba(2, 132, 199, 0.36),
+    0 4px 10px rgba(15, 23, 42, 0.04),
+    inset 0 2px 3px #ffffff,
+    inset 0 -2px 4px rgba(2, 132, 199, 0.2) !important;
+  transform: translateX(4px) !important;
+}
+
+.sidebar-nav-item.active .nav-item-icon {
+  filter: drop-shadow(0 2px 6px rgba(2, 132, 199, 0.35));
+  transform: scale(1.1);
+}
+
+.sidebar-nav-item.active .nav-item-arrow {
+  color: #0284c7 !important;
+  transform: translateX(5px) scale(1.15) !important;
+}
+
+/* 5. Chuyển Tab Siêu Mượt (Smooth View Transition Animation) */
+.view-section:not(.hidden) {
+  animation: tabFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
