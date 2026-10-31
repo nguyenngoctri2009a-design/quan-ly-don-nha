@@ -8160,3 +8160,54 @@ window.addEventListener('DOMContentLoaded', () => {
 })();
 
 ;
+
+
+/* ==========================================================================
+   TOUCH ZOOM LOCK CONTROLLER (CHỐNG PHÓNG TO THU NHỎ, CHO PHÉP VUỐT / KÉO)
+   ========================================================================== */
+(function() {
+  // 1. Chống pinch-to-zoom 2 ngón tay trên iOS & Android
+  document.addEventListener('touchstart', function(e) {
+    if (e.touches && e.touches.length > 1) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  // 2. Chống Safari iOS gesture zoom
+  document.addEventListener('gesturestart', function(e) {
+    e.preventDefault();
+  }, { passive: false });
+  document.addEventListener('gesturechange', function(e) {
+    e.preventDefault();
+  }, { passive: false });
+  document.addEventListener('gestureend', function(e) {
+    e.preventDefault();
+  }, { passive: false });
+
+  // 3. Chống double-tap to zoom (nhấn đúp phóng to) nhưng không cản trở tương tác nút/input
+  var lastTouchEnd = 0;
+  document.addEventListener('touchend', function(e) {
+    var now = Date.now();
+    if (now - lastTouchEnd <= 300) {
+      var target = e.target;
+      var isInput = target && (target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'TEXTAREA' || target.tagName === 'BUTTON' || target.closest('button') || target.closest('a'));
+      if (!isInput) {
+        e.preventDefault();
+      }
+    }
+    lastTouchEnd = now;
+  }, { passive: false });
+
+  // 4. Chống Ctrl + Scroll / Phím tắt Zoom trên máy tính
+  document.addEventListener('wheel', function(e) {
+    if (e.ctrlKey) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '_')) {
+      e.preventDefault();
+    }
+  });
+})();
