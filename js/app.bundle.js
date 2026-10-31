@@ -5144,7 +5144,8 @@ async function sendViaDiscordWebhook({ webhookUrl, content, embeds, imageBase64,
   }
 }
 
-async function sendDiscordReport({ type, targetChannelId, title, date, stats, imageBase64, customContent, extraFile }) {
+async function sendDiscordReport({ type, targetChannelId, title, date, stats, imageBase64, imageDataUrl, description, customContent, extraFile }) {
+  const finalImage = imageBase64 || imageDataUrl;
   if (!isAdmin()) {
     return {
       success: false,
@@ -5164,7 +5165,7 @@ async function sendDiscordReport({ type, targetChannelId, title, date, stats, im
       webhookUrl,
       content: messageContent,
       embeds,
-      imageBase64,
+      imageBase64: finalImage,
       filename,
       extraFile
     });
@@ -5177,7 +5178,8 @@ async function sendDiscordReport({ type, targetChannelId, title, date, stats, im
     title,
     date,
     stats,
-    imageBase64,
+    imageBase64: finalImage,
+    description,
     customContent,
     extraFile
   });
@@ -7773,6 +7775,11 @@ $('manualBackupBtn')?.addEventListener('click', (e) => triggerManualBackup(e.cur
    Thiết kế chuẩn T1 Pro / Modern Elite 3D: Nền trắng sáng, góc viền thanh mảnh,
    Huy chương 3D cực đại (+20%) Vàng/Bạc/Đồng, Dải Thống Kê Tri-Metric Ribbon Siêu Sang.
    ========================================================================== */
+/* ==========================================================================
+   SECTION 2: BẰNG VINH DANH THÀNH TÍCH & BÁO CÁO DOANH SỐ (MODERN ELITE 3D - 10/10 EDITION)
+   Thiết kế chuẩn T1 Pro / Modern Elite 3D: Nền trắng sáng, góc viền thanh mảnh,
+   Huy chương 3D cực đại (+20%) Vàng/Bạc/Đồng, Dải Thống Kê Tri-Metric Ribbon Siêu Sang.
+   ========================================================================== */
 $('exportImgTopBtn')?.addEventListener('click', openExportModal);
 
 function openExportModal() {
@@ -8413,11 +8420,19 @@ async function generateCertificateImage(targetUserId) {
         btn.disabled = true;
 
         const res = await (window.sendDiscordReport || sendDiscordReport)({
-          type: 'weekly',
-          targetChannelId: '1561985096943276042',
-          title: `🏆 VINH DANH THÀNH TÍCH CHIẾN BINH: ${memberName}`,
-          description: `🎖️ Trân trọng vinh danh chiến binh **${memberName}** đã xuất sắc đạt **${roundedHouses} nhà** (#${rank}) toàn hệ thống Crew Lưỡi Búa!`,
-          imageDataUrl: dataUrl
+          type: 'cert',
+          targetChannelId: '1566023759343779871',
+          title: `🏆 BẰNG VINH DANH THÀNH TÍCH — ${memberName}`,
+          description: `🎖️ Trân trọng vinh danh chiến binh **${memberName}** đã xuất sắc đạt kỷ lục **${roundedHouses} căn nhà** (${rankBadgeText}) toàn hệ thống Crew Lưỡi Búa!`,
+          imageBase64: dataUrl,
+          imageDataUrl: dataUrl,
+          stats: {
+            memberName: memberName,
+            houses: roundedHouses,
+            totalHouses: roundedHouses,
+            rank: rank,
+            rankBadge: rankBadgeText
+          }
         });
 
         btn.disabled = false;
@@ -8798,6 +8813,7 @@ async function generateExportImage(customTitle) {
   }
 }
 window.generateExportImage = generateExportImage;
+
 
 
 
