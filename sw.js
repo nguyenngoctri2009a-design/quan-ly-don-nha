@@ -1,5 +1,5 @@
 // Service Worker cho PWA "Thống Kê Nhập Nhà" - Crew Lưới Búa
-const CACHE_NAME = 'tknn-pwa-v20261031_25_gold_certificate';
+const CACHE_NAME = 'v20261031_26_bright_luxury_export';
 const STATIC_ASSETS = [
   './',
   './index.html',
