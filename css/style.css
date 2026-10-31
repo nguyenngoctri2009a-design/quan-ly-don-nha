@@ -6719,3 +6719,247 @@ html, body {
 input, select, textarea {
   font-size: 16px !important;
 }
+
+
+
+/* ==========================================================================
+   CREW DISCIPLINE & SCAR SYSTEM (HỆ THỐNG ĐÁNH SẸO - 3 SẸO ĐUỔI THẲNG)
+   ========================================================================== */
+.scar-management-card {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(254, 242, 242, 0.95) 0%, rgba(255, 241, 242, 0.9) 100%);
+  border: 1.5px solid #fecaca;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.08), inset 0 1px 2px #ffffff;
+  position: relative;
+}
+
+.scar-counter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.scar-counter-pill.clean {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1.2px solid #a7f3d0;
+}
+
+.scar-counter-pill.warn1 {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1.2px solid #fde68a;
+}
+
+.scar-counter-pill.warn2 {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1.2px solid #fdba74;
+}
+
+.scar-counter-pill.expelled {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1.5px solid #f87171;
+  animation: pulseExpelled 1.5s infinite;
+}
+
+@keyframes pulseExpelled {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { transform: scale(1.04); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+}
+
+.scar-tracker-track {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.scar-seg {
+  padding: 8px 6px;
+  border-radius: 12px;
+  text-align: center;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.scar-seg span {
+  font-size: 13px;
+  font-weight: 900;
+  color: #64748b;
+}
+
+.scar-seg small {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.scar-seg.active-1 {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border-color: #f59e0b;
+}
+.scar-seg.active-1 span { color: #b45309; }
+.scar-seg.active-1 small { color: #d97706; }
+
+.scar-seg.active-2 {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border-color: #f97316;
+}
+.scar-seg.active-2 span { color: #c2410c; }
+.scar-seg.active-2 small { color: #ea580c; }
+
+.scar-seg.active-3 {
+  background: linear-gradient(135deg, #fee2e2, #fecdd3);
+  border-color: #ef4444;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+.scar-seg.active-3 span { color: #991b1b; }
+.scar-seg.active-3 small { color: #dc2626; font-weight: 900; }
+
+.btn-scar-action {
+  padding: 8px 12px !important;
+  font-size: 12.5px !important;
+  font-weight: 850 !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+}
+
+.btn-add-scar {
+  background: linear-gradient(180deg, #fee2e2 0%, #fecaca 100%) padding-box,
+              linear-gradient(135deg, #ef4444, #f43f5e) border-box !important;
+  border: 1.5px solid transparent !important;
+  color: #991b1b !important;
+}
+.btn-add-scar:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3) !important;
+}
+
+.btn-remove-scar {
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%) padding-box,
+              linear-gradient(135deg, #cbd5e1, #94a3b8) border-box !important;
+  border: 1.2px solid transparent !important;
+  color: #475569 !important;
+}
+.btn-remove-scar:hover:not(:disabled) {
+  transform: translateY(-2px) !important;
+  color: #0f172a !important;
+}
+.btn-remove-scar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tag-scar-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 3px 9px !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  color: #7f1d1d !important;
+  background: #ffffff !important;
+  border: 1px solid #fca5a5 !important;
+  border-radius: 999px !important;
+  cursor: pointer !important;
+  transition: all 0.18s ease !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+.tag-scar-btn:hover {
+  background: #fee2e2 !important;
+  border-color: #ef4444 !important;
+  transform: translateY(-1px) !important;
+}
+
+.scar-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: #ffffff;
+  border: 1px solid #fee2e2;
+  border-radius: 9px;
+  font-size: 11.5px;
+}
+.scar-history-item .reason {
+  color: #991b1b;
+  font-weight: 800;
+}
+.scar-history-item .meta {
+  color: #94a3b8;
+  font-size: 10.5px;
+}
+.scar-history-item .btn-del-scar {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+/* Badges on table rows */
+.badge-scar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2.5px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.badge-scar-clean {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.badge-scar-warn {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.badge-scar-danger {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fdba74;
+}
+
+.badge-scar-expelled {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1.5px solid #ef4444;
+  font-weight: 900;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.25);
+}
+
+.btn-act-scar {
+  background: linear-gradient(180deg, #fee2e2 0%, #fecaca 100%) padding-box,
+              linear-gradient(135deg, #ef4444, #f43f5e) border-box !important;
+  border: 1.2px solid transparent !important;
+  color: #991b1b !important;
+  font-weight: 850 !important;
+}

@@ -1302,6 +1302,14 @@ try {
       .slice(0, 5);
 
     const rank = getRankInfo(roundedHouses);
+    const userScars = Number(user ? user.scars : 0) || 0;
+    const isExpelled = userScars >= 3 || !!(user && user.isExpelled);
+    let scarBadgeDossier = '';
+    if (isExpelled) {
+      scarBadgeDossier = '<span style="background:#fee2e2;color:#991b1b;font-size:11px;font-weight:900;padding:3px 9px;border-radius:8px;border:1.5px solid #ef4444;text-transform:uppercase;">⛔ ĐÃ BỊ ĐUỔI (3/3 SẸO)</span>';
+    } else if (userScars > 0) {
+      scarBadgeDossier = `<span style="background:#fffbeb;color:#b45309;font-size:11px;font-weight:800;padding:3px 9px;border-radius:8px;border:1.5px solid #fde68a;">🪓 ${userScars}/3 SẸO KỶ LUẬT</span>`;
+    }
 
     // Tạo modal DOM
     const overlay = document.createElement('div');
@@ -1326,6 +1334,7 @@ try {
                 <span style="background: ${rank.bg}; color: ${rank.color}; font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 8px; border: 1.5px solid ${rank.color}; text-transform: uppercase;">
                   ${rank.title}
                 </span>
+                ${scarBadgeDossier}
               </div>
               <div style="font-size: 12.5px; color: #64748b; font-weight: 700; margin-top: 4px; display: flex; align-items: center; gap: 8px;">
                 <span>${rank.desc}</span>
@@ -1426,7 +1435,8 @@ try {
         </div>
 
         <!-- Actions Footer -->
-        <div style="display: flex; justify-content: flex-end; align-items: center; padding: 4px 4px 2px;">
+        <div style="display: flex; justify-content: flex-end; align-items: center; padding: 4px 4px 2px; gap: 10px;">
+          ${(typeof isAdmin === 'function' && isAdmin()) ? `<button type="button" class="btn-scar-action btn-add-scar" id="btnDossierEditScar" style="margin-right:auto;">🪓 Đánh Sẹo / Kỷ Luật</button>` : ''}
           <button type="button" class="dossier-close-btn" id="btnDossierClose">
             ✕ Đóng Thẻ
           </button>
@@ -1445,6 +1455,12 @@ try {
 
     overlay.querySelector('#closeDossierBtn').onclick = closeDossier;
     overlay.querySelector('#btnDossierClose').onclick = closeDossier;
+    if (overlay.querySelector('#btnDossierEditScar')) {
+      overlay.querySelector('#btnDossierEditScar').onclick = () => {
+        closeDossier();
+        if (typeof editMember === 'function') editMember(userId);
+      };
+    }
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) closeDossier();
     });
@@ -1891,7 +1907,15 @@ function renderStatsTable(totalBinh) {
     tr.innerHTML = `
       <td style="text-align:center;">${rankBadge}</td>
       <td>
-        <b style="font-size:14.5px;color:var(--text-dark);letter-spacing:-0.2px;">${escHtml(row.name)}</b>
+        ${(() => {
+          const uObj = allUsers && (allUsers[row.id] || Object.values(allUsers).find(x => x.name === row.name));
+          const uScars = Number(uObj?.scars) || 0;
+          const isExp = uScars >= 3 || !!uObj?.isExpelled;
+          let scBadge = '';
+          if (isExp) scBadge = '<span class="badge-scar badge-scar-expelled" style="margin-left:6px;font-size:10px;padding:2px 7px;">⛔ ĐÃ ĐUỔI</span>';
+          else if (uScars > 0) scBadge = `<span class="badge-scar badge-scar-warn" style="margin-left:6px;font-size:10px;padding:2px 7px;">🪓 ${uScars}/3 Sẹo</span>`;
+          return `<b style="font-size:14.5px;color:var(--text-dark);letter-spacing:-0.2px;${isExp ? 'text-decoration:line-through;color:#94a3b8;' : ''}">${escHtml(row.name)}</b>${scBadge}`;
+        })()}
       </td>
       <td>
         <span class="badge-binh">${Math.round(row.binh * 100) / 100} nhà</span>
@@ -3104,9 +3128,16 @@ function renderMemberOptions() {
   const list = Object.values(allUsers).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
   const frag = document.createDocumentFragment();
   list.forEach(u => {
+    const isExpelled = (Number(u.scars) || 0) >= 3 || !!u.isExpelled;
     const o = document.createElement('option');
     o.value = u.id;
-    o.textContent = u.name || u.username;
+    if (isExpelled) {
+      o.disabled = true;
+      o.textContent = `⛔ ${u.name || u.username} (ĐÃ ĐUỔI - 3 Sẹo)`;
+    } else {
+      const sCount = Number(u.scars) || 0;
+      o.textContent = (u.name || u.username) + (sCount > 0 ? ` [${sCount}/3 sẹo]` : '');
+    }
     frag.appendChild(o);
   });
   sel.appendChild(frag);
@@ -3408,6 +3439,19 @@ function renderMembersTable() {
     const roundedHouses = Math.round(totalBinh * 100) / 100;
     const uName = u.name || '';
     const uNameLower = uName.toLowerCase();
+    const userScars = Number(u.scars) || 0;
+    const isExpelled = userScars >= 3 || !!u.isExpelled;
+
+    let scarBadge = '';
+    if (isExpelled) {
+      scarBadge = '<span class="badge-scar badge-scar-expelled">⛔ ĐÃ ĐUỔI (3/3 Sẹo)</span>';
+    } else if (userScars === 2) {
+      scarBadge = '<span class="badge-scar badge-scar-danger">🪓🪓 2/3 Sẹo</span>';
+    } else if (userScars === 1) {
+      scarBadge = '<span class="badge-scar badge-scar-warn">🪓 1/3 Sẹo</span>';
+    } else {
+      scarBadge = '<span class="badge-scar badge-scar-clean">🟢 0/3 Sẹo</span>';
+    }
 
     // 1. Huy hiệu thứ hạng (Rank Badge)
     let rankBadge = '';
@@ -3435,7 +3479,13 @@ function renderMembersTable() {
     let avatarColor = '#92400e';
 
     let titleTag = '';
-    if (isOwner) {
+    if (isExpelled) {
+      avatarChar = '⛔';
+      avatarBg = 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)';
+      avatarBorder = '#ef4444';
+      avatarColor = '#991b1b';
+      titleTag = '<span class="member-title-tag" style="background:#fee2e2;color:#991b1b;border-color:#fca5a5;">⛔ ĐÃ BỊ ĐUỔI KHỎI CREW</span>';
+    } else if (isOwner) {
       avatarChar = '👑';
       avatarBg = 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)';
       avatarBorder = '#f59e0b';
@@ -3460,11 +3510,18 @@ function renderMembersTable() {
     const progressColor = percent >= 80 ? 'linear-gradient(90deg, #f59e0b, #ef4444)' : (percent >= 40 ? 'linear-gradient(90deg, #0284c7, #10b981)' : 'linear-gradient(90deg, #94a3b8, #64748b)');
 
     // 4. Trạng thái (Status Badge)
-    const statusBadge = totalBinh > 0 
+    const workStatusBadge = totalBinh > 0 
       ? `<span style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:#ecfdf5;color:#047857;font-size:11.5px;font-weight:800;border:1px solid #a7f3d0;"><span style="width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;"></span>Đang Nắm Nhà</span>`
       : `<span style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:#f1f5f9;color:#64748b;font-size:11.5px;font-weight:700;border:1px solid #e2e8f0;"><span style="width:7px;height:7px;border-radius:50%;background:#94a3b8;"></span>Sẵn Sàng</span>`;
 
+    const statusColHtml = isExpelled
+      ? `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;"><span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;background:#fee2e2;color:#991b1b;font-size:11.5px;font-weight:900;border:1px solid #ef4444;"><span style="width:7px;height:7px;border-radius:50%;background:#ef4444;"></span>Đã Bị Đuổi</span>${scarBadge}</div>`
+      : `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;">${workStatusBadge}${scarBadge}</div>`;
+
     const tr = document.createElement('tr');
+    if (isExpelled) {
+      tr.style.opacity = '0.75';
+    }
 
     if (isAdmin()) {
       tr.innerHTML = `
@@ -3475,7 +3532,7 @@ function renderMembersTable() {
           <div class="member-cell-wrap" title="Bấm để xem hồ sơ chiến binh">
             <div class="member-avatar-chip" style="background:${avatarBg};border-color:${avatarBorder};color:${avatarColor};">${avatarChar}</div>
             <div style="display:flex;flex-direction:column;">
-              <span class="member-name-title">${escHtml(uName)}</span>
+              <span class="member-name-title" style="${isExpelled ? 'text-decoration:line-through;color:#94a3b8;' : ''}">${escHtml(uName)}</span>
               ${titleTag}
             </div>
           </div>
@@ -3492,14 +3549,17 @@ function renderMembersTable() {
           <span class="badge-house-pill ${totalBinh > 0 ? 'has-houses' : ''}" style="cursor:pointer;" title="Bấm để xem chi tiết">🏠 ${roundedHouses} nhà</span>
         </td>
         <td style="text-align:center;">
-          ${statusBadge}
+          ${statusColHtml}
         </td>
         <td class="action-cell">
           <div class="table-actions-group">
+            <button type="button" class="btn-table-action btn-act-scar" data-act="scar" title="Đánh sẹo / Kỷ luật thành viên">
+              <span>🪓 Sẹo (${userScars}/3)</span>
+            </button>
             <button type="button" class="btn-table-action btn-act-profile" data-act="profile" title="Xem hồ sơ chi tiết">
               <span>👤 Hồ sơ</span>
             </button>
-            <button type="button" class="btn-table-action btn-act-edit" data-act="edit" title="Chỉnh sửa tên" aria-label="Sửa">
+            <button type="button" class="btn-table-action btn-act-edit" data-act="edit" title="Chỉnh sửa tên & tổng nhà" aria-label="Sửa">
               <span>✏️ Sửa</span>
             </button>
             <button type="button" class="btn-table-action btn-act-del" data-act="del" title="Xóa khỏi danh sách" aria-label="Xóa">
@@ -3511,6 +3571,7 @@ function renderMembersTable() {
       tr.querySelector('.member-cell-wrap').onclick = () => window.openMemberProfileModal && window.openMemberProfileModal(u.id);
       tr.querySelector('.badge-house-pill').onclick = () => window.openMemberProfileModal && window.openMemberProfileModal(u.id);
       tr.querySelector('[data-act="profile"]').onclick = () => window.openMemberProfileModal && window.openMemberProfileModal(u.id);
+      tr.querySelector('[data-act="scar"]').onclick = () => editMember(u.id);
       tr.querySelector('[data-act="edit"]').onclick = () => editMember(u.id);
       tr.querySelector('[data-act="del"]').onclick = () => deleteMember(u.id);
     } else {
@@ -3642,7 +3703,7 @@ async function deleteMember(id) {
 }
 window.deleteMember = deleteMember;
 
-/* Edit Member */
+/* Edit Member & Scar Discipline System */
 function editMember(id) {
   if (!isAdmin()) {
     alert('⛔ Bạn đang ở chế độ xem thành viên. Vui lòng đăng nhập trang Quản Trị (admin.html) để chỉnh sửa!');
@@ -3656,40 +3717,118 @@ function editMember(id) {
   const roundedTotal = Math.round(currentTotal * 100) / 100;
   const recCount = allRecords.filter(r => r.userId === id).length;
 
+  let currentScars = Number(m.scars) || 0;
+  let scarHistoryList = Array.isArray(m.scarHistory)
+    ? [...m.scarHistory]
+    : (m.scarHistory ? Object.values(m.scarHistory) : []);
+
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.innerHTML = `
-    <div class="modal-box" style="max-width:450px;">
+    <div class="modal-box" style="max-width:480px;max-height:92vh;overflow-y:auto;">
       
       <!-- FANCY HEADER -->
       <div class="modal-header-fancy">
         <div class="modal-title-group">
           <div class="modal-icon-badge">✏️</div>
           <div>
-            <h3>Sửa Thông Tin Thành Viên</h3>
-            <span style="font-size:12px;color:var(--slate-500);font-weight:600;">Cập nhật tên &amp; tổng số nhà đang giữ</span>
+            <h3>Sửa Thông Tin &amp; Kỷ Luật</h3>
+            <span style="font-size:12px;color:var(--slate-500);font-weight:600;">Cập nhật tên, nhà &amp; đánh sẹo thành viên</span>
           </div>
         </div>
         <button class="modal-close-btn" id="closeEditM" title="Đóng">✕</button>
       </div>
 
-      <div class="form-group" style="margin-bottom:14px;">
+      <div class="form-group" style="margin-bottom:12px;">
         <label for="editMName">Tên thành viên *</label>
         <input id="editMName" value="${escHtml(m.name || '')}">
         <div id="editMWarn" style="font-size:12.5px;font-weight:700;color:var(--danger, #dc2626);margin-top:6px;display:none;"></div>
       </div>
 
-      <div class="form-group" style="margin-bottom:14px;">
+      <div class="form-group" style="margin-bottom:12px;">
         <label for="editMBinh">Tổng số nhà hiện tại</label>
         <input type="number" id="editMBinh" step="any" min="0" value="${roundedTotal}">
       </div>
 
-      <p style="font-size:12px;color:var(--slate-500);margin:-4px 0 16px;line-height:1.5;">
+      <p style="font-size:11.5px;color:var(--slate-500);margin:-4px 0 12px;line-height:1.4;">
         ℹ️ Hiện có <b>${recCount}</b> bản ghi, tổng <b>${roundedTotal}</b> nhà.<br>
         Nếu bạn đổi tổng nhà, các bản ghi cũ sẽ được <b>gộp lại thành 1 bản ghi mới</b> với ngày hôm nay.
       </p>
 
-      <div class="modal-actions">
+      <!-- HỆ THỐNG ĐÁNH SẸO & KỶ LUẬT (3 SẸO ĐUỔI THẲNG) -->
+      <div class="scar-management-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:18px;">🪓</span>
+            <div>
+              <div style="font-size:13px;font-weight:900;color:#991b1b;letter-spacing:0.2px;">KỶ LUẬT &amp; ĐÁNH SẸO CREW</div>
+              <div style="font-size:10.5px;color:#dc2626;font-weight:700;">Quy tắc nghiêm: Đủ 3 Sẹo đuổi thẳng khỏi Crew!</div>
+            </div>
+          </div>
+          <div id="scarStatusPill" class="scar-counter-pill clean">
+            🟢 0/3 Sẹo
+          </div>
+        </div>
+
+        <!-- 3-Segment Visual Tracker -->
+        <div class="scar-tracker-track">
+          <div class="scar-seg" id="scarSeg1">
+            <span>Sẹo 1</span>
+            <small>Cảnh cáo</small>
+          </div>
+          <div class="scar-seg" id="scarSeg2">
+            <span>Sẹo 2</span>
+            <small>Nghiêm khắc</small>
+          </div>
+          <div class="scar-seg" id="scarSeg3">
+            <span>Sẹo 3</span>
+            <small>ĐUỔI THẲNG</small>
+          </div>
+        </div>
+
+        <!-- Expelled Alert Banner -->
+        <div id="scarExpelledBanner" style="display:none;background:#fee2e2;border:1.5px solid #ef4444;border-radius:12px;padding:8px 12px;margin-bottom:10px;text-align:center;">
+          <div style="font-size:12.5px;font-weight:900;color:#991b1b;">⛔ ĐÃ BỊ ĐUỔI THẲNG KHỎI CREW LƯỚI BÚA!</div>
+          <div style="font-size:11px;font-weight:700;color:#dc2626;margin-top:2px;">Thành viên này đã tích lũy đủ 3/3 sẹo kỷ luật và bị khóa chức năng dọn nhà.</div>
+        </div>
+
+        <!-- Add / Remove Scar Controls -->
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="scarReasonInput" placeholder="Nhập lý do đánh sẹo (bắt buộc khi +sẹo)..." style="flex:1;font-size:12px;padding:8px 12px;border:1.5px solid #fca5a5;border-radius:12px;background:#ffffff;">
+            <button type="button" class="btn-scar-action btn-add-scar" id="btnAddScar" title="Đánh thêm 1 sẹo">
+              <span>+1 Sẹo 🪓</span>
+            </button>
+            <button type="button" class="btn-scar-action btn-remove-scar" id="btnRemoveScar" title="Ân xá / Xóa bớt 1 sẹo">
+              <span>-1 Ân Xá 🛡️</span>
+            </button>
+          </div>
+
+          <!-- Quick presets for reasons -->
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:5px;">
+            <span style="font-size:11px;font-weight:800;color:#991b1b;">Gợi ý lý do:</span>
+            <button type="button" class="tag-scar-btn" data-reason="Bỏ ca / Vắng mặt không phép">🏃 Bỏ ca</button>
+            <button type="button" class="tag-scar-btn" data-reason="Nợ chỉ tiêu nhà">📉 Nợ chỉ tiêu nhà</button>
+            <button type="button" class="tag-scar-btn" data-reason="Phá quy chế Crew">⚠️ Phá quy chế Crew</button>
+            <button type="button" class="tag-scar-btn" data-reason="Gây gổ anh em trong Crew">🥊 Gây gổ anh em</button>
+            <button type="button" class="tag-scar-btn" data-reason="Bắn lung tung / Vi phạm kỷ luật">💥 Bắn lung tung</button>
+            <button type="button" class="tag-scar-btn" data-reason="Nợ tiền chuộc quỹ">💸 Nợ tiền chuộc quỹ</button>
+          </div>
+        </div>
+
+        <!-- Scar History Log List -->
+        <div id="scarHistorySection" style="margin-top:10px;">
+          <div style="font-size:11px;font-weight:800;color:#7f1d1d;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;">
+            <span>Lịch sử đánh sẹo &amp; vi phạm:</span>
+            <span id="scarHistoryCount" style="font-size:10.5px;color:#94a3b8;">0 lần</span>
+          </div>
+          <div id="scarHistoryList" style="display:flex;flex-direction:column;gap:5px;max-height:120px;overflow-y:auto;padding-right:2px;">
+            <!-- History items rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions" style="margin-top:16px;">
         <button type="button" class="secondary" id="cancelEdit">Huỷ bỏ</button>
         <button type="button" class="green" id="saveEdit">💾 Lưu Thay Đổi</button>
       </div>
@@ -3699,7 +3838,153 @@ function editMember(id) {
   const inpName = overlay.querySelector('#editMName');
   const inpBinh = overlay.querySelector('#editMBinh');
   const warn = overlay.querySelector('#editMWarn');
+  const scarReasonInput = overlay.querySelector('#scarReasonInput');
   inpName.focus(); inpName.select();
+
+  function updateScarUI() {
+    const isExp = currentScars >= 3;
+    
+    // Update Pill
+    const pill = overlay.querySelector('#scarStatusPill');
+    if (pill) {
+      if (isExp) {
+        pill.className = 'scar-counter-pill expelled';
+        pill.innerHTML = `⛔ ĐÃ ĐUỔI (${currentScars}/3)`;
+      } else if (currentScars === 2) {
+        pill.className = 'scar-counter-pill warn2';
+        pill.innerHTML = '🪓🪓 2/3 Sẹo';
+      } else if (currentScars === 1) {
+        pill.className = 'scar-counter-pill warn1';
+        pill.innerHTML = '🪓 1/3 Sẹo';
+      } else {
+        pill.className = 'scar-counter-pill clean';
+        pill.innerHTML = '🟢 0/3 Sẹo (Sạch)';
+      }
+    }
+
+    // Update Segments
+    const seg1 = overlay.querySelector('#scarSeg1');
+    const seg2 = overlay.querySelector('#scarSeg2');
+    const seg3 = overlay.querySelector('#scarSeg3');
+    if (seg1) seg1.className = 'scar-seg' + (currentScars >= 1 ? ' active-1' : '');
+    if (seg2) seg2.className = 'scar-seg' + (currentScars >= 2 ? ' active-2' : '');
+    if (seg3) seg3.className = 'scar-seg' + (currentScars >= 3 ? ' active-3' : '');
+
+    // Expelled banner
+    const banner = overlay.querySelector('#scarExpelledBanner');
+    if (banner) banner.style.display = isExp ? 'block' : 'none';
+
+    // Remove scar button disable state
+    const btnRemove = overlay.querySelector('#btnRemoveScar');
+    if (btnRemove) {
+      btnRemove.disabled = currentScars <= 0 && scarHistoryList.length === 0;
+    }
+
+    // History list
+    const histContainer = overlay.querySelector('#scarHistoryList');
+    const histCount = overlay.querySelector('#scarHistoryCount');
+    if (histCount) histCount.textContent = `${scarHistoryList.length} lần`;
+    if (histContainer) {
+      if (!scarHistoryList.length) {
+        histContainer.innerHTML = '<div style="font-size:11px;color:#94a3b8;font-style:italic;padding:4px 0;">Chưa có vết sẹo hay vi phạm nào.</div>';
+      } else {
+        histContainer.innerHTML = scarHistoryList.slice().reverse().map((sc, revIdx) => {
+          const origIdx = scarHistoryList.length - 1 - revIdx;
+          return `
+            <div class="scar-history-item">
+              <div style="display:flex;flex-direction:column;gap:1px;flex:1;overflow:hidden;">
+                <span class="reason" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🪓 ${escHtml(sc.reason || 'Kỷ luật Crew')}</span>
+                <span class="meta">${escHtml(sc.date || '')} ${escHtml(sc.time || '')} • Bởi: <b>${escHtml(sc.admin || 'Admin')}</b></span>
+              </div>
+              <button type="button" class="btn-del-scar" data-idx="${origIdx}" title="Xóa bản ghi sẹo này">✕</button>
+            </div>
+          `;
+        }).join('');
+
+        histContainer.querySelectorAll('.btn-del-scar').forEach(btn => {
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            const idx = Number(btn.dataset.idx);
+            if (confirm('Đại ca có chắc chắn muốn xoá bản ghi sẹo này không?')) {
+              scarHistoryList.splice(idx, 1);
+              if (currentScars > 0) currentScars--;
+              updateScarUI();
+            }
+          };
+        });
+      }
+    }
+  }
+
+  // Initial UI render
+  updateScarUI();
+
+  // Preset tag click
+  overlay.querySelectorAll('.tag-scar-btn').forEach(tag => {
+    tag.onclick = () => {
+      if (scarReasonInput) {
+        scarReasonInput.value = tag.dataset.reason;
+        scarReasonInput.focus();
+      }
+    };
+  });
+
+  // Add scar button click
+  overlay.querySelector('#btnAddScar').onclick = () => {
+    const reason = (scarReasonInput?.value || '').trim();
+    if (!reason) {
+      alert('⚠️ Đại ca vui lòng nhập hoặc bấm chọn 1 gợi ý lý do đánh sẹo!');
+      scarReasonInput?.focus();
+      return;
+    }
+
+    const willExpel = (currentScars + 1) >= 3;
+    if (willExpel) {
+      const ok = confirm(`⚠️ CẢNH BÁO QUY CHẾ 3 SẸO:
+Đánh thêm sẹo này sẽ làm thành viên "${m.name}" đạt 3/3 SẸO và BỊ ĐUỔI THẲNG KHỎI CREW LƯỚI BÚA!
+
+Lý do: "${reason}"
+
+Đại ca có chắc chắn muốn thi hành kỷ luật đuổi không?`);
+      if (!ok) return;
+    }
+
+    const adminName = sessionStorage.getItem('luoibua_admin_name') || 'Nguyễn Trí';
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    
+    scarHistoryList.push({
+      id: 'scar_' + Date.now(),
+      reason: reason,
+      admin: adminName,
+      date: todayStr(),
+      time: timeStr,
+      timestamp: Date.now()
+    });
+    currentScars++;
+    if (scarReasonInput) scarReasonInput.value = '';
+    updateScarUI();
+
+    if (currentScars >= 3) {
+      alert(`⛔ ĐÃ THI HÀNH KỶ LUẬT:
+Thành viên "${m.name}" đã đạt 3/3 sẹo và CHÍNH THỨC BỊ ĐUỔI KHỎI CREW!
+Đại ca nhớ bấm [💾 Lưu Thay Đổi] để lưu dữ liệu lên hệ thống.`);
+    }
+  };
+
+  // Remove scar button click
+  overlay.querySelector('#btnRemoveScar').onclick = () => {
+    if (currentScars <= 0 && !scarHistoryList.length) {
+      alert('Thành viên này hiện tại trong sạch (0 sẹo), không có sẹo nào để xoá!');
+      return;
+    }
+    if (!confirm(`Đại ca có muốn ân xá (-1 sẹo) cho thành viên "${m.name}" không?`)) return;
+    if (scarHistoryList.length) {
+      scarHistoryList.pop();
+    }
+    if (currentScars > 0) currentScars--;
+    updateScarUI();
+  };
 
   inpName.addEventListener('input', () => {
     const val = inpName.value.trim();
@@ -3727,6 +4012,8 @@ function editMember(id) {
 
     const nameChanged = newName !== m.name;
     const binhChanged = Math.abs(newBinh - roundedTotal) > 0.001;
+    const scarsChanged = currentScars !== (Number(m.scars) || 0) || JSON.stringify(scarHistoryList) !== JSON.stringify(m.scarHistory || []);
+    const isExpelled = currentScars >= 3;
 
     if (nameChanged && isMemberNameExists(newName, id)) {
       alert(`❌ Đã có "${newName}" rồi! Vui lòng nhập tên khác.`);
@@ -3735,7 +4022,7 @@ function editMember(id) {
       return;
     }
 
-    if (!nameChanged && !binhChanged) { overlay.remove(); return; }
+    if (!nameChanged && !binhChanged && !scarsChanged) { overlay.remove(); return; }
 
     if (binhChanged) {
       const ok = (typeof showConfirmModal === 'function')
@@ -3773,15 +4060,58 @@ function editMember(id) {
           if (r.userId === id) updates[`records/${r.id}/userName`] = newName;
         });
       }
+
+      if (scarsChanged) {
+        updates[`users/${id}/scars`] = currentScars;
+        updates[`users/${id}/isExpelled`] = isExpelled;
+        updates[`users/${id}/scarHistory`] = scarHistoryList;
+        if (isExpelled && !m.isExpelled) {
+          updates[`users/${id}/expelledAt`] = new Date().toISOString();
+        } else if (!isExpelled && m.isExpelled) {
+          updates[`users/${id}/expelledAt`] = null;
+        }
+      }
+
       if (Object.keys(updates).length) {
         await db.ref().update(updates);
+        // Cập nhật bộ nhớ đệm client ngay lập tức
+        if (nameChanged) m.name = newName;
+        if (scarsChanged) {
+          m.scars = currentScars;
+          m.isExpelled = isExpelled;
+          m.scarHistory = scarHistoryList;
+        }
+
         const changeDesc = [];
         if (nameChanged) changeDesc.push(`Đổi tên: "${m.name}" -> "${newName}"`);
         if (binhChanged) changeDesc.push(`Đổi tổng số nhà: ${roundedTotal} -> ${newBinh} nhà`);
-        logAudit('EDIT_MEMBER', 'Sửa Thành Viên', `Cập nhật thành viên "${m.name}": ${changeDesc.join(', ')}`);
+        if (scarsChanged) {
+          if (isExpelled && !m.isExpelled) {
+            changeDesc.push(`ĐUỔI KHỎI CREW (3/3 Sẹo)`);
+            logAudit('EXPEL_MEMBER', 'Đuổi Thành Viên (3 Sẹo)', `Thành viên "${m.name}" đã nhận đủ 3 sẹo và BỊ ĐUỔI THẲNG khỏi Crew Lưới Búa.`);
+          } else {
+            changeDesc.push(`Kỷ luật: ${currentScars}/3 Sẹo`);
+            logAudit('DISCIPLINE_SCAR', 'Cập Nhật Kỷ Luật Sẹo', `Cập nhật kỷ luật cho "${m.name}": ${currentScars}/3 sẹo (${scarHistoryList.length} bản ghi)`);
+          }
+        }
+        if (changeDesc.length && (!scarsChanged || nameChanged || binhChanged)) {
+          logAudit('EDIT_MEMBER', 'Sửa Thành Viên', `Cập nhật thành viên "${m.name}": ${changeDesc.join(', ')}`);
+        }
       }
+
       overlay.remove();
-      alert('✅ Đã cập nhật thành công!');
+      if (typeof showAlertModal === 'function') {
+        showAlertModal({
+          title: 'Cập Nhật Thành Công',
+          message: isExpelled
+            ? `Đã cập nhật thành viên "${newName}"!<br><b style="color:#dc2626;">⛔ Thành viên này đã có 3/3 sẹo và bị đuổi thẳng khỏi Crew!</b>`
+            : `Đã cập nhật thông tin & kỷ luật cho "${newName}" thành công!`,
+          type: isExpelled ? 'warning' : 'success',
+          icon: isExpelled ? '⛔' : '✅'
+        });
+      } else {
+        alert(isExpelled ? `⛔ Đã cập nhật! Thành viên "${newName}" đã bị đuổi khỏi Crew do đủ 3 sẹo.` : '✅ Đã cập nhật thành công!');
+      }
     } catch (e) {
       alert('❌ Lỗi: ' + e.message);
     }
@@ -5142,9 +5472,15 @@ function renderBailMemberOptions() {
   const list = Object.values(allUsers).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
   const frag = document.createDocumentFragment();
   list.forEach(u => {
+    const isExpelled = (Number(u.scars) || 0) >= 3 || !!u.isExpelled;
     const o = document.createElement('option');
     o.value = u.name || u.username;
-    o.textContent = u.name || u.username;
+    if (isExpelled) {
+      o.disabled = true;
+      o.textContent = `⛔ ${u.name || u.username} (ĐÃ ĐUỔI - 3 Sẹo)`;
+    } else {
+      o.textContent = u.name || u.username;
+    }
     frag.appendChild(o);
   });
   sel.appendChild(frag);
