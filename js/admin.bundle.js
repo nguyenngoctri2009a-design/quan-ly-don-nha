@@ -3871,7 +3871,7 @@ function renderMembersTable() {
           <div class="member-cell-wrap" title="Bấm để xem hồ sơ chiến binh">
             <div class="member-avatar-chip" style="background:${avatarBg};border-color:${avatarBorder};color:${avatarColor};">${avatarChar}</div>
             <div style="display:flex;flex-direction:column;">
-              <span class="member-name-title">${escHtml(uName)}</span>
+              <span class="member-name-title" style="${isExpelled ? 'text-decoration:line-through;color:#94a3b8;' : ''}">${escHtml(uName)}</span>
               ${titleTag}
             </div>
           </div>
@@ -3888,7 +3888,7 @@ function renderMembersTable() {
           <span class="badge-house-pill ${totalBinh > 0 ? 'has-houses' : ''}" style="cursor:pointer;" title="Bấm để xem chi tiết">🏠 ${roundedHouses} nhà</span>
         </td>
         <td style="text-align:center;">
-          ${statusBadge}
+          ${statusColHtml}
         </td>
         <td style="text-align:right;">
           <button type="button" class="btn-profile-view" data-act="profile" title="Xem hồ sơ cá nhân">
