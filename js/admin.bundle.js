@@ -1,3 +1,37 @@
+
+function animateValue(element, start, end, duration, formatter) {
+  if (!element) return;
+  var numEnd = Number(end);
+  if (isNaN(numEnd) || numEnd <= 0) {
+    element.textContent = formatter ? formatter(numEnd) : end;
+    return;
+  }
+  if (element._animId) {
+    cancelAnimationFrame(element._animId);
+  }
+  var startTime = performance.now();
+  var startNum = Math.min(Number(start) || 1, numEnd);
+  var diff = numEnd - startNum;
+  var dur = duration || 1200;
+
+  function step(currentTime) {
+    var elapsed = currentTime - startTime;
+    var progress = Math.min(elapsed / dur, 1);
+    var ease = 1 - Math.pow(1 - progress, 3);
+    var current = startNum + diff * ease;
+
+    element.textContent = formatter ? formatter(current) : Math.round(current);
+
+    if (progress < 1) {
+      element._animId = requestAnimationFrame(step);
+    } else {
+      element.textContent = formatter ? formatter(numEnd) : end;
+      element._animId = null;
+    }
+  }
+  element._animId = requestAnimationFrame(step);
+}
+
 /* CREW LUOI BUA - ADMIN CORE PROTECTED BUNDLE */
 
 /* [MODULE: firebase-init.js] */
@@ -357,6 +391,9 @@ function renderActiveView() {
   if ($('badgeMembers')) $('badgeMembers').textContent = Object.keys(allUsers).length;
   if ($('badgeRecords')) $('badgeRecords').textContent = allRecords.length;
   if ($('badgeLogs')) $('badgeLogs').textContent = auditLogs.length;
+
+  // 1. Luôn cập nhật 4 thẻ KPI đầu trang (hiển thị trên tất cả view)
+  if (typeof renderStats === 'function') renderStats();
 
   // 2. Phân luồng thông minh: Render View đang mở trước mắt người dùng
   if (activeView === 'dashboard') {
@@ -1714,14 +1751,29 @@ function renderStats() {
     topMember = statsData.length > 0 ? statsData[0] : null;
   }
 
-  // Update KPI Cards
-  if ($('kpiTotalBinh')) $('kpiTotalBinh').textContent = `${roundedTotal.toLocaleString('vi-VN')} nhà`;
-  if ($('kpiTotalMembers')) $('kpiTotalMembers').textContent = activeMembersInPeriod > 0 ? `${activeMembersInPeriod} / ${totalMembersCount} anh em` : `${totalMembersCount} anh em`;
-  if ($('kpiAvgBinh')) $('kpiAvgBinh').textContent = `${avgBinh} nhà/người`;
+  // Update KPI Cards with smooth 3D count-up animation
+  if ($('kpiTotalBinh')) {
+    animateValue($('kpiTotalBinh'), 1, roundedTotal, 1400, val => `${Math.round(val).toLocaleString('vi-VN')} nhà`);
+  }
+  if ($('kpiTotalMembers')) {
+    if (activeMembersInPeriod > 0) {
+      animateValue($('kpiTotalMembers'), 1, activeMembersInPeriod, 1200, val => `${Math.round(val)} / ${totalMembersCount} anh em`);
+    } else {
+      animateValue($('kpiTotalMembers'), 1, totalMembersCount, 1200, val => `${Math.round(val)} anh em`);
+    }
+  }
+  if ($('kpiAvgBinh')) {
+    var targetAvg = parseFloat(avgBinh) || 0;
+    animateValue($('kpiAvgBinh'), 1.0, targetAvg, 1300, val => `${val.toFixed(1)} nhà/người`);
+  }
 
   if (topMember) {
     if ($('kpiTopMember')) $('kpiTopMember').textContent = topMember.name;
-    if ($('kpiTopBinh')) $('kpiTopBinh').textContent = `${Math.round(topMember.binh * 100) / 100} nhà (${roundedTotal > 0 ? Math.round((topMember.binh / roundedTotal) * 100) : 0}%)`;
+    var topHomes = Math.round(topMember.binh * 100) / 100;
+    var topPct = roundedTotal > 0 ? Math.round((topMember.binh / roundedTotal) * 100) : 0;
+    if ($('kpiTopBinh')) {
+      animateValue($('kpiTopBinh'), 1, topHomes, 1300, val => `${Math.round(val)} nhà (${topPct}%)`);
+    }
   } else {
     if ($('kpiTopMember')) $('kpiTopMember').textContent = '--';
     if ($('kpiTopBinh')) $('kpiTopBinh').textContent = '0 nhà';
@@ -2250,10 +2302,10 @@ function renderAnalyticsDashboard() {
   const avgHomesPerTrip = thisWeekTrips > 0 ? (thisWeekHomes / thisWeekTrips).toFixed(1) : '0';
 
   // 4. HIỂN THỊ DỮ LIỆU LÊN 4 CARD
-  // Card 1: Doanh Số Ghi Nhận
+  // Card 1: Doanh Số Ghi Nhận (Count up animation từ 1 đến hiện tại)
   const revEl = document.getElementById('analyticsRevValue');
   if (revEl) {
-    revEl.textContent = `${thisWeekHomes.toLocaleString('vi-VN')} Nhà`;
+    animateValue(revEl, 1, thisWeekHomes, 1400, val => `${Math.round(val).toLocaleString('vi-VN')} Nhà`);
   }
   const revTrendEl = document.getElementById('analyticsRevTrend');
   if (revTrendEl) {
