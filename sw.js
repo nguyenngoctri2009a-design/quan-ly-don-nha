@@ -1,5 +1,5 @@
 // Service Worker cho PWA "Thống Kê Nhập Nhà" - Crew Lưới Búa
-const CACHE_NAME = 'v20261104_45_fix_zero_bail_and_analysis_trigger';
+const CACHE_NAME = 'v20261104_46_fix_duplicate_w_syntax_error';
 const STATIC_ASSETS = [
   './',
   './index.html',

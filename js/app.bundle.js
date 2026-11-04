@@ -5448,8 +5448,6 @@ async function generateDailyRecordReport(targetDate, autoSendDiscord = false) {
   const container = $('exportArea');
   if (!container) return;
 
-  const W = 960;
-
   const W = 1000;
 
   // Render danh sách chiến binh theo kiểu 3D Cards / Leaderboard sang trọng T1
