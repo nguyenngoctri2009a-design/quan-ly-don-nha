@@ -9576,9 +9576,10 @@ window.addEventListener('DOMContentLoaded', () => {
    MODULE: PHÂN TÍCH & PHÂN BỔ THƯỞNG CHIẾN BINH T1 PRO (AI MERIT REWARDS)
    Chuẩn T1 Design System: 75% Lao động (số căn) + 25% Đua Top bứt phá.
    Tự động san phẳng hòa điểm, bảo đảm công bằng 100% & làm tròn khớp quỹ.
+   CHỈ HIỂN THỊ KẾT QUẢ KHI NGƯỜI DÙNG BẤM NÚT PHÂN TÍCH.
    ========================================================================== */
 
-let t1RewardMembers = [];
+let t1HasAnalyzed = false;
 let t1LastAnalysisData = null;
 
 function parseRewardNum(val) {
@@ -9599,7 +9600,7 @@ window.t1SetTotalPreset = function(val) {
     document.querySelectorAll('.t1-rw-input-box:nth-child(1) .t1-rw-chip').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.val === String(val));
     });
-    runT1SmartRewardAnalysis();
+    if (t1HasAnalyzed) runT1SmartRewardAnalysis();
   }
 };
 
@@ -9613,20 +9614,27 @@ window.t1SetBailPreset = function(val) {
   } else {
     input.value = Number(val).toLocaleString('vi-VN');
   }
-  runT1SmartRewardAnalysis();
+  document.querySelectorAll('.t1-rw-input-box:nth-child(2) .t1-rw-chip').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  if (event && event.target) event.target.classList.add('active');
+  if (t1HasAnalyzed) runT1SmartRewardAnalysis();
 };
 
 window.t1SetTopPreset = function(num) {
   const topInput = $('rewardTopCountInput');
   if (topInput) {
     topInput.value = num;
-    syncRewardMembersFromSystem(num);
-    runT1SmartRewardAnalysis();
+    document.querySelectorAll('.t1-rw-input-box:nth-child(3) .t1-rw-chip').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    if (event && event.target) event.target.classList.add('active');
+    if (t1HasAnalyzed) runT1SmartRewardAnalysis();
   }
 };
 
-// Lấy danh sách thành viên từ dữ liệu thật
-function syncRewardMembersFromSystem(topCount) {
+// Lấy danh sách Top chiến binh trực tiếp từ hệ thống
+function getSystemTopMembers(limit) {
   const memberTotals = {};
   if (Array.isArray(window.allRecords)) {
     window.allRecords.forEach(r => {
@@ -9644,7 +9652,6 @@ function syncRewardMembersFromSystem(topCount) {
     }))
     .sort((a, b) => b.houses - a.houses);
 
-  const limit = topCount || parseInt($('rewardTopCountInput')?.value, 10) || 3;
   if (!sorted.length) {
     // Dữ liệu mẫu dự phòng thực chiến
     sorted = [
@@ -9654,71 +9661,24 @@ function syncRewardMembersFromSystem(topCount) {
     ];
   }
 
-  t1RewardMembers = sorted.slice(0, Math.max(2, limit)).map(m => ({ ...m }));
-  renderRewardMemberEditor();
+  const topN = Math.max(2, limit || 3);
+  return sorted.slice(0, topN);
 }
-
-// Render các thẻ input cho phép sửa số nhà & tên trực tiếp
-function renderRewardMemberEditor() {
-  const container = $('rewardMembersEditorGrid');
-  if (!container) return;
-
-  container.innerHTML = t1RewardMembers.map((m, idx) => `
-    <div class="t1-rw-member-item" data-idx="${idx}">
-      <div class="t1-rw-member-info">
-        <span class="t1-rw-rank-chip">#${idx + 1}</span>
-        <input type="text" class="t1-rw-name-input" value="${m.name}" placeholder="Tên chiến binh" onchange="window.t1UpdateMemberName(${idx}, this.value)">
-      </div>
-      <div class="t1-rw-house-input-wrap">
-        <input type="number" class="t1-rw-house-input" value="${m.houses}" min="0" placeholder="Số căn" onchange="window.t1UpdateMemberHouses(${idx}, this.value)">
-        <span style="font-size: 11px; font-weight: 800; color: #64748b;">căn</span>
-        ${t1RewardMembers.length > 2 ? `
-          <button type="button" style="border:none;background:none;color:#ef4444;cursor:pointer;font-size:14px;padding:2px 4px;" title="Xóa dòng" onclick="window.t1RemoveMember(${idx})">✕</button>
-        ` : ''}
-      </div>
-    </div>
-  `).join('');
-}
-
-window.t1UpdateMemberName = function(idx, val) {
-  if (t1RewardMembers[idx]) {
-    t1RewardMembers[idx].name = val.trim() || 'Chiến Binh';
-  }
-};
-
-window.t1UpdateMemberHouses = function(idx, val) {
-  if (t1RewardMembers[idx]) {
-    t1RewardMembers[idx].houses = Math.max(0, Number(val) || 0);
-    runT1SmartRewardAnalysis();
-  }
-};
-
-window.t1RemoveMember = function(idx) {
-  if (t1RewardMembers.length > 2) {
-    t1RewardMembers.splice(idx, 1);
-    if ($('rewardTopCountInput')) $('rewardTopCountInput').value = t1RewardMembers.length;
-    renderRewardMemberEditor();
-    runT1SmartRewardAnalysis();
-  }
-};
 
 // THUẬT TOÁN ĐỈNH CAO: T1 SMART AI MERIT SPLIT (75% SỐ NHÀ + 25% ĐUA TOP)
 function runT1SmartRewardAnalysis() {
   const totalGross = parseRewardNum($('rewardTotalInput')?.value) || 10000000;
   const bailDeduct = parseRewardNum($('rewardBailDeductInput')?.value) || 2000000;
+  const topCount = parseInt($('rewardTopCountInput')?.value, 10) || 3;
   const actualPool = Math.max(0, totalGross - bailDeduct);
 
-  if (!t1RewardMembers || !t1RewardMembers.length) {
-    syncRewardMembersFromSystem(parseInt($('rewardTopCountInput')?.value, 10) || 3);
-  }
-
-  // Sắp xếp danh sách giảm dần theo số căn
-  const members = [...t1RewardMembers].sort((a, b) => b.houses - a.houses);
+  // Lấy danh sách Top từ dữ liệu hệ thống
+  const members = getSystemTopMembers(topCount);
   const totalHouses = members.reduce((sum, m) => sum + (Number(m.houses) || 0), 0);
   const n = members.length;
 
   // 1. Phân bổ cơ sở
-  const housePool = actualPool * 0.75; // 75% chia theo năng lực lao động
+  const housePool = actualPool * 0.75; // 75% chia theo năng lực lao động (số nhà)
   const rankPool = actualPool * 0.25;  // 25% vinh danh đua top
 
   // 2. Trọng số xếp hạng cơ bản suy giảm mượt mà
@@ -9805,11 +9765,9 @@ function runT1SmartRewardAnalysis() {
   // 5. CÂN BẰNG PHẦN DƯ LÀM TRÒN (ZERO RESIDUAL - KHỚP 100% QUỸ)
   const diff = actualPool - sumRounded;
   if (diff !== 0 && results.length > 0) {
-    // Nếu Top 1 không hòa với ai, ưu tiên cộng/trừ vào Top 1 để bảo vệ nguyên vẹn sự bình đẳng của các nhóm hòa điểm
     if (results.length > 1 && results[0].houses > results[1].houses) {
       results[0].rounded += diff;
     } else {
-      // Nếu Top 1 hòa với người khác, bù trừ vào phần dư bước nhỏ
       results[0].rounded += diff;
     }
   }
@@ -9942,6 +9900,10 @@ function runT1SmartRewardAnalysis() {
       </tr>
     `;
   }
+
+  // 9. Bật hiển thị khu vực kết quả & ẩn khung chờ
+  if ($('rewardEmptyPlaceholder')) $('rewardEmptyPlaceholder').classList.add('hidden');
+  if ($('rewardAnalysisResultArea')) $('rewardAnalysisResultArea').classList.remove('hidden');
 }
 
 // Gắn sự kiện các nút
@@ -9950,38 +9912,15 @@ function initT1RewardSystem() {
   if (btnAnalyze && !btnAnalyze.dataset.bound) {
     btnAnalyze.dataset.bound = 'true';
     btnAnalyze.addEventListener('click', () => {
+      t1HasAnalyzed = true;
       runT1SmartRewardAnalysis();
+      const resArea = $('rewardAnalysisResultArea');
+      if (resArea) {
+        resArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
       if (typeof window.showToast === 'function') {
         window.showToast('⚡ Đã hoàn tất phân tích & phân bổ chia thưởng T1!', 'success');
       }
-    });
-  }
-
-  const btnSync = $('btnResetRewardDefault') || $('btnReloadSystemDataBtn');
-  if (btnSync && !btnSync.dataset.bound) {
-    btnSync.dataset.bound = 'true';
-    btnSync.addEventListener('click', () => {
-      const topCount = parseInt($('rewardTopCountInput')?.value, 10) || 3;
-      syncRewardMembersFromSystem(topCount);
-      runT1SmartRewardAnalysis();
-      if (typeof window.showToast === 'function') {
-        window.showToast('🔄 Đã đồng bộ danh sách từ cơ sở dữ liệu!', 'info');
-      }
-    });
-  }
-
-  const btnAdd = $('btnAddCustomMemberBtn');
-  if (btnAdd && !btnAdd.dataset.bound) {
-    btnAdd.dataset.bound = 'true';
-    btnAdd.addEventListener('click', () => {
-      t1RewardMembers.push({
-        id: 'custom_' + Date.now(),
-        name: `Chiến Binh ${t1RewardMembers.length + 1}`,
-        houses: 10
-      });
-      if ($('rewardTopCountInput')) $('rewardTopCountInput').value = t1RewardMembers.length;
-      renderRewardMemberEditor();
-      runT1SmartRewardAnalysis();
     });
   }
 
@@ -9989,7 +9928,10 @@ function initT1RewardSystem() {
   if (btnSendDiscord && !btnSendDiscord.dataset.bound) {
     btnSendDiscord.dataset.bound = 'true';
     btnSendDiscord.addEventListener('click', async () => {
-      if (!t1LastAnalysisData) runT1SmartRewardAnalysis();
+      if (!t1HasAnalyzed || !t1LastAnalysisData) {
+        t1HasAnalyzed = true;
+        runT1SmartRewardAnalysis();
+      }
       const d = t1LastAnalysisData;
       if (!d) return;
 
@@ -10000,7 +9942,7 @@ function initT1RewardSystem() {
       let imageBase64 = null;
       try {
         if (typeof html2canvas === 'function') {
-          const targetEl = document.querySelector('#view-rewards .t1-rw-table-wrap') || $('view-rewards');
+          const targetEl = document.querySelector('#rewardAnalysisResultArea .t1-rw-table-wrap') || $('rewardAnalysisResultArea');
           if (targetEl) {
             const canvas = await html2canvas(targetEl, {
               scale: 2,
@@ -10066,7 +10008,10 @@ function initT1RewardSystem() {
   if (btnCopy && !btnCopy.dataset.bound) {
     btnCopy.dataset.bound = 'true';
     btnCopy.addEventListener('click', () => {
-      if (!t1LastAnalysisData) runT1SmartRewardAnalysis();
+      if (!t1HasAnalyzed || !t1LastAnalysisData) {
+        t1HasAnalyzed = true;
+        runT1SmartRewardAnalysis();
+      }
       const d = t1LastAnalysisData;
       if (!d) return;
 
@@ -10099,15 +10044,24 @@ function initT1RewardSystem() {
       el.addEventListener('input', () => {
         const val = parseRewardNum(el.value);
         el.value = val ? Number(val).toLocaleString('vi-VN') : '';
+        if (t1HasAnalyzed) runT1SmartRewardAnalysis();
       });
     }
   });
 
-  // Tự động phân tích khi mở tab
-  if (!t1RewardMembers.length) {
-    syncRewardMembersFromSystem(parseInt($('rewardTopCountInput')?.value, 10) || 3);
+  const topInp = $('rewardTopCountInput');
+  if (topInp && !topInp.dataset.boundFormat) {
+    topInp.dataset.boundFormat = 'true';
+    topInp.addEventListener('input', () => {
+      if (t1HasAnalyzed) runT1SmartRewardAnalysis();
+    });
   }
-  runT1SmartRewardAnalysis();
+
+  // Khi mới mở tab: GIỮ NGUYÊN TRẠNG THÁI CHỜ, KHÔNG TỰ BUNG BẢNG KHI CHƯA BẤM PHÂN TÍCH
+  if (!t1HasAnalyzed) {
+    if ($('rewardEmptyPlaceholder')) $('rewardEmptyPlaceholder').classList.remove('hidden');
+    if ($('rewardAnalysisResultArea')) $('rewardAnalysisResultArea').classList.add('hidden');
+  }
 }
 
 window.renderRewardsView = function() {

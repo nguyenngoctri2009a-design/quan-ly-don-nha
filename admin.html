@@ -655,7 +655,7 @@
 
   <!-- Phân luồng tài nguyên: Preload Web Worker & Core Bundle đã đóng gói tối ưu 0ms -->
   <link rel="preload" href="js/worker-calc.js" as="worker">
-  <link rel="preload" href="js/admin.bundle.js?v=v20261104_40_discord_rewards_channel_1567414850727182478" as="script">
+  <link rel="preload" href="js/admin.bundle.js?v=v20261104_41_clean_t1_rewards_click_to_analyze" as="script">
 
   <!-- Highcharts & Canvas Export Libraries (Tải cục bộ tốc độ 0ms) -->
   <script src="js/highcharts.js"></script>
@@ -2135,6 +2135,10 @@
        VIEW: PHÂN BỔ THƯỞNG CHIẾN BINH T1 PRO (AI MERIT REWARDS)
        Áp dụng chuẩn giao diện T1 3D Neumorphic-Glass Hybrid
        ========================================================================== -->
+  <!-- ==========================================================================
+       VIEW: PHÂN BỔ THƯỞNG CHIẾN BINH T1 PRO (AI MERIT REWARDS)
+       Áp dụng chuẩn giao diện T1 3D Neumorphic-Glass Hybrid
+       ========================================================================== -->
   <section id="view-rewards" class="hidden">
     
     <style>
@@ -2247,7 +2251,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 16px;
-        margin-bottom: 18px;
+        margin-bottom: 22px;
       }
       .t1-rw-input-box {
         background: #f8fafc;
@@ -2332,102 +2336,6 @@
         background: #fef3c7;
       }
 
-      /* Member Houses Editor Box */
-      .t1-rw-editor-box {
-        background: #f8fafc;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 16px 18px;
-        margin-bottom: 20px;
-      }
-      .t1-rw-editor-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 14px;
-      }
-      .t1-rw-editor-title {
-        font-size: 13.5px;
-        font-weight: 850;
-        color: #0f172a;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .t1-rw-editor-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-        gap: 12px;
-      }
-      .t1-rw-member-item {
-        background: #ffffff;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 13px;
-        padding: 10px 14px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-        transition: all 0.2s ease;
-      }
-      .t1-rw-member-item:hover {
-        border-color: #cbd5e1;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      }
-      .t1-rw-member-info {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex: 1;
-        min-width: 0;
-      }
-      .t1-rw-rank-chip {
-        font-size: 11px;
-        font-weight: 900;
-        padding: 2px 7px;
-        border-radius: 6px;
-        background: #f1f5f9;
-        color: #475569;
-        white-space: nowrap;
-      }
-      .t1-rw-name-input {
-        flex: 1;
-        min-width: 0;
-        font-size: 13px;
-        font-weight: 750;
-        color: #0f172a;
-        border: 1px solid #cbd5e1;
-        border-radius: 8px;
-        padding: 5px 8px;
-        background: #ffffff;
-      }
-      .t1-rw-house-input-wrap {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
-      .t1-rw-house-input {
-        width: 70px;
-        height: 32px;
-        font-size: 14px;
-        font-weight: 850;
-        text-align: right;
-        color: #0284c7;
-        background: #f0f9ff;
-        border: 1.5px solid #bae6fd;
-        border-radius: 8px;
-        padding: 0 6px;
-        outline: none;
-      }
-      .t1-rw-house-input:focus {
-        border-color: #0284c7;
-        background: #ffffff;
-        box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
-      }
-
       /* Big 3D Super Analyze Button */
       .t1-btn-super-analyze {
         width: 100%;
@@ -2438,7 +2346,7 @@
         align-items: center;
         justify-content: center;
         gap: 3px;
-        padding: 14px 28px;
+        padding: 15px 28px;
         background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
         border: none;
         border-radius: 18px;
@@ -2469,6 +2377,16 @@
         font-size: 12px;
         font-weight: 600;
         opacity: 0.92;
+      }
+
+      /* Placeholder Card khi chưa bấm phân tích */
+      .t1-rw-placeholder-card {
+        background: #ffffff;
+        border: 2px dashed #cbd5e1;
+        border-radius: 20px;
+        padding: 48px 24px;
+        text-align: center;
+        margin-bottom: 24px;
       }
 
       /* 4 KPI Cards */
@@ -2609,16 +2527,11 @@
         <button type="button" class="t1-btn-3d t1-btn-3d-cyan" id="btnCopyRewardReport">
           📋 Sao Chép Bảng
         </button>
-        <button type="button" class="t1-btn-3d t1-btn-3d-white" id="btnResetRewardDefault">
-          🔄 Đồng Bộ Dữ Liệu
-        </button>
       </div>
     </div>
 
-    <!-- BỘ THAM SỐ ĐẦU VÀO & BẢNG SỐ NHÀ CHIẾN BINH (T1 3D CARD) -->
+    <!-- BỘ THAM SỐ ĐẦU VÀO GỌN GÀNG (T1 3D CARD) -->
     <div class="t1-rw-card">
-      
-      <!-- HÀNG 1: THAM SỐ QUỸ TIỀN & SỐ TOP -->
       <div class="t1-rw-inputs-grid">
         <!-- Ô 1: Tổng Quỹ Thưởng -->
         <div class="t1-rw-input-box">
@@ -2661,11 +2574,11 @@
         <div class="t1-rw-input-box">
           <label class="t1-rw-label">
             <span>👥 3. Lấy Top Mấy Để Chia:</span>
-            <span style="font-size: 11px; color: #0284c7;">Số chiến binh</span>
+            <span style="font-size: 11px; color: #0284c7;">Lấy từ dữ liệu</span>
           </label>
           <div class="t1-rw-input-wrap">
-            <input type="number" id="rewardTopCountInput" class="t1-rw-input" value="3" min="2" max="20" placeholder="Số người nhận...">
-            <span class="t1-rw-input-unit">Chiến binh</span>
+            <input type="number" id="rewardTopCountInput" class="t1-rw-input" value="3" min="2" max="50" placeholder="Nhập số top cần lấy...">
+            <span class="t1-rw-input-unit">Top</span>
           </div>
           <div class="t1-rw-chips-row">
             <button type="button" class="t1-rw-chip active" onclick="window.t1SetTopPreset(3)">Top 3 🥇</button>
@@ -2676,105 +2589,95 @@
         </div>
       </div>
 
-      <!-- HÀNG 2: DANH SÁCH CHIẾN BINH & SỐ NHÀ CÓ THỂ CHỈNH SỬA TRỰC TIẾP -->
-      <div class="t1-rw-editor-box">
-        <div class="t1-rw-editor-top">
-          <div class="t1-rw-editor-title">
-            <span>🏠</span>
-            <span>DANH SÁCH CHIẾN BINH &amp; SỐ NHÀ (TỰ ĐỘNG LOAD / CÓ THỂ SỬA TRỰC TIẾP):</span>
-          </div>
-          <div style="display: flex; gap: 8px;">
-            <button type="button" class="t1-btn-3d t1-btn-3d-white" style="padding: 5px 12px; font-size: 12px;" id="btnAddCustomMemberBtn">
-              + Thêm Chiến Binh
-            </button>
-            <button type="button" class="t1-btn-3d t1-btn-3d-white" style="padding: 5px 12px; font-size: 12px;" id="btnReloadSystemDataBtn">
-              🔄 Tải Lại Từ Bảng Dữ Liệu
-            </button>
-          </div>
-        </div>
-        <div id="rewardMembersEditorGrid" class="t1-rw-editor-grid">
-          <!-- Render danh sách các ô input tên và số nhà -->
-        </div>
-      </div>
-
-      <!-- HÀNG 3: NÚT PHÂN TÍCH 3D CỰC ĐẠI -->
+      <!-- NÚT PHÂN TÍCH 3D CỰC ĐẠI -->
       <div style="text-align: center;">
         <button type="button" class="t1-btn-super-analyze" id="btnExecuteRewardAnalysis">
           <div class="t1-super-main-text">
             <span>⚡</span> KÍCH HOẠT PHÂN TÍCH &amp; TỰ ĐỘNG CHIA THƯỞNG T1
           </div>
           <div class="t1-super-sub-text">
-            Bẻ khóa phân bổ: 75% số nhà + 25% vinh danh, tự động san phẳng hòa điểm &amp; làm tròn đẹp khớp 100%
+            Lấy dữ liệu top chiến binh, bẻ khóa phân bổ 75% số nhà + 25% vinh danh, san phẳng hòa điểm &amp; làm tròn khớp 100%
           </div>
         </button>
       </div>
-
     </div>
 
-    <!-- 4 THẺ KPI T1 3D METRICS -->
-    <div class="t1-rw-kpi-grid">
-      <!-- Card 1 -->
-      <div class="t1-rw-kpi-card">
-        <div class="t1-rw-kpi-title">
-          <span>💵</span> TỔNG QUỸ THƯỞNG
-        </div>
-        <div class="t1-rw-kpi-val" id="kpiRewardGross">10.000.000đ</div>
-        <div class="t1-rw-kpi-sub">Ngân sách xuất quỹ ban đầu</div>
-      </div>
-
-      <!-- Card 2 -->
-      <div class="t1-rw-kpi-card">
-        <div class="t1-rw-kpi-title" style="color: #b91c1c;">
-          <span>🛡️</span> TRÍCH QUỸ CHUỘC TÙ
-        </div>
-        <div class="t1-rw-kpi-val" style="color: #dc2626;" id="kpiRewardBail">- 2.000.000đ</div>
-        <div class="t1-rw-kpi-sub">Bảo lưu quỹ băng đảng</div>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="t1-rw-kpi-card" style="border-color: #bae6fd; background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);">
-        <div class="t1-rw-kpi-title" style="color: #0284c7;">
-          <span>💎</span> QUỸ THỰC CHIA (100%)
-        </div>
-        <div class="t1-rw-kpi-val" style="color: #0284c7;" id="kpiRewardNet">8.000.000đ</div>
-        <div class="t1-rw-kpi-sub" style="color: #0369a1; font-weight: 750;">75% Số Nhà + 25% Đua Top</div>
-      </div>
-
-      <!-- Card 4 -->
-      <div class="t1-rw-kpi-card">
-        <div class="t1-rw-kpi-title" style="color: #047857;">
-          <span>📈</span> ĐƠN GIÁ NĂNG LỰC
-        </div>
-        <div class="t1-rw-kpi-val" style="color: #059669;" id="kpiRewardPerHouse">~38.095đ / căn</div>
-        <div class="t1-rw-kpi-sub" id="kpiRewardScope">Tổng 3 chiến binh (210 căn)</div>
-      </div>
+    <!-- KHUNG CHỜ (KHI CHƯA ẤN NÚT PHÂN TÍCH) -->
+    <div id="rewardEmptyPlaceholder" class="t1-rw-placeholder-card">
+      <div style="font-size: 42px; margin-bottom: 10px;">📊</div>
+      <h3 style="font-size: 17px; font-weight: 850; color: #0f172a; margin: 0 0 6px 0;">Chưa Kích Hoạt Phân Tích</h3>
+      <p style="font-size: 13px; color: #64748b; font-weight: 600; margin: 0 auto; max-width: 520px; line-height: 1.5;">
+        Đại ca chỉ cần nhập Tổng Quỹ, Trích Quỹ Chuộc và Số Top muốn lấy ở bảng trên, sau đó nhấn nút <strong style="color: #0284c7;">⚡ Kích Hoạt Phân Tích</strong> để hệ thống AI tính toán và bung bảng chia thưởng ra nhé!
+      </p>
     </div>
 
-    <!-- AI INSIGHTS NOTIFICATION BANNER -->
-    <div class="t1-rw-ai-box" id="rewardAiInsightBox">
-      <!-- Render nội dung nhận định phân tích của AI -->
-    </div>
+    <!-- KHU VỰC KẾT QUẢ PHÂN TÍCH (CHỈ HIỂN THỊ SAU KHI ẤN NÚT PHÂN TÍCH) -->
+    <div id="rewardAnalysisResultArea" class="hidden">
+      <!-- 4 THẺ KPI T1 3D METRICS -->
+      <div class="t1-rw-kpi-grid">
+        <!-- Card 1 -->
+        <div class="t1-rw-kpi-card">
+          <div class="t1-rw-kpi-title">
+            <span>💵</span> TỔNG QUỸ THƯỞNG
+          </div>
+          <div class="t1-rw-kpi-val" id="kpiRewardGross">10.000.000đ</div>
+          <div class="t1-rw-kpi-sub">Ngân sách xuất quỹ ban đầu</div>
+        </div>
 
-    <!-- BẢNG DỮ LIỆU CHIA THƯỞNG T1 PRO -->
-    <div class="t1-rw-table-wrap">
-      <table class="t1-rw-table">
-        <thead>
-          <tr>
-            <th style="width: 130px; text-align: center;">HẠNG</th>
-            <th>CHIẾN BINH &amp; NĂNG SUẤT</th>
-            <th style="text-align: right; width: 180px;">THƯỞNG NHÀ (75%)</th>
-            <th style="text-align: right; width: 180px;">VINH DANH (25%)</th>
-            <th style="text-align: right; width: 180px;">TỔNG THỰC TẾ</th>
-            <th style="text-align: right; width: 200px;" class="t1-rw-highlight-col">LÀM TRÒN ĐẸP</th>
-          </tr>
-        </thead>
-        <tbody id="rewardSplitTbody">
-          <!-- Render danh sách từ JS -->
-        </tbody>
-        <tfoot id="rewardSplitTfoot">
-          <!-- Render tổng kết từ JS -->
-        </tfoot>
-      </table>
+        <!-- Card 2 -->
+        <div class="t1-rw-kpi-card">
+          <div class="t1-rw-kpi-title" style="color: #b91c1c;">
+            <span>🛡️</span> TRÍCH QUỸ CHUỘC TÙ
+          </div>
+          <div class="t1-rw-kpi-val" style="color: #dc2626;" id="kpiRewardBail">- 2.000.000đ</div>
+          <div class="t1-rw-kpi-sub">Bảo lưu quỹ băng đảng</div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="t1-rw-kpi-card" style="border-color: #bae6fd; background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);">
+          <div class="t1-rw-kpi-title" style="color: #0284c7;">
+            <span>💎</span> QUỸ THỰC CHIA (100%)
+          </div>
+          <div class="t1-rw-kpi-val" style="color: #0284c7;" id="kpiRewardNet">8.000.000đ</div>
+          <div class="t1-rw-kpi-sub" style="color: #0369a1; font-weight: 750;">75% Số Nhà + 25% Đua Top</div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="t1-rw-kpi-card">
+          <div class="t1-rw-kpi-title" style="color: #047857;">
+            <span>📈</span> ĐƠN GIÁ NĂNG LỰC
+          </div>
+          <div class="t1-rw-kpi-val" style="color: #059669;" id="kpiRewardPerHouse">~38.095đ / căn</div>
+          <div class="t1-rw-kpi-sub" id="kpiRewardScope">Tổng 3 chiến binh (210 căn)</div>
+        </div>
+      </div>
+
+      <!-- AI INSIGHTS NOTIFICATION BANNER -->
+      <div class="t1-rw-ai-box" id="rewardAiInsightBox">
+        <!-- Render nội dung nhận định phân tích của AI -->
+      </div>
+
+      <!-- BẢNG DỮ LIỆU CHIA THƯỞNG T1 PRO -->
+      <div class="t1-rw-table-wrap">
+        <table class="t1-rw-table">
+          <thead>
+            <tr>
+              <th style="width: 130px; text-align: center;">HẠNG</th>
+              <th>CHIẾN BINH &amp; NĂNG SUẤT</th>
+              <th style="text-align: right; width: 180px;">THƯỞNG NHÀ (75%)</th>
+              <th style="text-align: right; width: 180px;">VINH DANH (25%)</th>
+              <th style="text-align: right; width: 180px;">TỔNG THỰC TẾ</th>
+              <th style="text-align: right; width: 200px;" class="t1-rw-highlight-col">LÀM TRÒN ĐẸP</th>
+            </tr>
+          </thead>
+          <tbody id="rewardSplitTbody">
+            <!-- Render danh sách từ JS -->
+          </tbody>
+          <tfoot id="rewardSplitTfoot">
+            <!-- Render tổng kết từ JS -->
+          </tfoot>
+        </table>
+      </div>
     </div>
 
   </section>
@@ -3754,6 +3657,6 @@ setTimeout(() => {
 </script>
 
 <!-- Crew Lưới Búa - Mã Nguồn Quản Trị Đã Đóng Gói & Khóa Bảo Vệ Toàn Diện -->
-<script src="js/admin.bundle.js?v=v20261104_40_discord_rewards_channel_1567414850727182478" charset="UTF-8"></script>
+<script src="js/admin.bundle.js?v=v20261104_41_clean_t1_rewards_click_to_analyze" charset="UTF-8"></script>
 </body>
 </html>
