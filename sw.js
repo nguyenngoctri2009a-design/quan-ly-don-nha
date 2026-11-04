@@ -1,5 +1,5 @@
 // Service Worker cho PWA "Thống Kê Nhập Nhà" - Crew Lưới Búa
-const CACHE_NAME = 'v20261104_43_preserve_fund_on_reset_all';
+const CACHE_NAME = 'v20261104_44_cyber_luxury_daily_report_poster';
 const STATIC_ASSETS = [
   './',
   './index.html',

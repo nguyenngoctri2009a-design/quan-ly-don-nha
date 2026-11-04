@@ -5450,131 +5450,237 @@ async function generateDailyRecordReport(targetDate, autoSendDiscord = false) {
 
   const W = 960;
 
-  // Render các hàng trong bảng y hệt giao diện thẻ ngày
-  let rowsHtml = '';
+  const W = 1000;
+
+  // Render danh sách chiến binh theo kiểu 3D Cards / Leaderboard sang trọng T1
+  let cardsHtml = '';
   if (sortedMembers.length === 0) {
-    rowsHtml = `
-      <tr>
-        <td colspan="4" style="padding:28px;text-align:center;font-weight:700;color:#64748b;font-style:italic;background:#fff;">
-          Ngày ${fmtDate(targetDate)} chưa có dữ liệu bản ghi số nhà nào.
-        </td>
-      </tr>
+    cardsHtml = `
+      <div style="background:#ffffff; border-radius:18px; border:1.5px dashed #cbd5e1; padding:36px; text-align:center; color:#64748b; font-weight:750; font-size:15px;">
+        Ngày ${fmtDate(targetDate)} chưa có dữ liệu chiến tích trộm nhà nào được ghi nhận.
+      </div>
     `;
   } else {
     sortedMembers.forEach((m, idx) => {
-      const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : (idx + 1);
+      const rankNum = idx + 1;
       const pct = totalHouses > 0 ? Math.round((m.binh / totalHouses) * 100) : 0;
 
-      rowsHtml += `
-        <tr style="border-bottom:1px solid #f1f5f9;background:#ffffff;">
-          <td style="padding:16px 18px;text-align:center;font-size:16px;font-weight:800;color:#475569;">
-            ${medal}
-          </td>
-          <td style="padding:16px 20px;">
-            <div style="font-weight:800;font-size:15px;color:#0f172a;">${escHtml(m.name)}</div>
-          </td>
-          <td style="padding:16px 20px;text-align:center;">
-            <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:999px;border:1.5px solid #f59e0b;background:#fff8ee;color:#b45309;font-weight:900;font-size:14px;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
-              🏠 ${Math.round(m.binh * 100) / 100} nhà
-            </span>
-          </td>
-          <td style="padding:16px 24px;">
-            <div style="display:flex;align-items:center;gap:12px;">
-              <div style="flex:1;background:#e2e8f0;height:7px;border-radius:999px;overflow:hidden;">
-                <div style="width:${pct}%;background:linear-gradient(90deg,#f59e0b,#ea580c);height:100%;border-radius:999px;"></div>
-              </div>
-              <span style="font-weight:800;font-size:13.5px;color:#475569;min-width:36px;text-align:right;">${pct}%</span>
+      let cardBg = '#ffffff';
+      let cardBorder = '1.5px solid #e2e8f0';
+      let cardShadow = '0 4px 12px rgba(0,0,0,0.03)';
+      let rankBadgeBg = 'linear-gradient(135deg, #f1f5f9, #e2e8f0)';
+      let rankBadgeColor = '#475569';
+      let rankText = `#${rankNum}`;
+      let nameColor = '#0f172a';
+      let houseBadgeBg = '#f1f5f9';
+      let houseBadgeColor = '#0f172a';
+      let houseBadgeBorder = '1px solid #cbd5e1';
+      let barGrad = 'linear-gradient(90deg, #0284c7, #0ea5e9)';
+
+      if (idx === 0) {
+        // TOP 1 MVP - GOLD LUXURY
+        cardBg = 'linear-gradient(90deg, #fffdf5 0%, #ffffff 50%, #fef8e8 100%)';
+        cardBorder = '2px solid #f59e0b';
+        cardShadow = '0 8px 20px rgba(245,158,11,0.18)';
+        rankBadgeBg = 'linear-gradient(135deg, #fbbf24, #d97706)';
+        rankBadgeColor = '#ffffff';
+        rankText = '🥇 TOP 1 MVP';
+        nameColor = '#92400e';
+        houseBadgeBg = 'linear-gradient(135deg, #f59e0b, #d97706)';
+        houseBadgeColor = '#ffffff';
+        houseBadgeBorder = 'none';
+        barGrad = 'linear-gradient(90deg, #f59e0b, #ea580c)';
+      } else if (idx === 1) {
+        // TOP 2 - SILVER ELITE
+        cardBg = 'linear-gradient(90deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%)';
+        cardBorder = '1.5px solid #94a3b8';
+        cardShadow = '0 6px 16px rgba(100,116,139,0.12)';
+        rankBadgeBg = 'linear-gradient(135deg, #94a3b8, #64748b)';
+        rankBadgeColor = '#ffffff';
+        rankText = '🥈 TOP 2';
+        nameColor = '#1e293b';
+        houseBadgeBg = 'linear-gradient(135deg, #475569, #334155)';
+        houseBadgeColor = '#ffffff';
+        houseBadgeBorder = 'none';
+        barGrad = 'linear-gradient(90deg, #64748b, #475569)';
+      } else if (idx === 2) {
+        // TOP 3 - BRONZE GLORY
+        cardBg = 'linear-gradient(90deg, #fff7ed 0%, #ffffff 50%, #ffedd5 100%)';
+        cardBorder = '1.5px solid #fdba74';
+        cardShadow = '0 6px 16px rgba(234,88,12,0.12)';
+        rankBadgeBg = 'linear-gradient(135deg, #f97316, #ea580c)';
+        rankBadgeColor = '#ffffff';
+        rankText = '🥉 TOP 3';
+        nameColor = '#9a3412';
+        houseBadgeBg = 'linear-gradient(135deg, #ea580c, #c2410c)';
+        houseBadgeColor = '#ffffff';
+        houseBadgeBorder = 'none';
+        barGrad = 'linear-gradient(90deg, #f97316, #ea580c)';
+      }
+
+      cardsHtml += `
+        <div style="background:${cardBg}; border:${cardBorder}; border-radius:16px; padding:14px 20px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; box-shadow:${cardShadow}; gap:16px;">
+          <!-- Left: Rank & Name -->
+          <div style="display:flex; align-items:center; gap:16px; flex:1; min-width:0;">
+            <div style="background:${rankBadgeBg}; color:${rankBadgeColor}; font-size:12.5px; font-weight:900; padding:6px 14px; border-radius:999px; letter-spacing:0.5px; white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,0.12); min-width:85px; text-align:center;">
+              ${rankText}
             </div>
-          </td>
-        </tr>
+            <div style="font-weight:900; font-size:16px; color:${nameColor}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:-0.2px;">
+              ${escHtml(m.name)}
+            </div>
+          </div>
+
+          <!-- Center: Progress Bar -->
+          <div style="width:220px; display:flex; align-items:center; gap:10px;">
+            <div style="flex:1; height:8px; background:#e2e8f0; border-radius:999px; overflow:hidden;">
+              <div style="width:${pct}%; height:100%; background:${barGrad}; border-radius:999px;"></div>
+            </div>
+            <span style="font-size:13px; font-weight:850; color:#64748b; min-width:38px; text-align:right;">${pct}%</span>
+          </div>
+
+          <!-- Right: Houses Badge -->
+          <div style="min-width:130px; text-align:right;">
+            <span style="display:inline-flex; align-items:center; gap:6px; background:${houseBadgeBg}; color:${houseBadgeColor}; border:${houseBadgeBorder}; font-size:15px; font-weight:900; padding:7px 18px; border-radius:12px; box-shadow:0 3px 10px rgba(0,0,0,0.06); letter-spacing:0.2px;">
+              🏠 ${Math.round(m.binh * 100) / 100} Nhà
+            </span>
+          </div>
+        </div>
       `;
     });
   }
 
   container.innerHTML = `
-    <div style="width:${W}px;background:#f8fafc;padding:36px;color:#0f172a;box-sizing:border-box;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;position:relative;background-image:linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);background-size:24px 24px;background-position:-1px -1px;">
+    <div style="width:${W}px; background:#f8fafc; padding:36px; color:#0f172a; box-sizing:border-box; font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif; position:relative; background-image:radial-gradient(#cbd5e1 0.85px, transparent 0.85px); background-size:24px 24px;">
 
-      <!-- CARD THẺ NGÀY ĐẲNG CẤP CHUẨN GIAO DIỆN THEO ẢNH ĐẠI CA -->
-      <div style="background:#ffffff;border:1.5px solid #e2e8f0;border-radius:18px;box-shadow:0 12px 30px -4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.03);overflow:hidden;">
+      <!-- POSTER CONTAINER SIÊU CẤP CHUẨN T1 LUXURY ESPORTS -->
+      <div style="background:#ffffff; border:2px solid #e2e8f0; border-radius:28px; box-shadow:0 24px 60px rgba(15,23,42,0.1), 0 4px 16px rgba(0,0,0,0.04); overflow:hidden;">
 
-        <!-- 1. HEADER CARD NGÀY -->
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:22px 28px;border-bottom:1.5px solid #f1f5f9;background:#fafaf9;">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <span style="font-size:24px;">📅</span>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span style="font-size:20px;font-weight:900;color:#0f172a;">${fmtDate(targetDate)}</span>
-              <span style="background:${tagBg};color:${tagColor};font-size:11.5px;font-weight:800;padding:4px 12px;border-radius:999px;letter-spacing:0.5px;text-transform:uppercase;">${tagText}</span>
-              <span style="font-size:13.5px;font-weight:700;color:#64748b;">(${memberCount} anh em ghi nhận)</span>
+        <!-- 1. HERO HEADER DARK & GOLD LUXURY -->
+        <div style="background:linear-gradient(135deg, #090d16 0%, #0f172a 45%, #0369a1 100%); padding:32px 36px; position:relative; color:#ffffff; border-bottom:3px solid #f59e0b;">
+          
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <!-- Brand & Title -->
+            <div>
+              <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(245,158,11,0.18); border:1px solid rgba(245,158,11,0.5); padding:5px 14px; border-radius:999px; margin-bottom:10px;">
+                <span style="font-size:14px;">👑</span>
+                <span style="font-size:12px; font-weight:900; color:#fbbf24; letter-spacing:1.5px; text-transform:uppercase;">CREW LƯỚI BÚA • GTA RP</span>
+              </div>
+              <h1 style="font-size:30px; font-weight:950; margin:0; letter-spacing:-0.5px; line-height:1.2; text-shadow:0 2px 10px rgba(0,0,0,0.4);">
+                BẢNG VINH DANH CHIẾN TÍCH NGÀY
+              </h1>
+              <p style="margin:6px 0 0 0; font-size:13.5px; color:#94a3b8; font-weight:600;">
+                Hệ thống ghi nhận thời gian thực • Tôn vinh các chiến binh xuất sắc nhất toàn đội
+              </p>
+            </div>
+
+            <!-- Date Glass Badge -->
+            <div style="text-align:right;">
+              <div style="display:inline-flex; flex-direction:column; align-items:flex-end; background:rgba(255,255,255,0.08); border:1.5px solid rgba(255,255,255,0.18); border-radius:18px; padding:12px 20px; backdrop-filter:blur(8px); box-shadow:0 8px 24px rgba(0,0,0,0.25);">
+                <span style="font-size:22px; font-weight:950; color:#38bdf8; letter-spacing:0.5px;">📅 ${fmtDate(targetDate)}</span>
+                <span style="background:${tagBg}; color:${tagColor}; font-size:11px; font-weight:900; padding:3px 10px; border-radius:999px; margin-top:4px; letter-spacing:1px; text-transform:uppercase;">
+                  ${tagText}
+                </span>
+              </div>
             </div>
           </div>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <span style="font-size:14px;font-weight:700;color:#64748b;">Tổng ngày:</span>
-            <span style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#ffffff;font-size:16px;font-weight:900;padding:6px 18px;border-radius:999px;box-shadow:0 3px 10px rgba(245,158,11,0.35);">🏠 ${totalHouses} nhà</span>
+
+        </div>
+
+        <!-- 2. PODIUM 3 THẺ METRIC 3D NỔI BẬT -->
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; padding:24px 32px; background:#f8fafc; border-bottom:1.5px solid #e2e8f0;">
+          
+          <!-- Metric 1: Tổng số nhà -->
+          <div style="background:#ffffff; border:1.5px solid #fde68a; border-radius:20px; padding:18px 20px; box-shadow:0 6px 18px rgba(245,158,11,0.1), inset 0 1px 2px #ffffff;">
+            <div style="font-size:12px; font-weight:900; color:#b45309; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+              <span>🏠</span> TỔNG SỐ NHÀ HOÀN THÀNH
+            </div>
+            <div style="font-size:32px; font-weight:950; color:#d97706; letter-spacing:-0.5px; line-height:1.1;">
+              ${totalHouses} <span style="font-size:18px; font-weight:800; color:#b45309;">căn</span>
+            </div>
+            <div style="font-size:11.5px; font-weight:700; color:#78350f; margin-top:4px;">
+              Năng suất toàn đội trong ngày
+            </div>
+          </div>
+
+          <!-- Metric 2: Chiến binh tham gia -->
+          <div style="background:#ffffff; border:1.5px solid #a7f3d0; border-radius:20px; padding:18px 20px; box-shadow:0 6px 18px rgba(16,185,129,0.1), inset 0 1px 2px #ffffff;">
+            <div style="font-size:12px; font-weight:900; color:#047857; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+              <span>👥</span> LỰC LƯỢNG THAM CHIẾN
+            </div>
+            <div style="font-size:32px; font-weight:950; color:#059669; letter-spacing:-0.5px; line-height:1.1;">
+              ${memberCount} <span style="font-size:18px; font-weight:800; color:#047857;">chiến binh</span>
+            </div>
+            <div style="font-size:11.5px; font-weight:700; color:#065f46; margin-top:4px;">
+              Trung bình ~${avgHouses} căn / người
+            </div>
+          </div>
+
+          <!-- Metric 3: MVP Ngày -->
+          <div style="background:#ffffff; border:1.5px solid #bae6fd; border-radius:20px; padding:18px 20px; box-shadow:0 6px 18px rgba(14,165,233,0.1), inset 0 1px 2px #ffffff;">
+            <div style="font-size:12px; font-weight:900; color:#0369a1; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+              <span>👑</span> VUA PHÁ LƯỚI (MVP NGÀY)
+            </div>
+            <div style="font-size:22px; font-weight:950; color:#0284c7; letter-spacing:-0.3px; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              ${top1 ? escHtml(top1.name) : 'Chưa có'}
+            </div>
+            <div style="font-size:13px; font-weight:850; color:#0369a1; margin-top:4px;">
+              🔥 Đạt ${top1 ? (Math.round(top1.binh * 100) / 100) : 0} căn hôm nay
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 3. DANH SÁCH CHIẾN BINH 3D CARDS -->
+        <div style="padding:28px 32px 16px 32px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <div style="font-size:13px; font-weight:900; color:#475569; text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:8px;">
+              <span>🎖️</span> BẢNG XẾP HẠNG CHI TIẾT
+            </div>
+            <div style="font-size:12px; font-weight:800; color:#64748b;">
+              TỔNG CỘNG: <span style="color:#0f172a;">${totalHouses} CĂN NHÀ</span>
+            </div>
+          </div>
+
+          <!-- Các Card chiến binh -->
+          <div>
+            ${cardsHtml}
           </div>
         </div>
 
-        <!-- 2. BẢNG THỐNG KÊ CHI TIẾT (CHUẨN FORM GIAO DIỆN) -->
-        <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
-          <thead>
-            <tr style="background:#f8fafc;border-bottom:1.5px solid #e2e8f0;">
-              <th style="padding:14px 18px;width:90px;text-align:center;font-size:12px;font-weight:800;color:#64748b;letter-spacing:1px;text-transform:uppercase;">HẠNG</th>
-              <th style="padding:14px 20px;text-align:left;font-size:12px;font-weight:800;color:#64748b;letter-spacing:1px;text-transform:uppercase;">THÀNH VIÊN</th>
-              <th style="padding:14px 20px;width:180px;text-align:center;font-size:12px;font-weight:800;color:#64748b;letter-spacing:1px;text-transform:uppercase;">SỐ NHÀ</th>
-              <th style="padding:14px 24px;width:240px;text-align:left;font-size:12px;font-weight:800;color:#64748b;letter-spacing:1px;text-transform:uppercase;">ĐÓNG GÓP NGÀY</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rowsHtml}
-          </tbody>
-          <tfoot>
-            <tr style="background:#f8fafc;border-top:2px solid #e2e8f0;font-weight:900;">
-              <td colspan="2" style="padding:16px 20px;text-align:left;font-size:14px;color:#0f172a;letter-spacing:0.5px;">
-                🌟 TỔNG CỘNG NGÀY ${fmtDate(targetDate)}: ${memberCount} ANH EM
-              </td>
-              <td style="padding:16px 20px;text-align:center;">
-                <span style="font-size:17px;color:#b45309;font-weight:900;">🔥 ${totalHouses} nhà</span>
-              </td>
-              <td style="padding:16px 24px;font-size:13.5px;color:#16a34a;font-weight:800;">
-                ✓ 100% hoàn thành
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-
-        <!-- 3. KHUNG THÔNG BÁO WEBSITE CHÍNH THỨC CỦA ĐẠI CA -->
-        <div style="margin:26px 24px 22px 24px;background:#fff8ee;border:2.5px solid #d97706;border-radius:14px;padding:22px 26px;text-align:center;box-shadow:inset 0 0 10px rgba(217,119,6,0.08);">
-          <div style="display:inline-block;background:#b45309;color:#fff;padding:5px 18px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">
-            ✦ THÔNG BÁO TỪ BAN QUẢN LÝ CREW LƯỠI BÚA ✦
+        <!-- 4. KHUNG THÔNG BÁO BAN CHỈ HUY SANG TRỌNG -->
+        <div style="margin:10px 32px 24px 32px; background:linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border:2px solid #38bdf8; border-radius:20px; padding:20px 26px; box-shadow:0 6px 20px rgba(2,132,199,0.08); text-align:center;">
+          <div style="display:inline-flex; align-items:center; gap:6px; background:#0284c7; color:#ffffff; padding:4px 16px; border-radius:999px; font-size:11.5px; font-weight:900; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">
+            ✦ CỔNG THÔNG TIN ĐIỀU HÀNH CREW LƯỚI BÚA ✦
           </div>
-          <div style="font-size:16.5px;font-weight:900;color:#0f172a;letter-spacing:0.5px;margin-bottom:6px;">
-            🌐 WEBSITE: <span style="color:#b45309;text-decoration:underline;">https://quan-ly-seven.vercel.app/</span>
+          <div style="font-size:16px; font-weight:950; color:#0c4a6e; margin-bottom:5px;">
+            🌐 HỆ THỐNG TRA CỨU: <span style="color:#0284c7; text-decoration:underline;">https://quan-ly-seven.vercel.app/</span>
           </div>
-          <div style="font-size:18px;font-weight:900;color:#b45309;letter-spacing:0.5px;margin-bottom:6px;">
-            👉 AE TỰ VÀO CHECK NHÀ MÌNH LẤY ĐƯỢC MẤY CĂN NHÉ .
+          <div style="font-size:15px; font-weight:900; color:#0369a1; margin-bottom:4px;">
+            👉 AE TỰ VÀO CHECK SỐ NHÀ &amp; THÀNH TÍCH ĐÃ ĐƯỢC ĐỒNG BỘ 24/7 NHÉ!
           </div>
-          <div style="font-size:12px;font-weight:700;color:#78350f;letter-spacing:0.3px;">
-            ⚡ Hệ thống tự động đồng bộ thời gian thực 24/7 • Minh bạch &amp; Chính xác tuyệt đối
+          <div style="font-size:11.5px; font-weight:750; color:#075985;">
+            ⚡ Tự động mã hóa &amp; bảo mật thời gian thực • Minh bạch 100% công sức anh em
           </div>
         </div>
 
-        <!-- 4. CHỮ KÝ VÀ DẤU ĐỎ CHÍNH THỨC CỦA ĐẠI CA -->
-        <div style="display:flex;justify-content:flex-end;padding:0 30px 24px 0;">
-          <div style="position:relative;width:340px;height:200px;">
-            <div style="position:absolute;left:0;top:0;text-align:center;width:220px;">
-              <div style="font-size:13.5px;font-weight:800;color:#0f172a;letter-spacing:1.5px;">QUẢN LÝ</div>
-              <div style="font-size:11px;font-weight:600;color:#64748b;font-style:italic;margin-top:2px;">(Ký, ghi rõ họ tên)</div>
-              <div style="height:20px;"></div>
-              <div style="font-family:'Great Vibes',cursive;font-size:48px;font-weight:400;color:#0f172a;line-height:1;letter-spacing:2px;">
+        <!-- 5. CHỮ KÝ VÀ DẤU ĐỎ CHÍNH THỨC CỦA ĐẠI CA -->
+        <div style="display:flex; justify-content:flex-end; padding:0 36px 24px 0;">
+          <div style="position:relative; width:340px; height:185px;">
+            <div style="position:absolute; left:0; top:0; text-align:center; width:220px;">
+              <div style="font-size:13.5px; font-weight:900; color:#0f172a; letter-spacing:1.5px; text-transform:uppercase;">QUẢN LÝ</div>
+              <div style="font-size:11px; font-weight:700; color:#64748b; font-style:italic; margin-top:2px;">(Ký, ghi rõ họ tên)</div>
+              <div style="height:14px;"></div>
+              <div style="font-family:'Great Vibes',cursive; font-size:46px; font-weight:400; color:#0f172a; line-height:1; letter-spacing:2px;">
                 Trí
               </div>
-              <div style="font-family:'Dancing Script','Brush Script MT',cursive;font-size:32px;font-weight:700;color:#0f172a;line-height:1.1;letter-spacing:.5px;margin-top:6px;">
+              <div style="font-family:'Dancing Script','Brush Script MT',cursive; font-size:30px; font-weight:750; color:#0f172a; line-height:1.1; letter-spacing:.5px; margin-top:6px;">
                 Nguyễn Ngọc Trí
               </div>
             </div>
 
             <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"
-                 style="position:absolute;right:0;top:10px;width:145px;height:145px;
-                        transform:rotate(-12deg);opacity:0.9;">
+                 style="position:absolute; right:0; top:6px; width:145px; height:145px;
+                        transform:rotate(-12deg); opacity:0.92;">
               <defs>
                 <path id="stampTopArcDaily" d="M 22,80 A 58,58 0 0,1 138,80" fill="none"/>
                 <path id="stampBotArcDaily" d="M 24,80 A 56,56 0 0,0 136,80" fill="none"/>
@@ -5602,10 +5708,9 @@ async function generateDailyRecordReport(targetDate, autoSendDiscord = false) {
           </div>
         </div>
 
-        <!-- 5. DÒNG BẢO MẬT & XÁC THỰC DƯỚI ĐÁY CARD -->
-        <div style="text-align:center;padding:14px 20px;background:#fafaf9;border-top:1.5px solid #f1f5f9;
-                    font-size:11px;font-weight:800;color:#64748b;letter-spacing:1px;text-transform:uppercase;">
-          ── CREW LƯỠI BÚA ★ HỆ THỐNG QUẢN LÝ TRỘM NHÀ &amp; QUỸ CHUỘC TÙ 24/7 ──
+        <!-- 6. DÒNG TEM BẢN QUYỀN ĐÁY POSTER -->
+        <div style="text-align:center; padding:16px 20px; background:#0f172a; color:#94a3b8; font-size:11.5px; font-weight:850; letter-spacing:1px; text-transform:uppercase;">
+          ── CREW LƯỠI BÚA ★ HỆ THỐNG QUẢN LÝ TRỘM NHÀ &amp; QUỸ BĂNG ĐẢNG GTA RP ──
         </div>
 
       </div>
