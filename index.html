@@ -201,7 +201,7 @@
 
   <!-- Phân luồng tài nguyên: Preload Bundle Ứng Dụng -->
   <link rel="preload" href="js/worker-calc.js" as="worker">
-  <link rel="preload" href="js/app.bundle.js?v=v20261104_46_fix_duplicate_w_syntax_error" as="script">
+  <link rel="preload" href="js/app.bundle.js?v=v20261104_47_ultimate_fps_performance_boost" as="script">
 
   <!-- Highcharts & Canvas Export Libraries (Tải cục bộ tốc độ 0ms) -->
   <script src="js/highcharts.js"></script>
@@ -892,9 +892,18 @@
               return s; 
             }
             for (var i = 0; i < N; i++) stars.push(spawn({}, false));
+            var lastModeText = '', lastSpdText = '';
             function hud() { 
-              if (mode) mode.textContent = warp ? 'Warp' : 'Cruise'; 
-              if (spd) spd.textContent = 'x' + (v / 0.22).toFixed(1); 
+              var curMode = warp ? 'Warp' : 'Cruise';
+              if (mode && curMode !== lastModeText) {
+                mode.textContent = curMode;
+                lastModeText = curMode;
+              }
+              var curSpd = '×' + (v / 0.22).toFixed(1);
+              if (spd && curSpd !== lastSpdText) {
+                spd.textContent = curSpd;
+                lastSpdText = curSpd;
+              }
             }
 
             var cachedGrad = null;
@@ -940,7 +949,7 @@
             var vis = true, raf = 0, last = 0;
             function frame(now) {
               raf = 0;
-              if (!root.isConnected || !vis || document.hidden) return;
+              if (!root.isConnected || !vis || document.hidden || root.closest('.hidden')) return;
               var dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); 
               last = now;
               v += (target - v) * (1 - Math.pow(warp ? 0.25 : 0.12, dt));
@@ -959,7 +968,7 @@
                 hud(); 
                 return; 
               } 
-              if (!raf && vis && !document.hidden) { 
+              if (!raf && vis && !document.hidden && !root.closest('.hidden')) { 
                 last = performance.now(); 
                 raf = requestAnimationFrame(frame); 
               } 
@@ -979,6 +988,18 @@
                 run();
               }
             }, { passive: true });
+
+            var parentSection = root.closest('section');
+            if (parentSection && 'MutationObserver' in window) {
+              new MutationObserver(function() {
+                if (parentSection.classList.contains('hidden')) {
+                  if (raf) { cancelAnimationFrame(raf); raf = 0; }
+                } else {
+                  run();
+                }
+              }).observe(parentSection, { attributes: true, attributeFilter: ['class'] });
+            }
+
 
             function setWarp(on) { 
               warp = on; 
@@ -1444,6 +1465,6 @@
 </script>
 
 <!-- Crew Lưới Búa - Mã Nguồn Đã Đóng Gói & Khóa Bảo Vệ Toàn Diện -->
-<script src="js/app.bundle.js?v=v20261104_46_fix_duplicate_w_syntax_error" charset="UTF-8"></script>
+<script src="js/app.bundle.js?v=v20261104_47_ultimate_fps_performance_boost" charset="UTF-8"></script>
 </body>
 </html>

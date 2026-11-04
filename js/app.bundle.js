@@ -798,12 +798,27 @@ function listenData() {
 
   if (!db) return;
   let batchUpdateTimer = null;
+  let batchUpdateRaf = null;
+  let saveCacheDebounce = null;
+
+  function debouncedSaveMasterCache() {
+    if (saveCacheDebounce) clearTimeout(saveCacheDebounce);
+    saveCacheDebounce = setTimeout(() => {
+      saveMasterCache();
+    }, 400);
+  }
 
   function triggerBatchUpdate() {
-    saveMasterCache();
+    debouncedSaveMasterCache();
     markAllViewsDirty();
-    if (typeof updateQuickFundBanner === 'function') updateQuickFundBanner();
-    renderActiveView();
+
+    if (!batchUpdateRaf) {
+      batchUpdateRaf = requestAnimationFrame(() => {
+        batchUpdateRaf = null;
+        if (typeof updateQuickFundBanner === 'function') updateQuickFundBanner();
+        renderActiveView();
+      });
+    }
 
     if (batchUpdateTimer) clearTimeout(batchUpdateTimer);
     batchUpdateTimer = setTimeout(() => {
@@ -818,7 +833,7 @@ function listenData() {
           }
         });
       }
-    }, 40);
+    }, 80);
   }
 
   // Luồng 2: Firebase Realtime WebSocket Listeners đồng bộ dữ liệu thời gian thực
