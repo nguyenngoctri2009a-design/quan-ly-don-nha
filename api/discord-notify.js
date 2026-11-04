@@ -8,6 +8,7 @@ const DEFAULT_CHANNEL_WEEKLY = '1561985096943276042';
 const DEFAULT_CHANNEL_FUND = '1561985235422281760';
 const DEFAULT_CHANNEL_BACKUP = '1562063584496844841';
 const DEFAULT_CHANNEL_CERT = '1566023759343779871';
+const DEFAULT_CHANNEL_REWARDS = '1567414850727182478';
 
 const BOT_CLIENT_ID = '1561984275585302619';
 const BOT_INVITE_URL = `https://discord.com/api/oauth2/authorize?client_id=${BOT_CLIENT_ID}&permissions=8&scope=bot`;
@@ -185,8 +186,43 @@ module.exports = async (req, res) => {
         targetChannelId = getEnv('DISCORD_CHANNEL_WEEKLY', DEFAULT_CHANNEL_WEEKLY);
       } else if (type === 'fund' || type === 'fund_weekly') {
         targetChannelId = getEnv('DISCORD_CHANNEL_FUND', DEFAULT_CHANNEL_FUND);
-      } else if (type === 'backup') {
+      } else if (type === 'rewards' || type === 'reward_split' || type === 'chia_thuong') {
+      const totalGross = stats?.totalGross ?? 0;
+      const bailDeduct = stats?.bailDeduct ?? 0;
+      const actualPool = stats?.actualPool ?? 0;
+      const totalHouses = stats?.totalHouses ?? 0;
+      const results = stats?.results || [];
+
+      messageContent = [
+        `🏆 **BẢNG PHÂN BỔ TIỀN THƯỞNG CHIẾN BINH (CREW LƯỚI BÚA)** 🏆`,
+        `🌐 **WEBSITE:** <https://quan-ly-seven.vercel.app/>`,
+        `👉 **Anh em tự vào check số tiền nhận thực tế của mình nhé!**`
+      ].join('\n');
+
+      let listText = '';
+      results.forEach(r => {
+        const icon = r.rankIcon || '🎖️';
+        const label = r.rankLabel || 'TOP';
+        listText += `${icon} **${label}**: **${r.name}** *(${r.houses} căn)* ➔ **${Number(r.rounded).toLocaleString('vi-VN')}đ**\n`;
+      });
+
+      embeds.push({
+        title: title || '💎 BẢNG PHÂN BỔ TIỀN THƯỞNG CHIẾN BINH (T1 AI MERIT)',
+        color: 16753920, // Gold #ffa500
+        description: stats?.aiInsight || 'Thuật toán tối ưu năng lực: 75% Số nhà + 25% Đua Top vinh danh. Tự động san phẳng hòa điểm & làm tròn đẹp khớp 100% quỹ.',
+        fields: [
+          { name: '💵 Tổng Quỹ Thưởng', value: `>>> **${Number(totalGross).toLocaleString('vi-VN')}đ**`, inline: true },
+          { name: '🛡️ Trích Quỹ Chuộc Tù', value: `>>> **- ${Number(bailDeduct).toLocaleString('vi-VN')}đ**`, inline: true },
+          { name: '💎 Quỹ Thực Chi (100%)', value: `>>> **${Number(actualPool).toLocaleString('vi-VN')}đ**`, inline: true },
+          { name: '🏠 Tổng Căn Áp Dụng', value: `>>> **${totalHouses} căn** *(${results.length} chiến binh)*`, inline: true },
+          { name: '👑 Danh Sách Nhận Thưởng Thực Tế', value: listText || 'Chưa có dữ liệu chiến binh', inline: false }
+        ],
+        footer: { text: 'Crew Lưới Búa • Hệ Thống Phân Bổ Tiền Thưởng T1 AI Merit Pro' }
+      });
+    } else if (type === 'backup') {
         targetChannelId = getEnv('DISCORD_CHANNEL_BACKUP', DEFAULT_CHANNEL_BACKUP);
+      } else if (type === 'rewards' || type === 'reward_split' || type === 'chia_thuong') {
+        targetChannelId = getEnv('DISCORD_CHANNEL_REWARDS', DEFAULT_CHANNEL_REWARDS);
       } else {
         targetChannelId = getEnv('DISCORD_CHANNEL_DAILY', DEFAULT_CHANNEL_DAILY);
       }

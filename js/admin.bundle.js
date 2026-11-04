@@ -9985,6 +9985,83 @@ function initT1RewardSystem() {
     });
   }
 
+  const btnSendDiscord = $('btnSendRewardDiscord');
+  if (btnSendDiscord && !btnSendDiscord.dataset.bound) {
+    btnSendDiscord.dataset.bound = 'true';
+    btnSendDiscord.addEventListener('click', async () => {
+      if (!t1LastAnalysisData) runT1SmartRewardAnalysis();
+      const d = t1LastAnalysisData;
+      if (!d) return;
+
+      const originalHtml = btnSendDiscord.innerHTML;
+      btnSendDiscord.disabled = true;
+      btnSendDiscord.innerHTML = '⏳ Đang Gửi Lên Discord...';
+
+      let imageBase64 = null;
+      try {
+        if (typeof html2canvas === 'function') {
+          const targetEl = document.querySelector('#view-rewards .t1-rw-table-wrap') || $('view-rewards');
+          if (targetEl) {
+            const canvas = await html2canvas(targetEl, {
+              scale: 2,
+              useCORS: true,
+              backgroundColor: '#ffffff'
+            });
+            imageBase64 = canvas.toDataURL('image/png');
+          }
+        }
+      } catch (cErr) {
+        console.warn('html2canvas reward error:', cErr);
+      }
+
+      try {
+        const res = await fetch('/api/discord-notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'rewards',
+            customChannelId: '1567414850727182478',
+            title: '🏆 BẢNG PHÂN BỔ TIỀN THƯỞNG CHIẾN BINH (T1 AI MERIT)',
+            stats: {
+              totalGross: d.totalGross,
+              bailDeduct: d.bailDeduct,
+              actualPool: d.actualPool,
+              totalHouses: d.totalHouses,
+              results: d.results,
+              aiInsight: 'Thuật toán tối ưu năng lực: 75% Số nhà + 25% Đua Top vinh danh. Tự động san phẳng hòa điểm & làm tròn đẹp khớp 100% quỹ.'
+            },
+            imageBase64: imageBase64
+          })
+        });
+
+        const data = await res.json();
+        if (data && data.success) {
+          if (typeof window.showToast === 'function') {
+            window.showToast('🚀 Đã gửi bảng chia tiền lên kênh Discord (ID: 1567414850727182478) thành công!', 'success');
+          } else {
+            alert('Đã gửi bảng chia tiền lên kênh Discord thành công!');
+          }
+        } else {
+          const errMsg = data?.message || 'Không thể gửi tin nhắn';
+          if (typeof window.showToast === 'function') {
+            window.showToast('⚠️ Discord: ' + errMsg, 'danger');
+          } else {
+            alert('Lỗi Discord: ' + errMsg);
+          }
+        }
+      } catch (err) {
+        if (typeof window.showToast === 'function') {
+          window.showToast('❌ Lỗi kết nối gửi Discord: ' + err.message, 'danger');
+        } else {
+          alert('Lỗi gửi Discord: ' + err.message);
+        }
+      } finally {
+        btnSendDiscord.disabled = false;
+        btnSendDiscord.innerHTML = originalHtml;
+      }
+    });
+  }
+
   const btnCopy = $('btnCopyRewardReport');
   if (btnCopy && !btnCopy.dataset.bound) {
     btnCopy.dataset.bound = 'true';
