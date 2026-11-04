@@ -9717,16 +9717,17 @@ window.addEventListener('DOMContentLoaded', () => {
    MODULE: PHÂN TÍCH & PHÂN BỔ THƯỞNG CHIẾN BINH T1 PRO (AI MERIT REWARDS)
    Chuẩn T1 Design System: 75% Lao động (số căn) + 25% Đua Top bứt phá.
    Tự động san phẳng hòa điểm, bảo đảm công bằng 100% & làm tròn khớp quỹ.
-   CHỈ HIỂN THỊ KẾT QUẢ KHI NGƯỜI DÙNG BẤM NÚT PHÂN TÍCH.
+   HỖ TRỢ ĐẦY ĐỦ KHI TRÍCH QUỸ CHUỘC = 0Đ (KHÔNG BỊ DEFAULT VỀ 2 TRIỆU).
    ========================================================================== */
 
 let t1HasAnalyzed = false;
 let t1LastAnalysisData = null;
 
 function parseRewardNum(val) {
-  if (typeof val === 'number') return val;
-  if (!val) return 0;
-  return Number(String(val).replace(/[^0-9]/g, '')) || 0;
+  if (typeof val === 'number') return isNaN(val) ? 0 : val;
+  if (val === '' || val === null || val === undefined) return 0;
+  const cleaned = String(val).replace(/[^0-9]/g, '');
+  return cleaned === '' ? 0 : Number(cleaned);
 }
 
 function formatRewardMoney(num) {
@@ -9746,7 +9747,8 @@ window.t1SetTotalPreset = function(val) {
 };
 
 window.t1SetBailPreset = function(val) {
-  const totalGross = parseRewardNum($('rewardTotalInput')?.value) || 10000000;
+  const totalVal = $('rewardTotalInput')?.value;
+  const totalGross = (totalVal !== undefined && totalVal !== '') ? parseRewardNum(totalVal) : 10000000;
   const input = $('rewardBailDeductInput');
   if (!input) return;
 
@@ -9758,7 +9760,7 @@ window.t1SetBailPreset = function(val) {
   document.querySelectorAll('.t1-rw-input-box:nth-child(2) .t1-rw-chip').forEach(btn => {
     btn.classList.remove('active');
   });
-  if (event && event.target) event.target.classList.add('active');
+  if (window.event && window.event.target) window.event.target.classList.add('active');
   if (t1HasAnalyzed) runT1SmartRewardAnalysis();
 };
 
@@ -9769,7 +9771,7 @@ window.t1SetTopPreset = function(num) {
     document.querySelectorAll('.t1-rw-input-box:nth-child(3) .t1-rw-chip').forEach(btn => {
       btn.classList.remove('active');
     });
-    if (event && event.target) event.target.classList.add('active');
+    if (window.event && window.event.target) window.event.target.classList.add('active');
     if (t1HasAnalyzed) runT1SmartRewardAnalysis();
   }
 };
@@ -9802,15 +9804,21 @@ function getSystemTopMembers(limit) {
     ];
   }
 
-  const topN = Math.max(2, limit || 3);
+  const topN = Math.max(1, limit || 3);
   return sorted.slice(0, topN);
 }
 
 // THUẬT TOÁN ĐỈNH CAO: T1 SMART AI MERIT SPLIT (75% SỐ NHÀ + 25% ĐUA TOP)
 function runT1SmartRewardAnalysis() {
-  const totalGross = parseRewardNum($('rewardTotalInput')?.value) || 10000000;
-  const bailDeduct = parseRewardNum($('rewardBailDeductInput')?.value) || 2000000;
-  const topCount = parseInt($('rewardTopCountInput')?.value, 10) || 3;
+  const totalVal = $('rewardTotalInput')?.value;
+  const totalGross = (totalVal !== undefined && totalVal !== '') ? parseRewardNum(totalVal) : 10000000;
+
+  const bailVal = $('rewardBailDeductInput')?.value;
+  const bailDeduct = (bailVal !== undefined && bailVal !== '') ? parseRewardNum(bailVal) : 0;
+
+  const topVal = $('rewardTopCountInput')?.value;
+  const topCount = (topVal !== undefined && topVal !== '') ? Math.max(1, parseInt(topVal, 10)) : 3;
+
   const actualPool = Math.max(0, totalGross - bailDeduct);
 
   // Lấy danh sách Top từ dữ liệu hệ thống
@@ -9927,7 +9935,9 @@ function runT1SmartRewardAnalysis() {
 
   // 6. CẬP NHẬT GIAO DIỆN KPI T1
   if ($('kpiRewardGross')) $('kpiRewardGross').textContent = formatRewardMoney(totalGross);
-  if ($('kpiRewardBail')) $('kpiRewardBail').textContent = '- ' + formatRewardMoney(bailDeduct);
+  if ($('kpiRewardBail')) {
+    $('kpiRewardBail').textContent = bailDeduct > 0 ? ('- ' + formatRewardMoney(bailDeduct)) : '0đ';
+  }
   if ($('kpiRewardNet')) $('kpiRewardNet').textContent = formatRewardMoney(actualPool);
   if ($('kpiRewardPerHouse')) {
     const avg = totalHouses > 0 ? Math.round(actualPool / totalHouses) : 0;
@@ -10047,22 +10057,26 @@ function runT1SmartRewardAnalysis() {
   if ($('rewardAnalysisResultArea')) $('rewardAnalysisResultArea').classList.remove('hidden');
 }
 
+// Hàm thực thi phân tích toàn diện
+window.executeRewardAnalysis = function() {
+  t1HasAnalyzed = true;
+  runT1SmartRewardAnalysis();
+  const resArea = $('rewardAnalysisResultArea');
+  if (resArea) {
+    resArea.classList.remove('hidden');
+    resArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  if (typeof window.showToast === 'function') {
+    window.showToast('⚡ Đã hoàn tất phân tích & phân bổ chia thưởng T1!', 'success');
+  }
+};
+
 // Gắn sự kiện các nút
 function initT1RewardSystem() {
   const btnAnalyze = $('btnExecuteRewardAnalysis');
   if (btnAnalyze && !btnAnalyze.dataset.bound) {
     btnAnalyze.dataset.bound = 'true';
-    btnAnalyze.addEventListener('click', () => {
-      t1HasAnalyzed = true;
-      runT1SmartRewardAnalysis();
-      const resArea = $('rewardAnalysisResultArea');
-      if (resArea) {
-        resArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-      if (typeof window.showToast === 'function') {
-        window.showToast('⚡ Đã hoàn tất phân tích & phân bổ chia thưởng T1!', 'success');
-      }
-    });
+    btnAnalyze.addEventListener('click', window.executeRewardAnalysis);
   }
 
   const btnSendDiscord = $('btnSendRewardDiscord');
@@ -10070,8 +10084,7 @@ function initT1RewardSystem() {
     btnSendDiscord.dataset.bound = 'true';
     btnSendDiscord.addEventListener('click', async () => {
       if (!t1HasAnalyzed || !t1LastAnalysisData) {
-        t1HasAnalyzed = true;
-        runT1SmartRewardAnalysis();
+        window.executeRewardAnalysis();
       }
       const d = t1LastAnalysisData;
       if (!d) return;
@@ -10150,8 +10163,7 @@ function initT1RewardSystem() {
     btnCopy.dataset.bound = 'true';
     btnCopy.addEventListener('click', () => {
       if (!t1HasAnalyzed || !t1LastAnalysisData) {
-        t1HasAnalyzed = true;
-        runT1SmartRewardAnalysis();
+        window.executeRewardAnalysis();
       }
       const d = t1LastAnalysisData;
       if (!d) return;
@@ -10181,7 +10193,7 @@ function initT1RewardSystem() {
 
       navigator.clipboard.writeText(msg).then(() => {
         if (typeof window.showToast === 'function') {
-          window.showToast('📋 Đã sao chép bảng thưởng đẹp chuẩn Markdown vào bộ nhớ!', 'success');
+          window.showToast('📋 Đã sao chép bảng thưởng đẹp chuẩn Discord vào bộ nhớ!', 'success');
         } else {
           alert('Đã sao chép bảng thưởng vào bộ nhớ tạm!');
         }
@@ -10189,14 +10201,14 @@ function initT1RewardSystem() {
     });
   }
 
-  // Tự động định dạng tiền khi nhập tay
+  // Tự động định dạng tiền khi nhập tay & kích hoạt phân tích
   ['rewardTotalInput', 'rewardBailDeductInput'].forEach(id => {
     const el = $(id);
     if (el && !el.dataset.boundFormat) {
       el.dataset.boundFormat = 'true';
       el.addEventListener('input', () => {
         const val = parseRewardNum(el.value);
-        el.value = val ? Number(val).toLocaleString('vi-VN') : '';
+        el.value = (val !== '' && val !== null) ? Number(val).toLocaleString('vi-VN') : '';
         if (t1HasAnalyzed) runT1SmartRewardAnalysis();
       });
     }
