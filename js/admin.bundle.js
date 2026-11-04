@@ -10015,16 +10015,28 @@ function initT1RewardSystem() {
       const d = t1LastAnalysisData;
       if (!d) return;
 
-      let msg = `🏆 **BẢNG PHÂN BỔ TIỀN THƯỞNG CREW LƯỚI BÚA (T1 AI MERIT)**\n`;
-      msg += `💵 Tổng Quỹ: **${formatRewardMoney(d.totalGross)}** | Trừ Quỹ Chuộc: **- ${formatRewardMoney(d.bailDeduct)}**\n`;
-      msg += `💎 **QUỸ THỰC CHI (100%): ${formatRewardMoney(d.actualPool)}** (Áp dụng Top ${d.results.length} - ${d.totalHouses} căn)\n\n`;
-      msg += `| Hạng | Chiến Binh | Số Căn | Thưởng Năng Lực | Thưởng Đua Top | Thực Nhận |\n`;
-      msg += `| :---: | :--- | :---: | :---: | :---: | :---: |\n`;
+      let msg = `🏆 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 🏆\n`;
+      msg += `   👑 **BẢNG PHÂN BỔ TIỀN THƯỞNG CREW LƯỚI BÚA** 👑\n`;
+      msg += `🏆 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 🏆\n\n`;
+      msg += `💵 **Tổng Quỹ Thưởng:** \`${formatRewardMoney(d.totalGross)}\`\n`;
+      msg += `🛡️ **Trích Quỹ Chuộc Tù:** \`- ${formatRewardMoney(d.bailDeduct)}\`\n`;
+      msg += `💎 **QUỸ THỰC CHI (100%):** \`${formatRewardMoney(d.actualPool)}\` *(Top ${d.results.length} • ${d.totalHouses} căn)*\n`;
+      const avgPrice = d.totalHouses > 0 ? Math.round(d.actualPool / d.totalHouses) : 0;
+      msg += `📈 **Đơn Giá Năng Lực:** \`~${Number(avgPrice).toLocaleString('vi-VN')}đ / căn\`\n`;
+      msg += `🧠 **Cơ Chế:** \`75% Số nhà + 25% Đua Top vinh danh\` (San phẳng hòa điểm)\n\n`;
 
       d.results.forEach(r => {
-        msg += `| ${r.rankIcon} ${r.rankLabel} | **${r.name}** | ${r.houses} căn | ${formatRewardMoney(r.houseAmt)} | ${formatRewardMoney(r.rankAmt)} | **${formatRewardMoney(r.rounded)}** |\n`;
+        msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+        msg += `${r.rankIcon} **${r.rankLabel}** ➔ **${r.name}**\n`;
+        msg += `   🏠 Cày được: \`${r.houses} căn\` *(${r.housePct}%)*\n`;
+        msg += `   💵 Thưởng số nhà (75%): \`${formatRewardMoney(r.houseAmt)}\`\n`;
+        msg += `   🎖️ Thưởng đua Top (25%): \`${formatRewardMoney(r.rankAmt)}\`\n`;
+        msg += `   👉 **THỰC NHẬN: ${formatRewardMoney(r.rounded)}** ⭐\n\n`;
       });
-      msg += `\n🎯 **TỔNG KẾT: ${formatRewardMoney(d.actualPool)}** (Khớp khít 100% quỹ)`;
+
+      msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `🎯 **TỔNG KẾT QUỸ CHI:** \`${formatRewardMoney(d.actualPool)}\` *(Khớp 100% không lệch 1 xu)*\n`;
+      msg += `🌐 **Tra Cứu Trực Tiếp:** <https://quan-ly-seven.vercel.app/>`;
 
       navigator.clipboard.writeText(msg).then(() => {
         if (typeof window.showToast === 'function') {
