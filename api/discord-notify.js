@@ -1,7 +1,7 @@
 const https = require('https');
 const { getEnv } = require('./_env');
 
-// Discord Bot Token & Channel IDs theo yêu cầu của Đại ca
+// Discord Bot Token & Channel IDs theo cấu hình hệ thống
 const DEFAULT_BOT_TOKEN = Buffer.from('TVRVMk1UazROREkzTlRVNE5UTXdNall4T1EuR2VsaEdwLmNRWllJRFBic0pCU2lyeDdqWmhrLUlSVnNqOGpLZW51M0FqaFE0', 'base64').toString('utf-8');
 const DEFAULT_CHANNEL_DAILY = '1561985181802569761';
 const DEFAULT_CHANNEL_WEEKLY = '1561985096943276042';
@@ -13,10 +13,41 @@ const DEFAULT_CHANNEL_REWARDS = '1567414850727182478';
 const BOT_CLIENT_ID = '1561984275585302619';
 const BOT_INVITE_URL = `https://discord.com/api/oauth2/authorize?client_id=${BOT_CLIENT_ID}&permissions=8&scope=bot`;
 
+// Connection Pool Keep-Alive cho Discord API v10
+const discordAgent = new https.Agent({
+  keepAlive: true,
+  maxSockets: 50,
+  maxFreeSockets: 15,
+  timeout: 12000,
+  freeSocketTimeout: 30000
+});
+
+// Bộ Rate Limiting trượt bảo vệ Bot Token không bị Discord ban (tối đa 8 request / 5s)
+const discordRateMap = new Map();
+const DISCORD_WINDOW_MS = 5000;
+const MAX_DISCORD_REQ = 8;
+
+// Deduplication Cache chống spam click gửi đúp tin nhắn trong 3s
+const dedupeCache = new Map();
+const DEDUPE_TTL_MS = 3000;
+
+function isDiscordRateLimited(key) {
+  const now = Date.now();
+  const history = discordRateMap.get(key) || [];
+  const recent = history.filter(ts => now - ts < DISCORD_WINDOW_MS);
+  if (recent.length >= MAX_DISCORD_REQ) {
+    return true;
+  }
+  recent.push(now);
+  discordRateMap.set(key, recent);
+  return false;
+}
+
 /**
- * Gửi tin nhắn và file ảnh lên Discord REST API v10 sử dụng Buffer và https native của Node.js
+ * Gửi tin nhắn và file ảnh lên Discord REST API v10 sử dụng Buffer và https Keep-Alive
+ * Tự động Retry khi gặp HTTP 429 (Rate Limit từ Discord) dựa trên retry_after
  */
-function sendToDiscordChannel({ botToken, channelId, content, embeds, imageBase64, filename = 'report.png', extraFile }) {
+function sendToDiscordChannel({ botToken, channelId, content, embeds, imageBase64, filename = 'report.png', extraFile }, retryCount = 0) {
   return new Promise((resolve) => {
     try {
       const boundary = '----CrewDiscordBoundary' + Math.random().toString(36).substring(2) + Date.now().toString(36);
@@ -89,24 +120,33 @@ function sendToDiscordChannel({ botToken, channelId, content, embeds, imageBase6
         port: 443,
         path: `/api/v10/channels/${channelId}/messages`,
         method: 'POST',
+        agent: discordAgent,
         headers: {
           'Authorization': `Bot ${botToken}`,
           'Content-Type': `multipart/form-data; boundary=${boundary}`,
           'Content-Length': totalBody.length,
           'User-Agent': 'CrewLuoiBua-Bot/2.0'
         },
-        timeout: 20000
+        timeout: 18000
       };
 
       const req = https.request(options, (res) => {
         let rawData = '';
         res.on('data', chunk => { rawData += chunk; });
-        res.on('end', () => {
+        res.on('end', async () => {
           let parsed = null;
           try {
             parsed = JSON.parse(rawData);
           } catch (e) {
             parsed = { raw: rawData };
+          }
+
+          // Xử lý tự động Retry khi dính Rate Limit 429 từ Discord
+          if (res.statusCode === 429 && retryCount < 2) {
+            const waitMs = Math.min(((parsed?.retry_after || 1.5) * 1000) + 100, 4000);
+            await new Promise(r => setTimeout(r, waitMs));
+            const retryRes = await sendToDiscordChannel({ botToken, channelId, content, embeds, imageBase64, filename, extraFile }, retryCount + 1);
+            return resolve(retryRes);
           }
 
           if (res.statusCode >= 200 && res.statusCode < 300) {
@@ -186,7 +226,34 @@ module.exports = async (req, res) => {
         targetChannelId = getEnv('DISCORD_CHANNEL_WEEKLY', DEFAULT_CHANNEL_WEEKLY);
       } else if (type === 'fund' || type === 'fund_weekly') {
         targetChannelId = getEnv('DISCORD_CHANNEL_FUND', DEFAULT_CHANNEL_FUND);
+      } else if (type === 'backup') {
+        targetChannelId = getEnv('DISCORD_CHANNEL_BACKUP', DEFAULT_CHANNEL_BACKUP);
       } else if (type === 'rewards' || type === 'reward_split' || type === 'chia_thuong') {
+        targetChannelId = getEnv('DISCORD_CHANNEL_REWARDS', DEFAULT_CHANNEL_REWARDS);
+      } else {
+        targetChannelId = getEnv('DISCORD_CHANNEL_DAILY', DEFAULT_CHANNEL_DAILY);
+      }
+    }
+
+    // Rate Limiting theo kênh đích
+    if (isDiscordRateLimited(targetChannelId)) {
+      return res.status(429).json({
+        success: false,
+        message: '⚠️ Kênh Discord này đang nhận quá nhiều bản tin liên tiếp! Vui lòng chờ vài giây để gửi tiếp.'
+      });
+    }
+
+    // Xây dựng nội dung văn bản tin nhắn & Khung thống kê (Embed Card)
+    let messageContent = [
+      `🌐 **WEBSITE:** <https://quan-ly-seven.vercel.app/>`,
+      `👉 **AE TỰ VÀO CHECK NHÀ MÌNH LẤY ĐƯỢC MẤY CĂN NHÉ .**`
+    ].join('\n');
+
+    const embeds = [];
+
+    if (customContent) {
+      messageContent = customContent;
+    } else if (type === 'rewards' || type === 'reward_split' || type === 'chia_thuong') {
       const totalGross = stats?.totalGross ?? 0;
       const bailDeduct = stats?.bailDeduct ?? 0;
       const actualPool = stats?.actualPool ?? 0;
@@ -219,25 +286,6 @@ module.exports = async (req, res) => {
         ],
         footer: { text: 'Crew Lưới Búa • Hệ Thống Phân Bổ Tiền Thưởng T1 AI Merit Pro' }
       });
-    } else if (type === 'backup') {
-        targetChannelId = getEnv('DISCORD_CHANNEL_BACKUP', DEFAULT_CHANNEL_BACKUP);
-      } else if (type === 'rewards' || type === 'reward_split' || type === 'chia_thuong') {
-        targetChannelId = getEnv('DISCORD_CHANNEL_REWARDS', DEFAULT_CHANNEL_REWARDS);
-      } else {
-        targetChannelId = getEnv('DISCORD_CHANNEL_DAILY', DEFAULT_CHANNEL_DAILY);
-      }
-    }
-
-    // Xây dựng nội dung văn bản tin nhắn & Khung thống kê (Embed Card)
-    let messageContent = [
-      `🌐 **WEBSITE:** <https://quan-ly-seven.vercel.app/>`,
-      `👉 **AE TỰ VÀO CHECK NHÀ MÌNH LẤY ĐƯỢC MẤY CĂN NHÉ .**`
-    ].join('\n');
-
-    const embeds = [];
-
-    if (customContent) {
-      messageContent = customContent;
     } else if (type === 'daily' || type === 'records_daily') {
       const dayDate = date || 'Hôm nay';
       const houses = stats?.totalHouses ?? 0;
@@ -300,7 +348,7 @@ module.exports = async (req, res) => {
       const bailCount = stats?.bailCount ?? 0;
 
       messageContent = [
-        `💾 **HỆ THỐNG SAO LƯU DỮ LIỆU CHU KỲ CREW LƯỠI BÚA** 💾`,
+        `💾 **HỆ THỐNG SAO LƯU DỮ LIỆU CHU KỲ CREW LƯỚI BÚA** 💾`,
         `🌐 **WEBSITE:** <https://quan-ly-seven.vercel.app/>`,
         `👉 **AE TỰ VÀO CHECK NHÀ MÌNH LẤY ĐƯỢC MẤY CĂN NHÉ .**`
       ].join('\n');
@@ -338,7 +386,7 @@ module.exports = async (req, res) => {
     });
 
     if (result.success) {
-      // Tự động gửi dòng phân cách ================= để phân biệt rõ ràng giữa các lần gửi báo cáo theo lệnh Đại ca
+      // Tự động gửi dòng phân cách ================= để phân biệt rõ ràng giữa các lần gửi báo cáo theo yêu cầu
       try {
         await sendToDiscordChannel({
           botToken,

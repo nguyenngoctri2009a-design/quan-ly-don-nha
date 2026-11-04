@@ -18,6 +18,28 @@ function sanitizeKey(str) {
   return String(str || 'unknown').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 80);
 }
 
+// Bộ Rate Limiting trượt chống brute-force mở khóa máy (tối đa 15 lần / phút)
+const unbanRateMap = new Map();
+const UNBAN_WINDOW_MS = 60 * 1000;
+const MAX_UNBAN_REQUESTS = 15;
+
+function isUnbanRateLimited(ip) {
+  const now = Date.now();
+  const history = unbanRateMap.get(ip) || [];
+  const recent = history.filter(ts => now - ts < UNBAN_WINDOW_MS);
+  if (recent.length >= MAX_UNBAN_REQUESTS) {
+    return true;
+  }
+  recent.push(now);
+  unbanRateMap.set(ip, recent);
+  if (unbanRateMap.size > 1000) {
+    for (const [k, v] of unbanRateMap.entries()) {
+      if (v.every(ts => now - ts >= UNBAN_WINDOW_MS)) unbanRateMap.delete(k);
+    }
+  }
+  return false;
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -31,6 +53,16 @@ module.exports = async (req, res) => {
     return res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
 
+  const clientIp = getClientIp(req);
+
+  // Bảo vệ Rate Limit
+  if (isUnbanRateLimited(clientIp)) {
+    return res.status(429).json({
+      success: false,
+      message: '⚠️ Bạn đã gửi quá nhiều yêu cầu mở khóa! Vui lòng chờ 1 phút trước khi thử lại.'
+    });
+  }
+
   let body = req.body;
   if (typeof body === 'string') {
     try { body = JSON.parse(body); } catch (e) { body = {}; }
@@ -39,14 +71,14 @@ module.exports = async (req, res) => {
 
   const unlockKey = (body.unlockKey || body.key || body.password || '').trim();
   const deviceId = (body.deviceId || '').trim();
-  const clientIp = (body.ip || getClientIp(req)).trim();
+  const targetIp = (body.ip || clientIp).trim();
 
-  // MẬT KHẨU MỞ KHÓA HỢP LỆ: 01062009, mật khẩu Đại ca (tri123456@) hoặc mật khẩu Admin mới (vit123456@)
-  const adminPass = getEnv('ADMIN_PASS', 'vit123456@').trim();
+  // MẬT KHẨU MỞ KHÓA HỢP LỆ: 01062009 hoặc mật khẩu của các Admin
   const triPass = getEnv('ADMIN_TRI_PASS', 'tri123456@').trim();
+  const cuuMuoiPass = getEnv('ADMIN_CUUMUOI_PASS', 'cuumuoi123@').trim();
   const masterUnlockKey = getEnv('MASTER_UNLOCK_KEY', '01062009').trim();
 
-  const validKeys = [masterUnlockKey, '01062009', adminPass, 'vit123456@', triPass];
+  const validKeys = [masterUnlockKey, '01062009', triPass, cuuMuoiPass];
 
   if (!validKeys.includes(unlockKey)) {
     return res.status(403).json({
@@ -57,7 +89,7 @@ module.exports = async (req, res) => {
 
   const safeMid = sanitizeKey(deviceId);
   const cleanMid = safeMid.replace(/^dev_/, '');
-  const safeIp = sanitizeKey(clientIp);
+  const safeIp = sanitizeKey(targetIp);
 
   // Xóa sạch toàn bộ bản ghi khóa trên Firebase Realtime Database
   await Promise.all([

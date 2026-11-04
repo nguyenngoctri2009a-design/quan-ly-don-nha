@@ -1,0 +1,23 @@
+{
+  "rules": {
+    ".read": "true",
+    ".write": "true",
+    "records": {
+      ".indexOn": ["date", "memberId", "timestamp"]
+    },
+    "fund_logs": {
+      ".indexOn": ["timestamp", "memberId", "type"]
+    },
+    "audit_logs": {
+      ".indexOn": ["timestamp", "actionType"]
+    },
+    "security": {
+      "locks": {
+        ".indexOn": ["timestamp", "expiresAt"]
+      }
+    },
+    "banned_devices": {
+      ".indexOn": ["bannedAt"]
+    }
+  }
+}
