@@ -1,5 +1,5 @@
 // Service Worker cho PWA "Thống Kê Nhập Nhà" - Crew Lưới Búa
-const CACHE_NAME = 'v20261104_36_ultra_performance_boost';
+const CACHE_NAME = 'v20261104_37_rewards_split_tab_t1pro';
 const STATIC_ASSETS = [
   './',
   './index.html',
