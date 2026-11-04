@@ -7244,8 +7244,8 @@ $('resetAllBinhBtn')?.addEventListener('click', () => {
         <div class="modal-title-group">
           <div class="modal-icon-badge" style="background:#fef2f2;color:#b91c1c;border-color:#fecaca;">⚠️</div>
           <div>
-            <h3>Reset Chu Kỳ Mới (Số Nhà &amp; Tiền Chuộc)</h3>
-            <span style="font-size:12px;color:var(--slate-400);font-weight:600;">Dọn sạch số nhà &amp; hoàn trả quỹ chuộc tù về ban đầu</span>
+            <h3>Reset Chu Kỳ Mới (Bảo Lưu Số Dư Quỹ)</h3>
+            <span style="font-size:12px;color:var(--slate-400);font-weight:600;">Dọn sạch số nhà chu kỳ mới • Số tiền quỹ hiện tại được bảo lưu nguyên vẹn 100%</span>
           </div>
         </div>
         <button class="modal-close-btn" id="closeResetSec" title="Đóng">✕</button>
@@ -7254,8 +7254,8 @@ $('resetAllBinhBtn')?.addEventListener('click', () => {
       <div class="danger-zone-box" style="margin-top:0;margin-bottom:16px;">
         <div class="danger-zone-desc" style="margin-bottom:0;color:#991b1b;font-weight:600;line-height:1.6;">
           ⚠️ <b>Thao tác này sẽ đồng thời:</b><br>
-          1. Xoá sạch toàn bộ bản ghi số nhà của tất cả anh em về <b>0 nhà</b>.<br>
-          2. Xoá sạch toàn bộ lịch sử chuộc tù, đưa <b>số dư quỹ về nguyên vẹn ban đầu</b>.<br>
+          1. Xoá sạch toàn bộ bản ghi số nhà của tất cả anh em về <b>0 nhà</b> để bắt đầu chu kỳ mới.<br>
+          2. <span style="color:#059669;font-weight:750;">💰 BẢO LƯU NGUYÊN VẸN SỐ TIỀN QUỸ HIỆN TẠI</span> sang chu kỳ mới (Tuyệt đối không bị reset mất tiền theo lệnh Đại ca).<br>
           <span style="color:#059669;font-weight:700;">✅ Danh sách thành viên vẫn được giữ nguyên an toàn 100%.</span>
         </div>
       </div>
@@ -7367,9 +7367,28 @@ $('resetAllBinhBtn')?.addEventListener('click', () => {
       }
       backupNotice.remove();
 
+      // 1. TÍNH TOÁN VÀ BẢO LƯU CHÍNH XÁC SỐ TIỀN QUỸ HIỆN TẠI THEO LỆNH ĐẠI CA
+      let currentFundToKeep = 5000000;
+      if (typeof cachedFundData !== 'undefined' && cachedFundData && cachedFundData.currentBalance !== undefined) {
+        currentFundToKeep = Number(cachedFundData.currentBalance) || 0;
+      } else {
+        const init = (fundSettings && fundSettings.initialFund !== undefined) ? Number(fundSettings.initialFund) : 5000000;
+        currentFundToKeep = init + (fundLogs || []).reduce((s, l) => s + (Number(l.amount) || 0), 0);
+      }
+
+      // Cập nhật số dư khởi đầu của chu kỳ mới thành đúng số tiền quỹ hiện tại!
+      if (fundSettingsRef) {
+        await fundSettingsRef.update({
+          initialFund: currentFundToKeep
+        });
+      }
+      fundSettings.initialFund = currentFundToKeep;
+      window.fundSettings = fundSettings;
+
+      // 2. Reset số nhà & dọn dẹp lịch sử chuộc tù cũ
       await Promise.all([
-        recordsRef.remove(),
-        fundLogsRef.remove()
+        recordsRef ? recordsRef.remove() : Promise.resolve(),
+        fundLogsRef ? fundLogsRef.remove() : Promise.resolve()
       ]);
       allRecords = [];
       statsData = [];
@@ -7378,10 +7397,27 @@ $('resetAllBinhBtn')?.addEventListener('click', () => {
       window.statsData = statsData;
       window.fundLogs = fundLogs;
 
-      logAudit('RESET_ALL', 'Reset Chu Kỳ Mới', '💣 Đã tự động sao lưu ảnh về Discord (1562063584496844841) và reset sạch số nhà, lịch sử chuộc tù!');
+      // 3. Tự động ghi 1 log mở đầu chu kỳ xác nhận bảo lưu số dư
+      if (fundLogsRef) {
+        const now = new Date();
+        const dStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+        const tStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        await fundLogsRef.push({
+          type: 'deposit',
+          typeName: 'Bảo Lưu Quỹ Chu Kỳ Trước',
+          memberName: 'Hệ Thống (Đại Ca)',
+          amount: 0,
+          note: `Bảo lưu nguyên vẹn 100% số dư quỹ ${fmtVND(currentFundToKeep)} sang chu kỳ mới theo lệnh Đại ca`,
+          dateStr: dStr,
+          timeStr: tStr,
+          timestamp: Date.now()
+        });
+      }
+
+      logAudit('RESET_ALL', 'Reset Chu Kỳ Mới', `💣 Đã reset số nhà về 0 và BẢO LƯU NGUYÊN VẸN số tiền quỹ hiện tại: ${fmtVND(currentFundToKeep)}!`);
 
       overlay.remove();
-      alert('✅ ĐÃ RESET TOÀN BỘ CHU KỲ MỚI THÀNH CÔNG!\n\n1. Bản ảnh dữ liệu đã được tự động sao lưu và gửi về Discord (Kênh 1562063584496844841).\n2. Không tải file về máy tính tránh phiền toái theo lệnh Đại ca.\n3. Số nhà của tất cả anh em đã về 0 nhà.\n4. Tiền chuộc tù và lịch sử quỹ đã được khôi phục về ban đầu.\n\nHệ thống sẵn sàng cho chu kỳ mới an toàn 100%!');
+      alert(`✅ ĐÃ RESET CHU KỲ MỚI THÀNH CÔNG!\n\n1. Bản ảnh dữ liệu đã được tự động sao lưu về Discord.\n2. Số nhà của tất cả anh em đã được đưa về 0 nhà.\n3. 💰 SỐ TIỀN QUỸ HIỆN TẠI (${fmtVND(currentFundToKeep)}) ĐÃ ĐƯỢC BẢO LƯU NGUYÊN VẸN 100% SANG CHU KỲ MỚI (KHÔNG BỊ RESET)!\n\nHệ thống sẵn sàng cho chu kỳ mới an toàn 100%!`);
 
       if (typeof renderStats === 'function') renderStats();
       if (typeof renderMembersTable === 'function') renderMembersTable();

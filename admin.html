@@ -655,7 +655,7 @@
 
   <!-- Phân luồng tài nguyên: Preload Web Worker & Core Bundle đã đóng gói tối ưu 0ms -->
   <link rel="preload" href="js/worker-calc.js" as="worker">
-  <link rel="preload" href="js/admin.bundle.js?v=v20261104_42_luxury_discord_copy_format" as="script">
+  <link rel="preload" href="js/admin.bundle.js?v=v20261104_43_preserve_fund_on_reset_all" as="script">
 
   <!-- Highcharts & Canvas Export Libraries (Tải cục bộ tốc độ 0ms) -->
   <script src="js/highcharts.js"></script>
@@ -1043,7 +1043,7 @@
         </button>
         <a href="index.html" class="btn-nav-member" title="Xem giao diện thành viên">👁️ Thành Viên</a>
         <button class="btn-nav-export" id="exportImgTopBtn" title="Xuất báo cáo số nhà &amp; quỹ">📸 Xuất Báo Cáo</button>
-        <button class="btn-nav-reset" id="resetAllBinhBtn" title="Reset toàn bộ số nhà &amp; tiền chuộc tù về ban đầu">🔄 Reset Chu Kỳ</button>
+        <button class="btn-nav-reset" id="resetAllBinhBtn" title="Reset toàn bộ số nhà chu kỳ mới (Bảo lưu 100% số tiền quỹ hiện tại)">🔄 Reset Chu Kỳ</button>
         <div class="nav-divider"></div>
         <div class="nav-admin-profile" id="adminProfileBadge" title="Tài khoản Quản Trị Viên đang hoạt động">
           <span class="admin-profile-avatar" id="adminAvatarIcon">👑</span>
@@ -1142,7 +1142,7 @@
             <button type="button" class="sidebar-action-pill" id="sidebarExportBtn" title="Chụp ảnh xuất báo cáo">
               <span>📸 Xuất Báo Cáo</span>
             </button>
-            <button type="button" class="sidebar-action-pill btn-action-danger" id="sidebarResetBtn" title="Reset chu kỳ số nhà">
+            <button type="button" class="sidebar-action-pill btn-action-danger" id="sidebarResetBtn" title="Reset chu kỳ số nhà (Bảo lưu 100% số tiền quỹ hiện tại)">
               <span>🔄 Reset Kỳ</span>
             </button>
             <a href="index.html" class="sidebar-action-pill" title="Xem giao diện thành viên">
@@ -3657,6 +3657,6 @@ setTimeout(() => {
 </script>
 
 <!-- Crew Lưới Búa - Mã Nguồn Quản Trị Đã Đóng Gói & Khóa Bảo Vệ Toàn Diện -->
-<script src="js/admin.bundle.js?v=v20261104_42_luxury_discord_copy_format" charset="UTF-8"></script>
+<script src="js/admin.bundle.js?v=v20261104_43_preserve_fund_on_reset_all" charset="UTF-8"></script>
 </body>
 </html>
