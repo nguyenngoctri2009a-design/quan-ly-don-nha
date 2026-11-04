@@ -8350,6 +8350,7 @@ async function generateCertificateImage(targetUserId) {
 
   try {
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 25)));
     const certNode = container.querySelector('#modernEliteCertNode');
     const canvas = await html2canvas(certNode, {
       scale: 2.25,
@@ -8725,6 +8726,7 @@ async function generateExportImage(customTitle) {
 
   try {
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 25)));
     const reportNode = container.querySelector('#modernReportNode');
     const canvas = await html2canvas(reportNode, {
       scale: 2.25,
