@@ -655,7 +655,7 @@
 
   <!-- Phân luồng tài nguyên: Preload Web Worker & Core Bundle đã đóng gói tối ưu 0ms -->
   <link rel="preload" href="js/worker-calc.js" as="worker">
-  <link rel="preload" href="js/admin.bundle.js?v=v20261104_38_move_rewards_tab_to_top" as="script">
+  <link rel="preload" href="js/admin.bundle.js?v=v20261104_39_t1_smart_rewards_split_full" as="script">
 
   <!-- Highcharts & Canvas Export Libraries (Tải cục bộ tốc độ 0ms) -->
   <script src="js/highcharts.js"></script>
@@ -2131,143 +2131,650 @@
   <!-- ==========================================================================
          VIEW: CHIA THƯỞNG CHIẾN BINH T1 PRO (30% THỨ HẠNG + 70% SỐ NHÀ)
          ========================================================================== -->
-    <section id="view-rewards" class="hidden">
-      
-      <!-- TOP TOOLBAR -->
-      <div class="fund-toolbar" style="margin-bottom: 20px;">
+    <!-- ==========================================================================
+       VIEW: PHÂN BỔ THƯỞNG CHIẾN BINH T1 PRO (AI MERIT REWARDS)
+       Áp dụng chuẩn giao diện T1 3D Neumorphic-Glass Hybrid
+       ========================================================================== -->
+  <section id="view-rewards" class="hidden">
+    
+    <style>
+      /* --- T1 REWARD STYLES SCOPED --- */
+      .t1-rw-header {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1.5px solid #e2e8f0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), inset 0 1px 2px #ffffff;
+        padding: 18px 24px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      .t1-rw-header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .t1-rw-icon-badge {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #ffffff;
+        box-shadow: 0 6px 16px rgba(217, 119, 6, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      }
+      .t1-rw-title {
+        font-size: 19px;
+        font-weight: 900;
+        color: #0f172a;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        letter-spacing: -0.3px;
+      }
+      .t1-rw-subtitle {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #64748b;
+        margin: 3px 0 0 0;
+      }
+      .t1-rw-header-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      /* T1 3D Buttons */
+      .t1-btn-3d {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 9px 18px;
+        font-size: 13px;
+        font-weight: 850;
+        border-radius: 13px;
+        border: 1.5px solid transparent;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        text-decoration: none;
+      }
+      .t1-btn-3d:hover {
+        transform: translateY(-2px);
+      }
+      .t1-btn-3d:active {
+        transform: translateY(1px);
+      }
+      .t1-btn-3d-cyan {
+        background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%) padding-box,
+                    linear-gradient(135deg, #0284c7, #38bdf8) border-box;
+        color: #0369a1;
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.16), inset 0 1px 1px #ffffff;
+      }
+      .t1-btn-3d-cyan:hover {
+        box-shadow: 0 6px 18px rgba(2, 132, 199, 0.28);
+      }
+      .t1-btn-3d-white {
+        background: #ffffff;
+        border: 1.5px solid #cbd5e1;
+        color: #475569;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+      .t1-btn-3d-white:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+        color: #0f172a;
+      }
+
+      /* Input Card */
+      .t1-rw-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1.5px solid #e2e8f0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), inset 0 1px 2px #ffffff;
+        padding: 22px 24px;
+        margin-bottom: 22px;
+      }
+      .t1-rw-inputs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+      .t1-rw-input-box {
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 14px 16px;
+      }
+      .t1-rw-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12.5px;
+        font-weight: 850;
+        color: #1e293b;
+        margin-bottom: 8px;
+      }
+      .t1-rw-input-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+      .t1-rw-input {
+        width: 100%;
+        height: 42px;
+        padding: 0 54px 0 14px;
+        font-size: 15px;
+        font-weight: 800;
+        color: #0f172a;
+        background: #ffffff;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 11px;
+        outline: none;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+        transition: all 0.2s ease;
+      }
+      .t1-rw-input:focus {
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.16);
+      }
+      .t1-rw-input-unit {
+        position: absolute;
+        right: 14px;
+        font-size: 12px;
+        font-weight: 850;
+        color: #64748b;
+        pointer-events: none;
+      }
+      .t1-rw-chips-row {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+      }
+      .t1-rw-chip {
+        padding: 4px 10px;
+        font-size: 11.5px;
+        font-weight: 800;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        user-select: none;
+      }
+      .t1-rw-chip:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+      }
+      .t1-rw-chip.active {
+        background: #0284c7;
+        color: #ffffff;
+        border-color: #0284c7;
+        box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+      }
+      .t1-rw-chip.highlight {
+        background: #fffbeb;
+        color: #b45309;
+        border-color: #fde68a;
+      }
+      .t1-rw-chip.highlight:hover {
+        background: #fef3c7;
+      }
+
+      /* Member Houses Editor Box */
+      .t1-rw-editor-box {
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 16px 18px;
+        margin-bottom: 20px;
+      }
+      .t1-rw-editor-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .t1-rw-editor-title {
+        font-size: 13.5px;
+        font-weight: 850;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .t1-rw-editor-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+        gap: 12px;
+      }
+      .t1-rw-member-item {
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 13px;
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        transition: all 0.2s ease;
+      }
+      .t1-rw-member-item:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+      .t1-rw-member-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+      }
+      .t1-rw-rank-chip {
+        font-size: 11px;
+        font-weight: 900;
+        padding: 2px 7px;
+        border-radius: 6px;
+        background: #f1f5f9;
+        color: #475569;
+        white-space: nowrap;
+      }
+      .t1-rw-name-input {
+        flex: 1;
+        min-width: 0;
+        font-size: 13px;
+        font-weight: 750;
+        color: #0f172a;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 5px 8px;
+        background: #ffffff;
+      }
+      .t1-rw-house-input-wrap {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .t1-rw-house-input {
+        width: 70px;
+        height: 32px;
+        font-size: 14px;
+        font-weight: 850;
+        text-align: right;
+        color: #0284c7;
+        background: #f0f9ff;
+        border: 1.5px solid #bae6fd;
+        border-radius: 8px;
+        padding: 0 6px;
+        outline: none;
+      }
+      .t1-rw-house-input:focus {
+        border-color: #0284c7;
+        background: #ffffff;
+        box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+      }
+
+      /* Big 3D Super Analyze Button */
+      .t1-btn-super-analyze {
+        width: 100%;
+        max-width: 680px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+        border: none;
+        border-radius: 18px;
+        color: #ffffff;
+        cursor: pointer;
+        user-select: none;
+        box-shadow: 0 8px 24px rgba(2, 132, 199, 0.38), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+        transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .t1-btn-super-analyze:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(2, 132, 199, 0.48);
+        background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+      }
+      .t1-btn-super-analyze:active {
+        transform: translateY(1px);
+        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+      }
+      .t1-super-main-text {
+        font-size: 16px;
+        font-weight: 900;
+        letter-spacing: 0.4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .t1-super-sub-text {
+        font-size: 12px;
+        font-weight: 600;
+        opacity: 0.92;
+      }
+
+      /* 4 KPI Cards */
+      .t1-rw-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .t1-rw-kpi-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1.5px solid #e2e8f0;
+        padding: 16px 20px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04), inset 0 1px 2px #ffffff;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.2s ease;
+      }
+      .t1-rw-kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+      }
+      .t1-rw-kpi-title {
+        font-size: 11.5px;
+        font-weight: 850;
+        color: #64748b;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 6px;
+      }
+      .t1-rw-kpi-val {
+        font-size: 26px;
+        font-weight: 900;
+        color: #0f172a;
+        letter-spacing: -0.5px;
+        line-height: 1.1;
+      }
+      .t1-rw-kpi-sub {
+        font-size: 11.5px;
+        font-weight: 700;
+        color: #94a3b8;
+        margin-top: 5px;
+      }
+
+      /* AI Insights Box */
+      .t1-rw-ai-box {
+        background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        border: 1.5px solid #a7f3d0;
+        border-radius: 16px;
+        padding: 14px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);
+      }
+      .t1-rw-ai-inner {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .t1-rw-ai-icon {
+        font-size: 22px;
+        line-height: 1;
+        margin-top: 2px;
+      }
+      .t1-rw-ai-text {
+        font-size: 13px;
+        line-height: 1.5;
+        color: #065f46;
+        font-weight: 600;
+      }
+      .t1-rw-ai-bold {
+        font-weight: 850;
+        color: #047857;
+      }
+
+      /* Table T1 Pro */
+      .t1-rw-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 20px;
+        border: 1.5px solid #e2e8f0;
+        background: #ffffff;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04), inset 0 1px 2px #ffffff;
+      }
+      .t1-rw-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 13.5px;
+      }
+      .t1-rw-table thead tr {
+        background: #f8fafc;
+        border-bottom: 1.5px solid #e2e8f0;
+      }
+      .t1-rw-table th {
+        padding: 14px 18px;
+        font-size: 12px;
+        font-weight: 850;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+      .t1-rw-table td {
+        padding: 14px 18px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+      }
+      .t1-rw-highlight-col {
+        background: #fffbeb !important;
+        border-left: 2px solid #f59e0b !important;
+        color: #b45309 !important;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+      }
+    </style>
+
+    <!-- TOP TOOLBAR BANNER -->
+    <div class="t1-rw-header">
+      <div class="t1-rw-header-left">
+        <div class="t1-rw-icon-badge">🏆</div>
         <div>
-          <h2 style="font-size: 20px; font-weight: 900; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 10px;">
-            <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,#f59e0b,#d97706); color: #fff; font-size: 20px; box-shadow: 0 4px 12px rgba(245,158,11,0.3);">💰</span>
-            Bảng Tính &amp; Phân Bổ Tiền Thưởng (T1 Merit Split)
-          </h2>
-          <p style="font-size: 13px; color: #64748b; margin: 4px 0 0; font-weight: 600;">
-            Thuật toán chia thưởng công bằng: <strong>30% Thứ Hạng</strong> cấp bậc + <strong>70% Sức Lao Động</strong> (tỷ lệ căn nhà hoàn thành).
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <h2 class="t1-rw-title">BẢNG TÍNH &amp; PHÂN TÍCH CHIA THƯỞNG CHIẾN BINH</h2>
+            <span class="t1-rw-chip active" style="font-size: 11px;">T1 AI MERIT v3</span>
+          </div>
+          <p class="t1-rw-subtitle">
+            Thuật toán tối ưu năng lực: 75% Lao động (số căn) + 25% Đua Top bứt phá. Tự động san phẳng hòa điểm &amp; làm tròn đẹp khớp 100% quỹ.
           </p>
         </div>
-
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <button type="button" class="btn-3d" id="btnCopyRewardText" style="padding: 10px 18px; border-radius: 12px; background: #ffffff; border: 1.5px solid #0284c7; color: #0284c7; font-weight: 850; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(2,132,199,0.08); cursor: pointer;">
-            <span>📋</span> Sao Chép Bảng Thưởng
-          </button>
-          <button type="button" class="btn-3d" id="btnSendRewardDiscord" style="padding: 10px 20px; border-radius: 12px; background: #5865F2; color: #ffffff; border: none; font-weight: 850; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(88,101,242,0.3); cursor: pointer;">
-            <span>🚀</span> Gửi Lên Discord
-          </button>
-        </div>
       </div>
+      <div class="t1-rw-header-actions">
+        <button type="button" class="t1-btn-3d t1-btn-3d-cyan" id="btnCopyRewardReport">
+          📋 Sao Chép Bảng Thưởng
+        </button>
+        <button type="button" class="t1-btn-3d t1-btn-3d-white" id="btnResetRewardDefault">
+          🔄 Đồng Bộ Từ Dữ Liệu
+        </button>
+      </div>
+    </div>
 
-      <!-- CONTROL BOX: 2 Ô NHẬP LIỆU CHÍNH & PRESETS -->
-      <div class="card" style="padding: 22px 24px; border-radius: 20px; margin-bottom: 22px; background: #ffffff; border: 1.5px solid #e2e8f0; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
-        <div style="display: grid; grid-template-columns: 1.2fr 1fr 0.8fr; gap: 20px; align-items: start;">
-          
-          <!-- Ô 1: TỔNG QUỸ THƯỞNG -->
-          <div>
-            <label style="display: block; font-size: 13px; font-weight: 850; color: #0f172a; margin-bottom: 8px;">
-              💵 1. Tổng Quỹ Thưởng (VNĐ):
-            </label>
-            <div style="position: relative;">
-              <input type="text" id="rewardTotalInput" value="10.000.000" 
-                     style="width: 100%; padding: 12px 42px 12px 14px; border-radius: 14px; border: 2px solid #0284c7; font-size: 16px; font-weight: 900; color: #0f172a; box-sizing: border-box; background: #f0f9ff;">
-              <span style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-weight: 900; color: #0284c7; font-size: 13px;">VNĐ</span>
-            </div>
-            <!-- Preset Buttons -->
-            <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
-              <button type="button" class="btn-reward-preset" data-val="10000000" style="padding: 4px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; cursor: pointer;">10M</button>
-              <button type="button" class="btn-reward-preset" data-val="15000000" style="padding: 4px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; cursor: pointer;">15M</button>
-              <button type="button" class="btn-reward-preset" data-val="20000000" style="padding: 4px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; cursor: pointer;">20M</button>
-              <button type="button" class="btn-reward-preset" data-val="30000000" style="padding: 4px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; background: #fef3c7; color: #b45309; border: 1px solid #fde68a; cursor: pointer;">30M 🔥</button>
-              <button type="button" class="btn-reward-preset" data-val="50000000" style="padding: 4px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; cursor: pointer;">50M</button>
-            </div>
+    <!-- BỘ THAM SỐ ĐẦU VÀO & BẢNG SỐ NHÀ CHIẾN BINH (T1 3D CARD) -->
+    <div class="t1-rw-card">
+      
+      <!-- HÀNG 1: THAM SỐ QUỸ TIỀN & SỐ TOP -->
+      <div class="t1-rw-inputs-grid">
+        <!-- Ô 1: Tổng Quỹ Thưởng -->
+        <div class="t1-rw-input-box">
+          <label class="t1-rw-label">
+            <span>💵 1. Tổng Quỹ Thưởng:</span>
+            <span style="font-size: 11px; color: #64748b;">Ngân sách thưởng</span>
+          </label>
+          <div class="t1-rw-input-wrap">
+            <input type="text" id="rewardTotalInput" class="t1-rw-input" value="10.000.000" placeholder="Nhập tổng quỹ...">
+            <span class="t1-rw-input-unit">VNĐ</span>
           </div>
-
-          <!-- Ô 2: TRỪ QUỸ CHUỘC TÙ -->
-          <div>
-            <label style="display: block; font-size: 13px; font-weight: 850; color: #0f172a; margin-bottom: 8px;">
-              🛡️ 2. Trích Quỹ Chuộc Tù (Bảo Lưu):
-            </label>
-            <div style="position: relative;">
-              <input type="text" id="rewardBailDeductInput" value="2.000.000" 
-                     style="width: 100%; padding: 12px 42px 12px 14px; border-radius: 14px; border: 1.5px solid #cbd5e1; font-size: 16px; font-weight: 900; color: #b45309; box-sizing: border-box; background: #fffbeb;">
-              <span style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-weight: 900; color: #b45309; font-size: 13px;">VNĐ</span>
-            </div>
-            <!-- Preset Buttons -->
-            <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
-              <button type="button" class="btn-bail-preset" data-val="2000000" style="padding: 4px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; background: #fef3c7; color: #b45309; border: 1px solid #fde68a; cursor: pointer;">Trừ 2M</button>
-              <button type="button" class="btn-bail-preset" data-pct="20" style="padding: 4px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; cursor: pointer;">Trừ 20%</button>
-              <button type="button" class="btn-bail-preset" data-val="0" style="padding: 4px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; cursor: pointer;">Không trừ (0đ)</button>
-            </div>
+          <div class="t1-rw-chips-row">
+            <button type="button" class="t1-rw-chip" data-val="5000000" onclick="window.t1SetTotalPreset(5000000)">5M</button>
+            <button type="button" class="t1-rw-chip active" data-val="10000000" onclick="window.t1SetTotalPreset(10000000)">10M</button>
+            <button type="button" class="t1-rw-chip" data-val="15000000" onclick="window.t1SetTotalPreset(15000000)">15M</button>
+            <button type="button" class="t1-rw-chip" data-val="20000000" onclick="window.t1SetTotalPreset(20000000)">20M</button>
+            <button type="button" class="t1-rw-chip highlight" data-val="30000000" onclick="window.t1SetTotalPreset(30000000)">30M 🔥</button>
+            <button type="button" class="t1-rw-chip highlight" data-val="50000000" onclick="window.t1SetTotalPreset(50000000)">50M 👑</button>
           </div>
+        </div>
 
-          <!-- Ô 3: CHỌN TOP MẤY ĐỂ CHIA -->
-          <div>
-            <label style="display: block; font-size: 13px; font-weight: 850; color: #0f172a; margin-bottom: 8px;">
-              👥 3. Lấy Top Mấy Chia:
-            </label>
-            <div style="position: relative;">
-              <input type="number" id="rewardTopCountInput" min="2" max="50" value="4" 
-                     style="width: 100%; padding: 12px 14px; border-radius: 14px; border: 2px solid #0284c7; font-size: 16px; font-weight: 900; color: #0284c7; box-sizing: border-box; background: #f0f9ff; text-align: center;">
-            </div>
-            <!-- Preset Buttons -->
-            <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; justify-content: center;">
-              <button type="button" class="btn-top-preset" data-top="3" style="padding: 4px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; cursor: pointer;">Top 3</button>
-              <button type="button" class="btn-top-preset" data-top="4" style="padding: 4px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; cursor: pointer;">Top 4</button>
-              <button type="button" class="btn-top-preset" data-top="5" style="padding: 4px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; cursor: pointer;">Top 5</button>
-              <button type="button" class="btn-top-preset" data-top="10" style="padding: 4px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; cursor: pointer;">Top 10</button>
-            </div>
+        <!-- Ô 2: Trích Quỹ Chuộc Tù -->
+        <div class="t1-rw-input-box">
+          <label class="t1-rw-label">
+            <span>🛡️ 2. Trích Quỹ Chuộc Tù:</span>
+            <span style="font-size: 11px; color: #b91c1c;">Bảo lưu an toàn</span>
+          </label>
+          <div class="t1-rw-input-wrap">
+            <input type="text" id="rewardBailDeductInput" class="t1-rw-input" value="2.000.000" placeholder="Số tiền trích giữ...">
+            <span class="t1-rw-input-unit">VNĐ</span>
           </div>
+          <div class="t1-rw-chips-row">
+            <button type="button" class="t1-rw-chip active" onclick="window.t1SetBailPreset(2000000)">Trừ 2M</button>
+            <button type="button" class="t1-rw-chip" onclick="window.t1SetBailPreset('20%')">Trừ 20%</button>
+            <button type="button" class="t1-rw-chip" onclick="window.t1SetBailPreset(0)">Không trừ (0đ)</button>
+          </div>
+        </div>
 
+        <!-- Ô 3: Lấy Top Mấy -->
+        <div class="t1-rw-input-box">
+          <label class="t1-rw-label">
+            <span>👥 3. Lấy Top Mấy Để Chia:</span>
+            <span style="font-size: 11px; color: #0284c7;">Số chiến binh</span>
+          </label>
+          <div class="t1-rw-input-wrap">
+            <input type="number" id="rewardTopCountInput" class="t1-rw-input" value="3" min="2" max="20" placeholder="Số người nhận...">
+            <span class="t1-rw-input-unit">Chiến binh</span>
+          </div>
+          <div class="t1-rw-chips-row">
+            <button type="button" class="t1-rw-chip active" onclick="window.t1SetTopPreset(3)">Top 3 🥇</button>
+            <button type="button" class="t1-rw-chip" onclick="window.t1SetTopPreset(4)">Top 4</button>
+            <button type="button" class="t1-rw-chip" onclick="window.t1SetTopPreset(5)">Top 5</button>
+            <button type="button" class="t1-rw-chip" onclick="window.t1SetTopPreset(10)">Top 10</button>
+          </div>
         </div>
       </div>
 
-      <!-- 4 THẺ KPI T1 TỔNG QUAN TÀI CHÍNH NỔI KHỐI 3D -->
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px;">
-        <div style="background: #ffffff; border: 1.5px solid #cbd5e1; padding: 16px 18px; border-radius: 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
-          <div style="font-size: 11px; font-weight: 850; color: #64748b; letter-spacing: 1px; text-transform: uppercase;">💵 TỔNG QUỸ THƯỞNG</div>
-          <div id="kpiRewardGross" style="font-size: 24px; font-weight: 900; color: #0f172a; margin-top: 4px;">10.000.000đ</div>
+      <!-- HÀNG 2: DANH SÁCH CHIẾN BINH & SỐ NHÀ CÓ THỂ CHỈNH SỬA TRỰC TIẾP -->
+      <div class="t1-rw-editor-box">
+        <div class="t1-rw-editor-top">
+          <div class="t1-rw-editor-title">
+            <span>🏠</span>
+            <span>DANH SÁCH CHIẾN BINH &amp; SỐ NHÀ (TỰ ĐỘNG LOAD / CÓ THỂ SỬA TRỰC TIẾP):</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="t1-btn-3d t1-btn-3d-white" style="padding: 5px 12px; font-size: 12px;" id="btnAddCustomMemberBtn">
+              + Thêm Chiến Binh
+            </button>
+            <button type="button" class="t1-btn-3d t1-btn-3d-white" style="padding: 5px 12px; font-size: 12px;" id="btnReloadSystemDataBtn">
+              🔄 Tải Lại Từ Bảng Dữ Liệu
+            </button>
+          </div>
         </div>
-
-        <div style="background: #ffffff; border: 1.5px solid #fde68a; padding: 16px 18px; border-radius: 18px; box-shadow: 0 4px 14px rgba(245,158,11,0.06);">
-          <div style="font-size: 11px; font-weight: 850; color: #b45309; letter-spacing: 1px; text-transform: uppercase;">🛡️ TRỪ QUỸ CHUỘC</div>
-          <div id="kpiRewardBail" style="font-size: 24px; font-weight: 900; color: #b45309; margin-top: 4px;">- 2.000.000đ</div>
-        </div>
-
-        <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #0284c7; padding: 16px 18px; border-radius: 18px; box-shadow: 0 6px 18px rgba(2,132,199,0.12);">
-          <div style="font-size: 11px; font-weight: 900; color: #0284c7; letter-spacing: 1px; text-transform: uppercase;">💎 QUỸ THỰC CHIA (100%)</div>
-          <div id="kpiRewardNet" style="font-size: 26px; font-weight: 900; color: #0284c7; margin-top: 4px;">8.000.000đ</div>
-          <div style="font-size: 11px; font-weight: 750; color: #0369a1; margin-top: 2px;">30% Thứ hạng • 70% Số nhà</div>
-        </div>
-
-        <div style="background: #ffffff; border: 1.5px solid #a7f3d0; padding: 16px 18px; border-radius: 18px; box-shadow: 0 4px 14px rgba(16,185,129,0.06);">
-          <div style="font-size: 11px; font-weight: 850; color: #047857; letter-spacing: 1px; text-transform: uppercase;">⚡ ĐƠN GIÁ TRUNG BÌNH</div>
-          <div id="kpiRewardPerHouse" style="font-size: 24px; font-weight: 900; color: #059669; margin-top: 4px;">~13.468đ / căn</div>
-          <div id="kpiRewardScope" style="font-size: 11px; font-weight: 700; color: #047857; margin-top: 2px;">Áp dụng cho Top 4 dẫn đầu</div>
+        <div id="rewardMembersEditorGrid" class="t1-rw-editor-grid">
+          <!-- Render danh sách các ô input tên và số nhà -->
         </div>
       </div>
 
-      <!-- BẢNG SỐ LIỆU CHIA THƯỞNG T1 PRO (TABLE DATA) -->
-      <div class="card" style="padding: 20px; border-radius: 20px; background: #ffffff; border: 1.5px solid #e2e8f0; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
-        <div style="overflow-x: auto;">
-          <table id="rewardSplitTable" style="width: 100%; border-collapse: collapse; font-family: 'Plus Jakarta Sans', sans-serif;">
-            <thead>
-              <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
-                <th style="padding: 14px 12px; font-weight: 900; font-size: 12.5px; color: #0284c7; text-align: center; width: 100px;">Hạng</th>
-                <th style="padding: 14px 16px; font-weight: 900; font-size: 12.5px; color: #0284c7; text-align: left;">Chiến Binh</th>
-                <th style="padding: 14px 16px; font-weight: 900; font-size: 12.5px; color: #0284c7; text-align: right;">Thưởng Thứ Hạng (30%)</th>
-                <th style="padding: 14px 16px; font-weight: 900; font-size: 12.5px; color: #0284c7; text-align: right;">Thưởng Số Nhà (70%)</th>
-                <th style="padding: 14px 16px; font-weight: 900; font-size: 12.5px; color: #0284c7; text-align: right;">Tổng Nhận Thực Tế</th>
-                <th style="padding: 14px 18px; font-weight: 900; font-size: 13px; color: #b45309; text-align: right; background: #fffbeb; width: 180px;">Làm Tròn Đẹp</th>
-              </tr>
-            </thead>
-            <tbody id="rewardSplitTbody">
-              <!-- Render tự động bởi JS -->
-            </tbody>
-            <tfoot id="rewardSplitTfoot">
-              <!-- Render hàng tổng kết -->
-            </tfoot>
-          </table>
-        </div>
+      <!-- HÀNG 3: NÚT PHÂN TÍCH 3D CỰC ĐẠI -->
+      <div style="text-align: center;">
+        <button type="button" class="t1-btn-super-analyze" id="btnExecuteRewardAnalysis">
+          <div class="t1-super-main-text">
+            <span>⚡</span> KÍCH HOẠT PHÂN TÍCH &amp; TỰ ĐỘNG CHIA THƯỞNG T1
+          </div>
+          <div class="t1-super-sub-text">
+            Bẻ khóa phân bổ: 75% số nhà + 25% vinh danh, tự động san phẳng hòa điểm &amp; làm tròn đẹp khớp 100%
+          </div>
+        </button>
       </div>
 
-    </section>
+    </div>
+
+    <!-- 4 THẺ KPI T1 3D METRICS -->
+    <div class="t1-rw-kpi-grid">
+      <!-- Card 1 -->
+      <div class="t1-rw-kpi-card">
+        <div class="t1-rw-kpi-title">
+          <span>💵</span> TỔNG QUỸ THƯỞNG
+        </div>
+        <div class="t1-rw-kpi-val" id="kpiRewardGross">10.000.000đ</div>
+        <div class="t1-rw-kpi-sub">Ngân sách xuất quỹ ban đầu</div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="t1-rw-kpi-card">
+        <div class="t1-rw-kpi-title" style="color: #b91c1c;">
+          <span>🛡️</span> TRÍCH QUỸ CHUỘC TÙ
+        </div>
+        <div class="t1-rw-kpi-val" style="color: #dc2626;" id="kpiRewardBail">- 2.000.000đ</div>
+        <div class="t1-rw-kpi-sub">Bảo lưu quỹ băng đảng</div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="t1-rw-kpi-card" style="border-color: #bae6fd; background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);">
+        <div class="t1-rw-kpi-title" style="color: #0284c7;">
+          <span>💎</span> QUỸ THỰC CHIA (100%)
+        </div>
+        <div class="t1-rw-kpi-val" style="color: #0284c7;" id="kpiRewardNet">8.000.000đ</div>
+        <div class="t1-rw-kpi-sub" style="color: #0369a1; font-weight: 750;">75% Số Nhà + 25% Đua Top</div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="t1-rw-kpi-card">
+        <div class="t1-rw-kpi-title" style="color: #047857;">
+          <span>📈</span> ĐƠN GIÁ NĂNG LỰC
+        </div>
+        <div class="t1-rw-kpi-val" style="color: #059669;" id="kpiRewardPerHouse">~38.095đ / căn</div>
+        <div class="t1-rw-kpi-sub" id="kpiRewardScope">Tổng 3 chiến binh (210 căn)</div>
+      </div>
+    </div>
+
+    <!-- AI INSIGHTS NOTIFICATION BANNER -->
+    <div class="t1-rw-ai-box" id="rewardAiInsightBox">
+      <!-- Render nội dung nhận định phân tích của AI -->
+    </div>
+
+    <!-- BẢNG DỮ LIỆU CHIA THƯỞNG T1 PRO -->
+    <div class="t1-rw-table-wrap">
+      <table class="t1-rw-table">
+        <thead>
+          <tr>
+            <th style="width: 130px; text-align: center;">HẠNG</th>
+            <th>CHIẾN BINH &amp; NĂNG SUẤT</th>
+            <th style="text-align: right; width: 180px;">THƯỞNG NHÀ (75%)</th>
+            <th style="text-align: right; width: 180px;">VINH DANH (25%)</th>
+            <th style="text-align: right; width: 180px;">TỔNG THỰC TẾ</th>
+            <th style="text-align: right; width: 200px;" class="t1-rw-highlight-col">LÀM TRÒN ĐẸP</th>
+          </tr>
+        </thead>
+        <tbody id="rewardSplitTbody">
+          <!-- Render danh sách từ JS -->
+        </tbody>
+        <tfoot id="rewardSplitTfoot">
+          <!-- Render tổng kết từ JS -->
+        </tfoot>
+      </table>
+    </div>
+
+  </section>
 
 
   <!-- ========================================================================
@@ -3244,6 +3751,6 @@ setTimeout(() => {
 </script>
 
 <!-- Crew Lưới Búa - Mã Nguồn Quản Trị Đã Đóng Gói & Khóa Bảo Vệ Toàn Diện -->
-<script src="js/admin.bundle.js?v=v20261104_38_move_rewards_tab_to_top" charset="UTF-8"></script>
+<script src="js/admin.bundle.js?v=v20261104_39_t1_smart_rewards_split_full" charset="UTF-8"></script>
 </body>
 </html>

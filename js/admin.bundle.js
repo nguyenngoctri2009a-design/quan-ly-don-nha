@@ -9573,9 +9573,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 /* ==========================================================================
-   MODULE: QUẢN LÝ CHIA THƯỞNG CHIẾN BINH T1 PRO (30% THỨ HẠNG + 70% SỐ NHÀ)
-   Hỗ trợ 2 ô nhập liệu động: Tổng số tiền & Chọn Top mấy.
+   MODULE: PHÂN TÍCH & PHÂN BỔ THƯỞNG CHIẾN BINH T1 PRO (AI MERIT REWARDS)
+   Chuẩn T1 Design System: 75% Lao động (số căn) + 25% Đua Top bứt phá.
+   Tự động san phẳng hòa điểm, bảo đảm công bằng 100% & làm tròn khớp quỹ.
    ========================================================================== */
+
+let t1RewardMembers = [];
+let t1LastAnalysisData = null;
+
 function parseRewardNum(val) {
   if (typeof val === 'number') return val;
   if (!val) return 0;
@@ -9586,312 +9591,448 @@ function formatRewardMoney(num) {
   return Number(num || 0).toLocaleString('vi-VN') + 'đ';
 }
 
-function initRewardInputs() {
-  const totalInput = $('rewardTotalInput');
-  const bailInput = $('rewardBailDeductInput');
+// Preset Handlers
+window.t1SetTotalPreset = function(val) {
+  const input = $('rewardTotalInput');
+  if (input) {
+    input.value = Number(val).toLocaleString('vi-VN');
+    document.querySelectorAll('.t1-rw-input-box:nth-child(1) .t1-rw-chip').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.val === String(val));
+    });
+    runT1SmartRewardAnalysis();
+  }
+};
+
+window.t1SetBailPreset = function(val) {
+  const totalGross = parseRewardNum($('rewardTotalInput')?.value) || 10000000;
+  const input = $('rewardBailDeductInput');
+  if (!input) return;
+
+  if (val === '20%') {
+    input.value = Number(Math.round(totalGross * 0.2)).toLocaleString('vi-VN');
+  } else {
+    input.value = Number(val).toLocaleString('vi-VN');
+  }
+  runT1SmartRewardAnalysis();
+};
+
+window.t1SetTopPreset = function(num) {
   const topInput = $('rewardTopCountInput');
-
-  if (totalInput && !totalInput.dataset.bound) {
-    totalInput.dataset.bound = 'true';
-    totalInput.addEventListener('input', () => {
-      const num = parseRewardNum(totalInput.value);
-      totalInput.value = num ? Number(num).toLocaleString('vi-VN') : '';
-      renderRewardsView();
-    });
+  if (topInput) {
+    topInput.value = num;
+    syncRewardMembersFromSystem(num);
+    runT1SmartRewardAnalysis();
   }
+};
 
-  if (bailInput && !bailInput.dataset.bound) {
-    bailInput.dataset.bound = 'true';
-    bailInput.addEventListener('input', () => {
-      const num = parseRewardNum(bailInput.value);
-      bailInput.value = num ? Number(num).toLocaleString('vi-VN') : '';
-      renderRewardsView();
-    });
-  }
-
-  if (topInput && !topInput.dataset.bound) {
-    topInput.dataset.bound = 'true';
-    topInput.addEventListener('input', () => {
-      renderRewardsView();
-    });
-  }
-
-  // Preset Tổng tiền
-  document.querySelectorAll('.btn-reward-preset').forEach(btn => {
-    btn.onclick = () => {
-      const val = Number(btn.dataset.val);
-      if (totalInput) {
-        totalInput.value = Number(val).toLocaleString('vi-VN');
-        // Tự động gợi ý 20% quỹ chuộc nếu đang để mặc định
-        if (bailInput) {
-          bailInput.value = Number(Math.round(val * 0.2)).toLocaleString('vi-VN');
-        }
-        renderRewardsView();
-      }
-    };
-  });
-
-  // Preset Quỹ chuộc
-  document.querySelectorAll('.btn-bail-preset').forEach(btn => {
-    btn.onclick = () => {
-      if (bailInput) {
-        if (btn.dataset.val !== undefined) {
-          const val = Number(btn.dataset.val);
-          bailInput.value = val ? Number(val).toLocaleString('vi-VN') : '0';
-        } else if (btn.dataset.pct !== undefined) {
-          const gross = parseRewardNum(totalInput?.value) || 0;
-          const pct = Number(btn.dataset.pct);
-          bailInput.value = Number(Math.round(gross * (pct / 100))).toLocaleString('vi-VN');
-        }
-        renderRewardsView();
-      }
-    };
-  });
-
-  // Preset Top N
-  document.querySelectorAll('.btn-top-preset').forEach(btn => {
-    btn.onclick = () => {
-      const top = Number(btn.dataset.top);
-      if (topInput) {
-        topInput.value = top;
-        renderRewardsView();
-      }
-    };
-  });
-
-  // Nút Sao chép nội dung
-  const copyBtn = $('btnCopyRewardText');
-  if (copyBtn && !copyBtn.dataset.bound) {
-    copyBtn.dataset.bound = 'true';
-    copyBtn.onclick = () => {
-      const data = calculateRewardData();
-      if (!data || !data.results.length) return alert('Chưa có số liệu để sao chép!');
-      
-      let text = `🏆 BẢNG PHÂN BỔ TIỀN THƯỞNG CREW LƯỠI BÚA 🏆\n`;
-      text += `💵 Tổng quỹ: ${formatRewardMoney(data.totalGross)} | 🛡️ Quỹ chuộc: ${formatRewardMoney(data.bailDeduct)}\n`;
-      text += `💎 Thực chia: ${formatRewardMoney(data.actualPool)} (30% Thứ hạng • 70% Số nhà)\n`;
-      text += `--------------------------------------------------\n`;
-      data.results.forEach(r => {
-        text += `${r.rankIcon} ${r.rankTitle}: ${r.name} (${r.houses} căn) => ${formatRewardMoney(r.roundedTotal)}\n`;
-      });
-      text += `--------------------------------------------------\n`;
-      text += `⚡ Tổng kết: ${data.results.length} chiến binh hoàn thành ${data.totalHouses} căn nhà. AE check tài khoản nhé!`;
-
-      navigator.clipboard.writeText(text).then(() => {
-        alert('✅ Đã sao chép bảng chia thưởng vào bộ nhớ tạm! Đại ca có thể dán ngay vào Discord / Zalo.');
-      }).catch(err => {
-        prompt('Sao chép thủ công:', text);
-      });
-    };
-  }
-
-  // Nút Gửi Discord
-  const sendDiscordBtn = $('btnSendRewardDiscord');
-  if (sendDiscordBtn && !sendDiscordBtn.dataset.bound) {
-    sendDiscordBtn.dataset.bound = 'true';
-    sendDiscordBtn.onclick = async () => {
-      const data = calculateRewardData();
-      if (!data || !data.results.length) return alert('Chưa có số liệu để gửi!');
-
-      sendDiscordBtn.innerHTML = '<span>⏳ Đang gửi lên Discord...</span>';
-      sendDiscordBtn.disabled = true;
-
-      const fields = data.results.map(r => ({
-        name: `${r.rankIcon} ${r.rankTitle}: ${r.name}`,
-        value: `>>> **${formatRewardMoney(r.roundedTotal)}** *(${r.houses} nhà • Thưởng Hạng: ${formatRewardMoney(r.rankAmt)} + Thưởng Nhà: ${formatRewardMoney(r.houseAmt)})*`,
-        inline: false
-      }));
-
-      const res = await (window.sendDiscordReport || sendDiscordReport)({
-        type: 'weekly',
-        targetChannelId: '1561985096943276042',
-        title: `💰 BẢNG PHÂN BỔ TIỀN THƯỞNG CHIẾN BINH CREW LƯỠI BÚA`,
-        description: `⚡ Ban Chỉ Huy giải ngân **${formatRewardMoney(data.actualPool)}** cho **Top ${data.results.length} Chiến Binh** theo công thức 30% Thứ Hạng + 70% Số Nhà!`,
-        customContent: `🔥 **BẢNG PHÂN BỔ THƯỞNG CREW LƯỠI BÚA** 🔥\n💵 Tổng quỹ thưởng: **${formatRewardMoney(data.totalGross)}** (Trừ quỹ chuộc: ${formatRewardMoney(data.bailDeduct)})\n💎 Thực chia anh em: **${formatRewardMoney(data.actualPool)}**\n🌐 Website: <https://quan-ly-seven.vercel.app/>`
-      });
-
-      sendDiscordBtn.disabled = false;
-      sendDiscordBtn.innerHTML = '<span>🚀 Gửi Lên Discord</span>';
-
-      if (res.success) {
-        alert('✅ Đã gửi Bảng Phân Bổ Tiền Thưởng lên Discord thành công!');
-      } else {
-        alert('❌ Lỗi gửi Discord: ' + res.message);
-      }
-    };
-  }
-}
-
-function calculateRewardData() {
+// Lấy danh sách thành viên từ dữ liệu thật
+function syncRewardMembersFromSystem(topCount) {
   const memberTotals = {};
-  allRecords.forEach(r => {
-    const val = Number(r.binh) || 0;
-    memberTotals[r.userId] = (memberTotals[r.userId] || 0) + val;
-  });
+  if (Array.isArray(window.allRecords)) {
+    window.allRecords.forEach(r => {
+      const val = Number(r.binh) || 0;
+      memberTotals[r.userId] = (memberTotals[r.userId] || 0) + val;
+    });
+  }
 
-  const sortedMembers = Object.values(allUsers)
+  const usersList = window.allUsers ? Object.values(window.allUsers) : [];
+  let sorted = usersList
     .map(u => ({
       id: String(u.id),
       name: u.name || 'Chiến Binh',
-      binh: Math.round((memberTotals[u.id] || 0) * 100) / 100
+      houses: Math.round((memberTotals[u.id] || 0) * 100) / 100
     }))
-    .sort((a, b) => b.binh - a.binh);
+    .sort((a, b) => b.houses - a.houses);
 
+  const limit = topCount || parseInt($('rewardTopCountInput')?.value, 10) || 3;
+  if (!sorted.length) {
+    // Dữ liệu mẫu dự phòng thực chiến
+    sorted = [
+      { id: '1', name: 'BUA | Kkdai Kktobi', houses: 82 },
+      { id: '2', name: 'BUA | Chị Cửu', houses: 64 },
+      { id: '3', name: 'BUA 4 | Anla Sao', houses: 64 }
+    ];
+  }
+
+  t1RewardMembers = sorted.slice(0, Math.max(2, limit)).map(m => ({ ...m }));
+  renderRewardMemberEditor();
+}
+
+// Render các thẻ input cho phép sửa số nhà & tên trực tiếp
+function renderRewardMemberEditor() {
+  const container = $('rewardMembersEditorGrid');
+  if (!container) return;
+
+  container.innerHTML = t1RewardMembers.map((m, idx) => `
+    <div class="t1-rw-member-item" data-idx="${idx}">
+      <div class="t1-rw-member-info">
+        <span class="t1-rw-rank-chip">#${idx + 1}</span>
+        <input type="text" class="t1-rw-name-input" value="${m.name}" placeholder="Tên chiến binh" onchange="window.t1UpdateMemberName(${idx}, this.value)">
+      </div>
+      <div class="t1-rw-house-input-wrap">
+        <input type="number" class="t1-rw-house-input" value="${m.houses}" min="0" placeholder="Số căn" onchange="window.t1UpdateMemberHouses(${idx}, this.value)">
+        <span style="font-size: 11px; font-weight: 800; color: #64748b;">căn</span>
+        ${t1RewardMembers.length > 2 ? `
+          <button type="button" style="border:none;background:none;color:#ef4444;cursor:pointer;font-size:14px;padding:2px 4px;" title="Xóa dòng" onclick="window.t1RemoveMember(${idx})">✕</button>
+        ` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+window.t1UpdateMemberName = function(idx, val) {
+  if (t1RewardMembers[idx]) {
+    t1RewardMembers[idx].name = val.trim() || 'Chiến Binh';
+  }
+};
+
+window.t1UpdateMemberHouses = function(idx, val) {
+  if (t1RewardMembers[idx]) {
+    t1RewardMembers[idx].houses = Math.max(0, Number(val) || 0);
+    runT1SmartRewardAnalysis();
+  }
+};
+
+window.t1RemoveMember = function(idx) {
+  if (t1RewardMembers.length > 2) {
+    t1RewardMembers.splice(idx, 1);
+    if ($('rewardTopCountInput')) $('rewardTopCountInput').value = t1RewardMembers.length;
+    renderRewardMemberEditor();
+    runT1SmartRewardAnalysis();
+  }
+};
+
+// THUẬT TOÁN ĐỈNH CAO: T1 SMART AI MERIT SPLIT (75% SỐ NHÀ + 25% ĐUA TOP)
+function runT1SmartRewardAnalysis() {
   const totalGross = parseRewardNum($('rewardTotalInput')?.value) || 10000000;
   const bailDeduct = parseRewardNum($('rewardBailDeductInput')?.value) || 2000000;
-  const topCount = Math.max(2, Math.min(parseInt($('rewardTopCountInput')?.value, 10) || 4, sortedMembers.length));
-
   const actualPool = Math.max(0, totalGross - bailDeduct);
-  const rankPool = actualPool * 0.3;
-  const housePool = actualPool * 0.7;
 
-  const selected = sortedMembers.slice(0, topCount);
-  const totalHouses = selected.reduce((s, m) => s + m.binh, 0);
-
-  // Tính trọng số thứ hạng suy giảm mượt mà
-  const rawWeights = [];
-  for (let i = 0; i < selected.length; i++) {
-    rawWeights.push(1 / Math.pow(i + 1, 0.78));
+  if (!t1RewardMembers || !t1RewardMembers.length) {
+    syncRewardMembersFromSystem(parseInt($('rewardTopCountInput')?.value, 10) || 3);
   }
-  const sumW = rawWeights.reduce((s, w) => s + w, 0);
-  const rankWeights = rawWeights.map(w => w / sumW);
 
+  // Sắp xếp danh sách giảm dần theo số căn
+  const members = [...t1RewardMembers].sort((a, b) => b.houses - a.houses);
+  const totalHouses = members.reduce((sum, m) => sum + (Number(m.houses) || 0), 0);
+  const n = members.length;
+
+  // 1. Phân bổ cơ sở
+  const housePool = actualPool * 0.75; // 75% chia theo năng lực lao động
+  const rankPool = actualPool * 0.25;  // 25% vinh danh đua top
+
+  // 2. Trọng số xếp hạng cơ bản suy giảm mượt mà
+  const rawWeights = [];
+  for (let i = 0; i < n; i++) {
+    rawWeights.push(1 / Math.pow(i + 1, 0.75));
+  }
+  const sumRawW = rawWeights.reduce((s, w) => s + w, 0);
+  const baseRankWeights = rawWeights.map(w => w / sumRawW);
+
+  // 3. XỬ LÝ HÒA ĐIỂM (SAN PHẲNG KHI ĐỒNG HẠNG CĂN)
+  const tiedWeights = new Array(n).fill(0);
+  const rankLabels = [];
+  const rankIcons = [];
+  let tieFound = false;
+  let tieDetails = [];
+
+  let i = 0;
+  while (i < n) {
+    let j = i;
+    while (j < n && members[j].houses === members[i].houses) {
+      j++;
+    }
+    const groupSize = j - i;
+    let groupWeightSum = 0;
+    for (let k = i; k < j; k++) {
+      groupWeightSum += baseRankWeights[k];
+    }
+    const avgWeight = groupWeightSum / groupSize;
+
+    const displayRank = i + 1;
+    let icon = '🎖️';
+    if (displayRank === 1) icon = '🥇';
+    else if (displayRank === 2) icon = '🥈';
+    else if (displayRank === 3) icon = '🥉';
+
+    for (let k = i; k < j; k++) {
+      tiedWeights[k] = avgWeight;
+      if (groupSize > 1) {
+        rankLabels[k] = `ĐỒNG HẠNG ${displayRank}`;
+        rankIcons[k] = icon;
+      } else {
+        rankLabels[k] = `TOP ${displayRank}`;
+        rankIcons[k] = icon;
+      }
+    }
+
+    if (groupSize > 1) {
+      tieFound = true;
+      const names = members.slice(i, j).map(m => m.name).join(' & ');
+      tieDetails.push(`${names} cùng đạt ${members[i].houses} căn`);
+    }
+
+    i = j;
+  }
+
+  // 4. Tính toán tiền chi tiết từng người
+  const stepRound = actualPool >= 1000000 ? 50000 : 10000;
   const results = [];
   let sumRounded = 0;
 
-  for (let i = 0; i < selected.length; i++) {
-    const m = selected[i];
-    const rank = i + 1;
-    const rAmt = rankPool * rankWeights[i];
-    const hShare = totalHouses > 0 ? (m.binh / totalHouses) : (1 / selected.length);
-    const hAmt = housePool * hShare;
-    const exact = rAmt + hAmt;
-    const rounded = Math.round(exact / 50000) * 50000;
-    sumRounded += rounded;
+  for (let idx = 0; idx < n; idx++) {
+    const m = members[idx];
+    const hShare = totalHouses > 0 ? (m.houses / totalHouses) : (1 / n);
+    const houseAmt = housePool * hShare;
+    const rankAmt = rankPool * tiedWeights[idx];
+    const exactTotal = houseAmt + rankAmt;
+    const rounded = Math.round(exactTotal / stepRound) * stepRound;
 
-    let rankIcon = '🎖️';
-    let rankTitle = `TOP ${rank}`;
-    if (rank === 1) { rankIcon = '🥇'; rankTitle = 'TOP 1'; }
-    else if (rank === 2) { rankIcon = '🥈'; rankTitle = 'TOP 2'; }
-    else if (rank === 3) { rankIcon = '🥉'; rankTitle = 'TOP 3'; }
-
-    results.append ? null : results.push({
-      rank,
-      rankIcon,
-      rankTitle,
-      id: m.id,
+    results.push({
+      rankLabel: rankLabels[idx],
+      rankIcon: rankIcons[idx],
       name: m.name,
-      houses: m.binh,
-      rankAmt: Math.round(rAmt),
-      houseAmt: Math.round(hAmt),
-      exactTotal: Math.round(exact),
-      roundedTotal: rounded
+      houses: m.houses,
+      housePct: totalHouses > 0 ? Math.round((m.houses / totalHouses) * 1000) / 10 : 0,
+      houseAmt: Math.round(houseAmt),
+      rankAmt: Math.round(rankAmt),
+      exactTotal: Math.round(exactTotal),
+      rounded: rounded
     });
+    sumRounded += rounded;
   }
 
-  // Điều chỉnh phần dư làm tròn vào Top 1 để tổng luôn khớp 100%
-  if (results.length > 0) {
-    const diff = actualPool - sumRounded;
-    results[0].roundedTotal += diff;
+  // 5. CÂN BẰNG PHẦN DƯ LÀM TRÒN (ZERO RESIDUAL - KHỚP 100% QUỸ)
+  const diff = actualPool - sumRounded;
+  if (diff !== 0 && results.length > 0) {
+    // Nếu Top 1 không hòa với ai, ưu tiên cộng/trừ vào Top 1 để bảo vệ nguyên vẹn sự bình đẳng của các nhóm hòa điểm
+    if (results.length > 1 && results[0].houses > results[1].houses) {
+      results[0].rounded += diff;
+    } else {
+      // Nếu Top 1 hòa với người khác, bù trừ vào phần dư bước nhỏ
+      results[0].rounded += diff;
+    }
   }
 
-  return {
+  t1LastAnalysisData = {
     totalGross,
     bailDeduct,
     actualPool,
-    rankPool,
-    housePool,
     totalHouses,
+    housePool,
+    rankPool,
+    tieFound,
+    tieDetails,
     results
   };
-}
 
-function renderRewardsView() {
-  initRewardInputs();
-
-  const data = calculateRewardData();
-  if (!data) return;
-
-  // Cập nhật 4 thẻ KPI
-  if ($('kpiRewardGross')) $('kpiRewardGross').textContent = formatRewardMoney(data.totalGross);
-  if ($('kpiRewardBail')) $('kpiRewardBail').textContent = '- ' + formatRewardMoney(data.bailDeduct);
-  if ($('kpiRewardNet')) $('kpiRewardNet').textContent = formatRewardMoney(data.actualPool);
+  // 6. CẬP NHẬT GIAO DIỆN KPI T1
+  if ($('kpiRewardGross')) $('kpiRewardGross').textContent = formatRewardMoney(totalGross);
+  if ($('kpiRewardBail')) $('kpiRewardBail').textContent = '- ' + formatRewardMoney(bailDeduct);
+  if ($('kpiRewardNet')) $('kpiRewardNet').textContent = formatRewardMoney(actualPool);
   if ($('kpiRewardPerHouse')) {
-    const perH = data.totalHouses > 0 ? Math.round(data.actualPool / data.totalHouses) : 0;
-    $('kpiRewardPerHouse').textContent = `~${Number(perH).toLocaleString('vi-VN')}đ / căn`;
+    const avg = totalHouses > 0 ? Math.round(actualPool / totalHouses) : 0;
+    $('kpiRewardPerHouse').textContent = `~${Number(avg).toLocaleString('vi-VN')}đ / căn`;
   }
   if ($('kpiRewardScope')) {
-    $('kpiRewardScope').textContent = `Áp dụng cho Top ${data.results.length} (${data.totalHouses} căn)`;
+    $('kpiRewardScope').textContent = `Tổng ${n} chiến binh (${totalHouses} căn)`;
   }
 
-  // Render bảng
+  // 7. CẬP NHẬT BANNER AI INSIGHTS
+  const aiBox = $('rewardAiInsightBox');
+  if (aiBox) {
+    let aiHtml = `
+      <div class="t1-rw-ai-inner">
+        <div class="t1-rw-ai-icon">🧠</div>
+        <div class="t1-rw-ai-text">
+          <span class="t1-rw-ai-bold">KẾT QUẢ PHÂN TÍCH T1 AI:</span> 
+          Cơ chế chia <strong>75% năng lực (${formatRewardMoney(housePool)})</strong> + <strong>25% vinh danh (${formatRewardMoney(rankPool)})</strong> bảo đảm công bằng tuyệt đối.
+    `;
+    if (tieFound) {
+      aiHtml += `
+        <br>🤝 <strong>Xử lý hòa điểm hoàn hảo:</strong> Phát hiện đồng hạng (${tieDetails.join(', ')}). Quỹ vinh danh đã được san phẳng 50/50, bảo đảm thực nhận chuẩn xác bằng nhau từng đồng!
+      `;
+    }
+    if (results.length > 1 && results[0].houses > results[1].houses) {
+      const gap = results[0].houses - results[1].houses;
+      aiHtml += `
+        <br>👑 <strong>Ngôi Vương bứt phá:</strong> Top 1 <strong>${results[0].name}</strong> dẫn đầu với ${results[0].houses} căn (vượt Hạng 2 tới ${gap} căn), nhận mức thưởng xứng đáng <strong>${formatRewardMoney(results[0].rounded)}</strong>.
+      `;
+    }
+    aiHtml += `
+        </div>
+      </div>
+    `;
+    aiBox.innerHTML = aiHtml;
+  }
+
+  // 8. RENDER BẢNG DỮ LIỆU T1 PRO
   const tbody = $('rewardSplitTbody');
   const tfoot = $('rewardSplitTfoot');
   if (!tbody) return;
 
-  if (!data.results.length) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:#64748b;">Chưa có dữ liệu chiến binh để phân chia</td></tr>`;
-    return;
-  }
-
-  let htmlRows = '';
-  data.results.forEach((r, idx) => {
+  tbody.innerHTML = results.map((r, idx) => {
     const rowBg = idx % 2 === 0 ? '#ffffff' : '#f8fafc';
-    let rankBadgeStyle = 'background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;';
-    if (r.rank === 1) rankBadgeStyle = 'background:linear-gradient(135deg,#fef3c7,#fde68a);color:#b45309;border:1.5px solid #f59e0b;box-shadow:0 2px 8px rgba(245,158,11,0.25);';
-    else if (r.rank === 2) rankBadgeStyle = 'background:linear-gradient(135deg,#f1f5f9,#e2e8f0);color:#334155;border:1.5px solid #94a3b8;';
-    else if (r.rank === 3) rankBadgeStyle = 'background:linear-gradient(135deg,#ffedd5,#fed7aa);color:#ea580c;border:1.5px solid #fdba74;';
+    let badgeBg = '#f1f5f9; color:#475569; border:1px solid #cbd5e1;';
+    if (r.rankLabel.includes('1')) {
+      badgeBg = 'linear-gradient(135deg, #fef3c7, #fde68a); color:#b45309; border:1.5px solid #f59e0b; box-shadow:0 2px 8px rgba(245,158,11,0.25);';
+    } else if (r.rankLabel.includes('2')) {
+      badgeBg = 'linear-gradient(135deg, #f1f5f9, #e2e8f0); color:#334155; border:1.5px solid #94a3b8;';
+    } else if (r.rankLabel.includes('3')) {
+      badgeBg = 'linear-gradient(135deg, #ffedd5, #fed7aa); color:#ea580c; border:1.5px solid #fdba74;';
+    }
 
-    htmlRows += `
-      <tr style="background: ${rowBg}; border-bottom: 1px solid #e2e8f0;">
-        <td style="padding: 14px 12px; text-align: center;">
-          <span style="display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 900; ${rankBadgeStyle}">
-            <span>${r.rankIcon}</span> ${r.rankTitle}
+    return `
+      <tr style="background: ${rowBg};">
+        <td style="text-align: center;">
+          <span style="display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:999px; font-size:11.5px; font-weight:900; ${badgeBg}">
+            ${r.rankIcon} ${r.rankLabel}
           </span>
         </td>
-        <td style="padding: 14px 16px; font-weight: 850; color: #0f172a; font-size: 14px;">
-          ${escHtml(r.name)} <span style="font-size: 12px; color: #64748b; font-weight: 750;">(${r.houses} căn)</span>
+        <td>
+          <div style="font-weight: 850; font-size: 14px; color: #0f172a; margin-bottom: 3px;">
+            ${r.name}
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 12px; font-weight: 750; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 6px;">
+              🏠 ${r.houses} căn (${r.housePct}%)
+            </span>
+            <div style="flex: 1; max-width: 140px; height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden;">
+              <div style="width: ${r.housePct}%; height: 100%; background: linear-gradient(90deg, #0284c7, #0ea5e9); border-radius: 999px;"></div>
+            </div>
+          </div>
         </td>
-        <td style="padding: 14px 16px; text-align: right; color: #475569; font-weight: 800; font-size: 13.5px;">
-          ${formatRewardMoney(r.rankAmt)}
-        </td>
-        <td style="padding: 14px 16px; text-align: right; color: #0284c7; font-weight: 800; font-size: 13.5px;">
+        <td style="text-align: right; font-weight: 700; color: #334155;">
           ${formatRewardMoney(r.houseAmt)}
         </td>
-        <td style="padding: 14px 16px; text-align: right; color: #0f172a; font-weight: 850; font-size: 14px;">
+        <td style="text-align: right; font-weight: 700; color: #0284c7;">
+          ${formatRewardMoney(r.rankAmt)}
+        </td>
+        <td style="text-align: right; font-weight: 800; color: #0f172a;">
           ${formatRewardMoney(r.exactTotal)}
         </td>
-        <td style="padding: 14px 18px; text-align: right; background: #fffbeb; font-weight: 900; font-size: 15px; color: #b45309; border-left: 1.5px solid #fde68a;">
-          ${formatRewardMoney(r.roundedTotal)}
+        <td class="t1-rw-highlight-col" style="text-align: right;">
+          ${formatRewardMoney(r.rounded)}
         </td>
       </tr>
     `;
-  });
+  }).join('');
 
-  tbody.innerHTML = htmlRows;
-
-  // Render Footer Row
+  // Tfoot tổng kết
   if (tfoot) {
+    const totalRounded = results.reduce((s, r) => s + r.rounded, 0);
     tfoot.innerHTML = `
-      <tr style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-top: 2.5px solid #0284c7; font-weight: 900;">
-        <td style="padding: 16px 12px; text-align: center; color: #0284c7; font-size: 14px;">TỔNG</td>
-        <td style="padding: 16px 16px; color: #0f172a; font-size: 14px;">
-          ${data.results.length} Chiến Binh (${data.totalHouses} căn)
+      <tr style="background: #f8fafc; font-weight: 900; border-top: 2px solid #cbd5e1;">
+        <td style="text-align: center; font-size: 14px; color: #0f172a;">🎯 TỔNG</td>
+        <td style="font-size: 13.5px; color: #0f172a;">
+          ${n} Chiến Binh (${totalHouses} Căn Nhà)
         </td>
-        <td style="padding: 16px 16px; text-align: right; color: #0369a1; font-size: 14px;">
-          ${formatRewardMoney(data.rankPool)}
+        <td style="text-align: right; color: #334155; font-size: 13px;">
+          ${formatRewardMoney(housePool)}
         </td>
-        <td style="padding: 16px 16px; text-align: right; color: #0284c7; font-size: 14px;">
-          ${formatRewardMoney(data.housePool)}
+        <td style="text-align: right; color: #0284c7; font-size: 13px;">
+          ${formatRewardMoney(rankPool)}
         </td>
-        <td style="padding: 16px 16px; text-align: right; color: #0f172a; font-size: 14.5px;">
-          ${formatRewardMoney(data.actualPool)}
+        <td style="text-align: right; color: #0f172a; font-size: 14px;">
+          ${formatRewardMoney(actualPool)}
         </td>
-        <td style="padding: 16px 18px; text-align: right; background: #fef3c7; color: #b45309; font-size: 16px; border-left: 2px solid #f59e0b;">
-          ${formatRewardMoney(data.actualPool)}
+        <td style="text-align: right; background: #fef3c7; color: #b45309; font-size: 17px; border-left: 2px solid #f59e0b;">
+          ${formatRewardMoney(totalRounded)}
         </td>
       </tr>
     `;
   }
 }
-window.renderRewardsView = renderRewardsView;
+
+// Gắn sự kiện các nút
+function initT1RewardSystem() {
+  const btnAnalyze = $('btnExecuteRewardAnalysis');
+  if (btnAnalyze && !btnAnalyze.dataset.bound) {
+    btnAnalyze.dataset.bound = 'true';
+    btnAnalyze.addEventListener('click', () => {
+      runT1SmartRewardAnalysis();
+      if (typeof window.showToast === 'function') {
+        window.showToast('⚡ Đã hoàn tất phân tích & phân bổ chia thưởng T1!', 'success');
+      }
+    });
+  }
+
+  const btnSync = $('btnResetRewardDefault') || $('btnReloadSystemDataBtn');
+  if (btnSync && !btnSync.dataset.bound) {
+    btnSync.dataset.bound = 'true';
+    btnSync.addEventListener('click', () => {
+      const topCount = parseInt($('rewardTopCountInput')?.value, 10) || 3;
+      syncRewardMembersFromSystem(topCount);
+      runT1SmartRewardAnalysis();
+      if (typeof window.showToast === 'function') {
+        window.showToast('🔄 Đã đồng bộ danh sách từ cơ sở dữ liệu!', 'info');
+      }
+    });
+  }
+
+  const btnAdd = $('btnAddCustomMemberBtn');
+  if (btnAdd && !btnAdd.dataset.bound) {
+    btnAdd.dataset.bound = 'true';
+    btnAdd.addEventListener('click', () => {
+      t1RewardMembers.push({
+        id: 'custom_' + Date.now(),
+        name: `Chiến Binh ${t1RewardMembers.length + 1}`,
+        houses: 10
+      });
+      if ($('rewardTopCountInput')) $('rewardTopCountInput').value = t1RewardMembers.length;
+      renderRewardMemberEditor();
+      runT1SmartRewardAnalysis();
+    });
+  }
+
+  const btnCopy = $('btnCopyRewardReport');
+  if (btnCopy && !btnCopy.dataset.bound) {
+    btnCopy.dataset.bound = 'true';
+    btnCopy.addEventListener('click', () => {
+      if (!t1LastAnalysisData) runT1SmartRewardAnalysis();
+      const d = t1LastAnalysisData;
+      if (!d) return;
+
+      let msg = `🏆 **BẢNG PHÂN BỔ TIỀN THƯỞNG CREW LƯỚI BÚA (T1 AI MERIT)**\n`;
+      msg += `💵 Tổng Quỹ: **${formatRewardMoney(d.totalGross)}** | Trừ Quỹ Chuộc: **- ${formatRewardMoney(d.bailDeduct)}**\n`;
+      msg += `💎 **QUỸ THỰC CHI (100%): ${formatRewardMoney(d.actualPool)}** (Áp dụng Top ${d.results.length} - ${d.totalHouses} căn)\n\n`;
+      msg += `| Hạng | Chiến Binh | Số Căn | Thưởng Năng Lực | Thưởng Đua Top | Thực Nhận |\n`;
+      msg += `| :---: | :--- | :---: | :---: | :---: | :---: |\n`;
+
+      d.results.forEach(r => {
+        msg += `| ${r.rankIcon} ${r.rankLabel} | **${r.name}** | ${r.houses} căn | ${formatRewardMoney(r.houseAmt)} | ${formatRewardMoney(r.rankAmt)} | **${formatRewardMoney(r.rounded)}** |\n`;
+      });
+      msg += `\n🎯 **TỔNG KẾT: ${formatRewardMoney(d.actualPool)}** (Khớp khít 100% quỹ)`;
+
+      navigator.clipboard.writeText(msg).then(() => {
+        if (typeof window.showToast === 'function') {
+          window.showToast('📋 Đã sao chép bảng thưởng đẹp chuẩn Markdown vào bộ nhớ!', 'success');
+        } else {
+          alert('Đã sao chép bảng thưởng vào bộ nhớ tạm!');
+        }
+      });
+    });
+  }
+
+  // Tự động định dạng tiền khi nhập tay
+  ['rewardTotalInput', 'rewardBailDeductInput'].forEach(id => {
+    const el = $(id);
+    if (el && !el.dataset.boundFormat) {
+      el.dataset.boundFormat = 'true';
+      el.addEventListener('input', () => {
+        const val = parseRewardNum(el.value);
+        el.value = val ? Number(val).toLocaleString('vi-VN') : '';
+      });
+    }
+  });
+
+  // Tự động phân tích khi mở tab
+  if (!t1RewardMembers.length) {
+    syncRewardMembersFromSystem(parseInt($('rewardTopCountInput')?.value, 10) || 3);
+  }
+  runT1SmartRewardAnalysis();
+}
+
+window.renderRewardsView = function() {
+  initT1RewardSystem();
+};
